@@ -76,6 +76,15 @@ main() {
         print_warning ".env already exists, skipping"
     fi
 
+    # Load environment variables for database connection check
+    if [ -f ".env" ]; then
+        export $(grep -v '^#' .env | grep -v '^$' | xargs)
+    fi
+
+    # Use defaults if not set
+    DB_USER="${POSTGRES_USER:-suba}"
+    DB_NAME="${POSTGRES_DB:-suba_app}"
+
     # Start database (if Docker available)
     if [ "$DOCKER_AVAILABLE" = true ]; then
         print_step "Starting PostgreSQL database..."
@@ -86,23 +95,23 @@ main() {
         else
             docker compose -f packages/db/docker-compose.yml up -d
             print_success "PostgreSQL started"
-            
-            # Wait for database to be ready
-            print_step "Waiting for database to be ready..."
-            sleep 3
-            
-            for i in {1..30}; do
-                if docker compose -f packages/db/docker-compose.yml exec -T postgres pg_isready -U company_user -d company_db &>/dev/null; then
-                    print_success "Database is ready"
-                    break
-                fi
-                if [ $i -eq 30 ]; then
-                    print_error "Database failed to start within 30 seconds"
-                    exit 1
-                fi
-                sleep 1
-            done
         fi
+        
+        # Wait for database to be ready
+        print_step "Waiting for database to be ready..."
+        sleep 3
+        
+        for i in {1..30}; do
+            if docker compose -f packages/db/docker-compose.yml exec -T postgres pg_isready -U "$DB_USER" -d "$DB_NAME" &>/dev/null; then
+                print_success "Database is ready"
+                break
+            fi
+            if [ $i -eq 30 ]; then
+                print_error "Database failed to start within 30 seconds"
+                exit 1
+            fi
+            sleep 1
+        done
     else
         print_warning "Skipping database setup (Docker not available)"
         print_warning "Make sure you have PostgreSQL running and DATABASE_URL is set in .env"
@@ -111,24 +120,33 @@ main() {
     # Run database migrations
     print_step "Pushing database schema..."
     cd packages/db
-    bun run db:push
+    if bun run db:push; then
+        print_success "Database schema pushed"
+    else
+        print_error "Failed to push database schema"
+        print_warning "Please check your DATABASE_URL in .env and ensure the database is running"
+        cd ../..
+        exit 1
+    fi
     cd ../..
-    print_success "Database schema pushed"
 
     # Seed database
     print_step "Seeding database with sample data..."
     cd packages/db
-    bun run db:seed || {
+    if bun run db:seed; then
+        print_success "Database seeded"
+    else
         print_warning "Seeding failed or already seeded. Continuing..."
-    }
+    fi
     cd ../..
-    print_success "Database seeded"
 
     # Build packages
     print_step "Building packages..."
-    bun run build || {
+    if bun run build; then
+        print_success "Build completed"
+    else
         print_warning "Build had some issues, but setup can continue"
-    }
+    fi
 
     # Final instructions
     echo -e "\n${GREEN}"
@@ -144,12 +162,8 @@ main() {
     echo -e "API server:  ${BLUE}http://localhost:3000${NC}"
     echo -e "DB Studio:   ${BLUE}bun db:studio${NC}"
     echo ""
-    echo -e "${YELLOW}Default seed users:${NC}"
-    echo "  admin@example.com (Admin)"
-    echo "  editor@example.com (Editor)"
-    echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "  1. Update .env with your configuration (database, auth, etc.)"
+    echo "  1. Review .env and update any placeholder values"
     echo "  2. Update apps/web/src/config/template.ts with your branding"
     echo "  3. Replace placeholder logos in apps/web/src/assets/company-logo/"
     echo ""
