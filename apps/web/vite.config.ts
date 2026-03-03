@@ -19,7 +19,9 @@ const plugins: PluginOption[] = [
 
 export default defineConfig(({ mode }) => {
   const rootEnv = loadEnv(mode, rootDir, "");
-  const prodEnv = mode === "production" ? loadEnv("prod", rootDir, "") : {};
+  const shouldLoadProdEnv =
+    mode === "production" || process.env.ENV_FILE?.endsWith(".env.prod");
+  const prodEnv = shouldLoadProdEnv ? loadEnv("prod", rootDir, "") : {};
   const env = { ...rootEnv, ...prodEnv };
 
   return {
