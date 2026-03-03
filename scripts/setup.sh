@@ -76,6 +76,18 @@ main() {
         print_warning ".env already exists, skipping"
     fi
 
+    if [ ! -f ".env.prod" ]; then
+        if [ -f ".env.prod.example" ]; then
+            cp .env.prod.example .env.prod
+            print_success "Created .env.prod from .env.prod.example"
+            print_warning "Please review and update .env.prod for production"
+        else
+            print_warning ".env.prod.example not found, skipping .env.prod creation"
+        fi
+    else
+        print_warning ".env.prod already exists, skipping"
+    fi
+
     # Load only the database-related environment variables we need
     if [ -f ".env" ]; then
         # Extract specific variables safely using grep and cut

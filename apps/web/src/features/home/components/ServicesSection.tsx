@@ -112,12 +112,12 @@ const ServicesSection: React.FC = () => {
               </p>
 
               <div className="flex items-center gap-8 mb-12">
-                <Link to="/demo/contact">
+                <Link to="/contact">
                   <Button className="bg-primary hover:bg-[#54763d] text-white px-8 py-3 rounded-full font-medium transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                     Get a Quote
                   </Button>
                 </Link>
-                <Link to="/demo/services">
+                <Link to="/services">
                   <Button
                     variant="ghost"
                     className="text-gray-500 hover:text-primary font-medium flex items-center gap-2 group transition-colors"

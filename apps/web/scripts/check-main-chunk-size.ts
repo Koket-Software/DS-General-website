@@ -1,6 +1,8 @@
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
+import "./load-root-env";
+
 const DEFAULT_MAX_KB = 3760;
 
 function parseMaxKb(): number {

@@ -50,15 +50,17 @@ export const Contact: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Book a Call Link */}
+      {/* Consultation Link */}
       <motion.div
         variants={itemVariants}
         className="flex items-center justify-center gap-2 pt-4"
       >
-        <span className="text-sm text-muted-foreground">Or book a call</span>
+        <span className="text-sm text-muted-foreground">
+          Or request a consultation
+        </span>
         <ArrowRight className="w-4 h-4 text-muted-foreground" />
         <Link
-          to="/demo/schedule"
+          to="/schedule"
           onClick={() =>
             window.scrollTo({
               top: 0,
@@ -67,7 +69,7 @@ export const Contact: React.FC = () => {
           }
           className="text-sm font-medium text-primary hover:underline underline-offset-4 decoration-primary/30"
         >
-          Book a Call
+          Schedule a Meeting
         </Link>
       </motion.div>
     </div>

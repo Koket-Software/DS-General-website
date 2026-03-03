@@ -13,23 +13,26 @@
 
 export const COMPANY = {
   /** Company/product name */
-  name: "Your Company",
+  name: "DS General PLC",
 
   /** Short tagline for the company */
-  tagline: "Software Engineering & Digital Innovation",
+  tagline: "Integrated Business & Industrial Solutions",
 
   /** Full description for SEO and marketing */
   description:
-    "We craft intelligent software platforms, resilient digital products, and innovation ecosystems for forward-looking teams.",
+    "DS General PLC delivers reliable engineering, trading, and operational solutions for high-impact business sectors in Ethiopia.",
 
   /** Year the company was founded (for copyright) */
   foundedYear: 2024,
 
   /** Primary contact email */
-  email: "contact@example.com",
+  email: "info@dsgeneralplc.com",
+
+  /** Primary contact phone number */
+  phone: "+251 11 000 0000",
 
   /** Physical address (optional) */
-  address: "123 Main Street, City, Country",
+  address: "Addis Ababa, Ethiopia",
 } as const;
 
 // =============================================================================
@@ -41,7 +44,7 @@ export const SITE = {
   name: COMPANY.name,
 
   /** Base URL of the site (set via VITE_SITE_URL env var for flexibility) */
-  url: import.meta.env.VITE_SITE_URL || "http://localhost:5173",
+  url: import.meta.env.VITE_SITE_URL || "https://dsgeneralplc.com",
 
   /** Default page title (appears in browser tab) */
   defaultTitle: `${COMPANY.name} | ${COMPANY.tagline}`,
@@ -50,7 +53,7 @@ export const SITE = {
   defaultDescription: COMPANY.description,
 
   /** Twitter/X handle (without @) */
-  twitterHandle: "yourcompany",
+  twitterHandle: "dsgeneralplc",
 
   /** Default locale */
   locale: "en_US",
@@ -60,11 +63,12 @@ export const SITE = {
 
   /** Keywords for SEO */
   keywords: [
-    "software engineering",
-    "digital innovation",
-    "product development",
-    "cloud platforms",
-    "automation",
+    "ds general",
+    "ds general plc",
+    "ethiopia business solutions",
+    "industrial solutions",
+    "engineering services",
+    "trading services",
   ],
 } as const;
 
@@ -73,10 +77,10 @@ export const SITE = {
 // =============================================================================
 
 export const SOCIAL_LINKS = {
-  twitter: "https://twitter.com/yourcompany",
-  linkedin: "https://www.linkedin.com/company/yourcompany",
-  instagram: "https://www.instagram.com/yourcompany",
-  github: "https://github.com/yourcompany",
+  twitter: "",
+  linkedin: "",
+  instagram: "",
+  github: "",
   facebook: "", // Leave empty to hide
   tiktok: "", // Leave empty to hide
 } as const;
@@ -91,16 +95,17 @@ export const NAVIGATION = {
 
   /** Main navigation items */
   items: [
-    { label: "About Us", href: "/demo/about" },
-    { label: "Services", href: "/demo/services" },
-    { label: "Projects", href: "/demo/projects" },
-    { label: "Contact Us", href: "/demo/contact" },
+    { label: "About", href: "/about" },
+    { label: "Services", href: "/services" },
+    { label: "Sectors", href: "/sectors" },
+    { label: "Projects", href: "/projects" },
+    { label: "Contact", href: "/contact" },
   ],
 
   /** CTA button in header */
   cta: {
-    label: "Book a Call",
-    href: "/demo/schedule",
+    label: "Request Consultation",
+    href: "/schedule",
   },
 } as const;
 
@@ -111,20 +116,20 @@ export const NAVIGATION = {
 export const FOOTER = {
   sections: [
     {
-      title: "Services",
+      title: "Company",
       links: [
-        { label: "Web Development", href: "/demo/services/web-development" },
-        { label: "Mobile Apps", href: "/demo/services/mobile-apps" },
-        { label: "Cloud Solutions", href: "/demo/services/cloud-solutions" },
+        { label: "About", href: "/about" },
+        { label: "Services", href: "/services" },
+        { label: "Business Sectors", href: "/sectors" },
       ],
     },
     {
       title: "Quick Links",
       links: [
-        { label: "Services", href: "/demo/services" },
-        { label: "Blogs", href: "/demo/blogs" },
-        { label: "Projects", href: "/demo/projects" },
-        { label: "Careers", href: "/demo/careers" },
+        { label: "Services", href: "/services" },
+        { label: "Blogs", href: "/blogs" },
+        { label: "Projects", href: "/projects" },
+        { label: "Careers", href: "/careers" },
       ],
     },
   ],

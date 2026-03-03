@@ -39,7 +39,7 @@ export const BrandingShowcase: React.FC<BrandingShowcaseProps> = ({
               className="h-12 w-full rounded-full bg-[#628B35] text-base font-medium text-white shadow-sm hover:bg-[#4f7a28] sm:w-auto"
               asChild
             >
-              <Link to="/demo/schedule">Book A Call</Link>
+              <Link to="/schedule">Book A Call</Link>
             </Button>
 
             <Button
@@ -48,7 +48,7 @@ export const BrandingShowcase: React.FC<BrandingShowcaseProps> = ({
               className="h-12 w-full rounded-full text-base font-medium text-[#628B35] hover:bg-[#628B35]/10 hover:text-[#4f7a28] sm:w-auto"
               asChild
             >
-              <Link to="/demo/projects">View Client Projects</Link>
+              <Link to="/projects">View Client Projects</Link>
             </Button>
           </div>
         </div>

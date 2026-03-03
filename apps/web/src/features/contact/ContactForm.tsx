@@ -156,7 +156,7 @@ export function ContactForm({
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  placeholder="john@example.com or +1 234 567 8900"
+                  placeholder="name@company.com or +251 9XX XXX XXX"
                   disabled={submitMutation.isPending}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />

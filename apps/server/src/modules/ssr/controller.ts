@@ -127,38 +127,38 @@ async function getMetaForPath(
     case "/":
       return createStaticPageMeta(
         "/",
-        "Software Engineering & Digital Innovation",
-        "We craft intelligent software platforms, resilient digital products, and innovation ecosystems for forward-looking teams.",
+        "Integrated Business & Industrial Solutions",
+        "DS General PLC delivers reliable engineering, trading, and operational services for high-impact business sectors.",
       );
     case "/about":
       return createStaticPageMeta(
         "/about",
         "About Us",
-        "Learn about our company - our mission, vision, and the team behind innovative software solutions.",
+        "Learn about DS General PLC, our mission, and the team delivering practical business solutions.",
       );
     case "/contact":
       return createStaticPageMeta(
         "/contact",
         "Contact Us",
-        "Get in touch with us. We'd love to hear about your project and discuss how we can help.",
+        "Get in touch with DS General PLC to discuss your business and operational requirements.",
       );
     case "/schedule":
       return createStaticPageMeta(
         "/schedule",
         "Schedule a Meeting",
-        "Book a consultation with us to discuss your software development needs.",
+        "Book a consultation with DS General PLC to discuss your service needs.",
       );
     case "/blogs":
       return createStaticPageMeta(
         "/blogs",
         "Blog",
-        "Insights, tutorials, and updates from our team on software development and digital innovation.",
+        "Updates and insights from DS General PLC on operations, delivery, and sector-focused work.",
       );
     case "/services":
       return createStaticPageMeta(
         "/services",
         "Our Services",
-        "Explore our software engineering, digital product development, and cloud platform services.",
+        "Explore the core services DS General PLC delivers across engineering, trading, and operations.",
       );
     case "/projects":
       return createStaticPageMeta(

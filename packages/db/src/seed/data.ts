@@ -164,11 +164,11 @@ export const businessSectorSeeds: SeedBusinessSector[] = [
     featuredImageUrl:
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80",
     phoneNumber: "+251-11-123-4567",
-    emailAddress: "hospitality@suba.studio",
+    emailAddress: "hospitality@dsgeneralplc.com",
     address: "Bole Road, Addis Ababa, Ethiopia",
-    facebookUrl: "https://facebook.com/subahospitality",
-    instagramUrl: "https://instagram.com/subahospitality",
-    linkedinUrl: "https://www.linkedin.com/company/suba-hospitality",
+    facebookUrl: "https://facebook.com/dsgeneralhospitality",
+    instagramUrl: "https://instagram.com/dsgeneralhospitality",
+    linkedinUrl: "https://www.linkedin.com/company/dsgeneral-hospitality",
     publishDate: daysAgo(20),
     stats: [
       { statKey: "Projects Delivered", statValue: "48+", position: 0 },
@@ -216,11 +216,11 @@ export const businessSectorSeeds: SeedBusinessSector[] = [
     featuredImageUrl:
       "https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80",
     phoneNumber: "+251-11-765-4321",
-    emailAddress: "commerce@suba.studio",
+    emailAddress: "commerce@dsgeneralplc.com",
     address: "Kazanchis, Addis Ababa, Ethiopia",
-    facebookUrl: "https://facebook.com/subacommerce",
-    instagramUrl: "https://instagram.com/subacommerce",
-    linkedinUrl: "https://www.linkedin.com/company/suba-commerce",
+    facebookUrl: "https://facebook.com/dsgeneralcommerce",
+    instagramUrl: "https://instagram.com/dsgeneralcommerce",
+    linkedinUrl: "https://www.linkedin.com/company/dsgeneral-commerce",
     publishDate: daysAgo(10),
     stats: [
       { statKey: "Transactions Processed", statValue: "120K+", position: 0 },
@@ -268,11 +268,11 @@ export const businessSectorSeeds: SeedBusinessSector[] = [
     featuredImageUrl:
       "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=1600&q=80",
     phoneNumber: "+251-11-555-0101",
-    emailAddress: "industry@suba.studio",
+    emailAddress: "industry@dsgeneralplc.com",
     address: "Lebu Industrial Zone, Addis Ababa, Ethiopia",
-    facebookUrl: "https://facebook.com/subaindustry",
-    instagramUrl: "https://instagram.com/subaindustry",
-    linkedinUrl: "https://www.linkedin.com/company/suba-industry",
+    facebookUrl: "https://facebook.com/dsgeneralindustry",
+    instagramUrl: "https://instagram.com/dsgeneralindustry",
+    linkedinUrl: "https://www.linkedin.com/company/dsgeneral-industry",
     publishDate: null,
     stats: [
       { statKey: "Plants Supported", statValue: "12", position: 0 },
@@ -313,14 +313,14 @@ export const partnerSeeds: InferInsertModel<typeof partners>[] = [
     slug: "nile-agro",
     description:
       "Marketplace for smallholder farmers to reach regional buyers.",
-    websiteUrl: "https://example.com/nile-agro",
+    websiteUrl: "https://dsgeneralplc.com/nile-agro",
     logoUrl: "https://dummyimage.com/160x80/628b35/ffffff&text=Nile+Agro",
   },
   {
     title: "Blue Horizon Fintech",
     slug: "blue-horizon-fintech",
     description: "SME-focused digital wallet and credit rails.",
-    websiteUrl: "https://example.com/blue-horizon",
+    websiteUrl: "https://dsgeneralplc.com/blue-horizon",
     logoUrl: "https://dummyimage.com/160x80/1f2937/ffffff&text=Blue+Horizon",
   },
   {
@@ -328,7 +328,7 @@ export const partnerSeeds: InferInsertModel<typeof partners>[] = [
     slug: "aster-health",
     description:
       "Remote care enablement for clinics and community health workers.",
-    websiteUrl: "https://example.com/aster-health",
+    websiteUrl: "https://dsgeneralplc.com/aster-health",
     logoUrl: "https://dummyimage.com/160x80/0f766e/ffffff&text=Aster+Health",
   },
 ];
@@ -336,7 +336,7 @@ export const partnerSeeds: InferInsertModel<typeof partners>[] = [
 export const testimonialSeeds: SeedTestimonial[] = [
   {
     comment:
-      "Suba translated complex field workflows into a clean, fast marketplace that our vendors love using.",
+      "DS General translated complex field workflows into a clean, fast marketplace that our vendors love using.",
     companyName: "Nile Agro",
     partnerSlug: "nile-agro",
     companyLogoUrl: "https://dummyimage.com/120x60/628b35/ffffff&text=Nile",
@@ -358,7 +358,7 @@ export const testimonialSeeds: SeedTestimonial[] = [
   },
   {
     comment:
-      "Suba delivered a mobile-first experience that our clinicians picked up instantly. Adoption skyrocketed.",
+      "DS General delivered a mobile-first experience that our clinicians picked up instantly. Adoption skyrocketed.",
     companyName: "Aster Health",
     partnerSlug: "aster-health",
     companyLogoUrl: "https://dummyimage.com/120x60/0f766e/ffffff&text=Aster",
@@ -371,13 +371,13 @@ export const testimonialSeeds: SeedTestimonial[] = [
 
 export const productSeeds: SeedProduct[] = [
   {
-    title: "Suba Design System Kit",
-    slug: "suba-design-system-kit",
+    title: "DS General System Kit",
+    slug: "ds-general-system-kit",
     description:
-      "Foundational UI kit with tokens, components, and templates tuned for Suba.",
+      "Foundational UI kit with tokens, components, and templates tuned for DS General.",
     overview:
       "Includes Figma styles, responsive layouts, form components, and motion presets for fast delivery.",
-    productLink: "https://suba.design/system-kit",
+    productLink: "https://dsgeneralplc.com/system-kit",
     tagSlugs: ["ui-ux", "branding"],
     images: [
       {
@@ -392,7 +392,7 @@ export const productSeeds: SeedProduct[] = [
     description: "Composable analytics views for product and marketing teams.",
     overview:
       "Prebuilt cohorts, funnels, and retention views with export-ready visuals.",
-    productLink: "https://suba.design/analytics-kit",
+    productLink: "https://dsgeneralplc.com/analytics-kit",
     tagSlugs: ["data-viz", "web-development"],
     images: [
       {
@@ -408,7 +408,7 @@ export const productSeeds: SeedProduct[] = [
       "Self-serve feedback capture with triage and roadmap visibility.",
     overview:
       "Great for beta programs and feature prioritization across distributed teams.",
-    productLink: "https://suba.design/feedback-portal",
+    productLink: "https://dsgeneralplc.com/feedback-portal",
     tagSlugs: ["product-strategy", "ui-ux"],
     images: [
       {
@@ -500,7 +500,7 @@ export const blogSeeds: SeedBlog[] = [
       "We unpack the minimum viable design system for startups, including token strategy, contribution models, and governance.",
     featuredImageUrl:
       "https://images.unsplash.com/photo-1483478550801-ceba5fe50e8e?auto=format&fit=crop&w=1400&q=80",
-    authorId: "suba-admin",
+    authorId: "dsg-admin",
     publishDate: new Date("2025-01-12T10:00:00Z").toISOString(),
     readTimeMinutes: 6,
     tagSlugs: ["ui-ux", "branding"],
@@ -514,7 +514,7 @@ export const blogSeeds: SeedBlog[] = [
       "From preview environments to trace-based monitoring, here’s the stack we rely on for dependable launches.",
     featuredImageUrl:
       "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=1400&q=80",
-    authorId: "suba-editor",
+    authorId: "dsg-editor",
     publishDate: new Date("2025-01-05T08:00:00Z").toISOString(),
     readTimeMinutes: 7,
     tagSlugs: ["web-development", "product-strategy"],
@@ -527,7 +527,7 @@ export const blogSeeds: SeedBlog[] = [
       "We cover live working sessions, shared checklists, and zero-height specs that minimize rework.",
     featuredImageUrl:
       "https://images.unsplash.com/photo-1471879832106-c7ab9e0cee23?auto=format&fit=crop&w=1400&q=80",
-    authorId: "suba-admin",
+    authorId: "dsg-admin",
     publishDate: new Date("2024-12-15T12:00:00Z").toISOString(),
     readTimeMinutes: 5,
     tagSlugs: ["ui-ux", "web-development"],
@@ -541,7 +541,7 @@ export const blogSeeds: SeedBlog[] = [
       "Templates, rituals, and stakeholder maps that speed up decision making for product teams.",
     featuredImageUrl:
       "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80",
-    authorId: "suba-editor",
+    authorId: "dsg-editor",
     publishDate: new Date("2024-12-02T09:00:00Z").toISOString(),
     readTimeMinutes: 4,
     tagSlugs: ["product-strategy"],
@@ -554,7 +554,7 @@ export const blogSeeds: SeedBlog[] = [
       "We share caching approaches, offline-first UI cues, and progressive enhancement tips.",
     featuredImageUrl:
       "https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1400&q=80",
-    authorId: "suba-admin",
+    authorId: "dsg-admin",
     publishDate: new Date("2024-11-20T14:00:00Z").toISOString(),
     readTimeMinutes: 6,
     tagSlugs: ["mobile", "ui-ux"],
@@ -711,7 +711,7 @@ export const contactSeeds: SeedContact[] = [
   },
   {
     fullName: "Marta Abate",
-    contact: "marta@example.com",
+    contact: "marta@dsgeneralplc.com",
     message: "Seeking product strategy sprint for a fintech MVP.",
     isHandled: false,
     serviceSlug: "product-strategy",
@@ -736,11 +736,11 @@ export const vacancySeeds: SeedVacancy[] = [
     salaryMin: 80000,
     salaryMax: 120000,
     salaryCurrency: "USD",
-    applyEmail: "careers@suba.studio",
+    applyEmail: "careers@dsgeneralplc.com",
     status: "PUBLISHED",
     publishedAt: daysAgo(15),
     deadlineAt: daysFromNow(30),
-    createdByUserId: "suba-admin",
+    createdByUserId: "dsg-admin",
     tagSlugs: ["ui-ux", "product-strategy"],
   },
   {
@@ -759,11 +759,11 @@ export const vacancySeeds: SeedVacancy[] = [
     salaryMin: 65000,
     salaryMax: 95000,
     salaryCurrency: "USD",
-    applyEmail: "engineering@suba.studio",
+    applyEmail: "engineering@dsgeneralplc.com",
     status: "PUBLISHED",
     publishedAt: daysAgo(5),
     deadlineAt: daysFromNow(45),
-    createdByUserId: "suba-admin",
+    createdByUserId: "dsg-admin",
     tagSlugs: ["web-development", "ui-ux"],
   },
   {
@@ -785,7 +785,7 @@ export const vacancySeeds: SeedVacancy[] = [
     status: "CLOSED",
     publishedAt: daysAgo(90),
     deadlineAt: daysAgo(10),
-    createdByUserId: "suba-admin",
+    createdByUserId: "dsg-admin",
     tagSlugs: ["branding", "ui-ux"],
   },
   {
@@ -800,7 +800,7 @@ export const vacancySeeds: SeedVacancy[] = [
     employmentType: "FULL_TIME",
     seniority: "ENTRY",
     status: "DRAFT",
-    createdByUserId: "suba-admin",
+    createdByUserId: "dsg-admin",
     tagSlugs: ["product-strategy"],
   },
   {
@@ -817,11 +817,11 @@ export const vacancySeeds: SeedVacancy[] = [
     salaryMin: 15000,
     salaryMax: 25000,
     salaryCurrency: "USD",
-    applyEmail: "marketing@suba.studio",
+    applyEmail: "marketing@dsgeneralplc.com",
     status: "PUBLISHED",
     publishedAt: daysAgo(2),
     deadlineAt: daysFromNow(14),
-    createdByUserId: "suba-admin",
+    createdByUserId: "dsg-admin",
     tagSlugs: ["product-strategy", "data-viz"],
   },
 ];
@@ -830,21 +830,21 @@ export const vacancyApplicationSeeds: SeedVacancyApplication[] = [
   {
     vacancySlug: "senior-product-designer",
     fullName: "Liya Bekele",
-    email: "liya.bekele@example.com",
+    email: "liya.bekele@dsgeneralplc.com",
     phone: "+251-91-555-0123",
-    resumeUrl: "https://example.com/resumes/liya-bekele.pdf",
+    resumeUrl: "https://dsgeneralplc.com/resumes/liya-bekele.pdf",
     portfolioUrl: "https://behance.net/liya-bekele",
     linkedinUrl: "https://www.linkedin.com/in/liya-bekele",
     coverLetter:
-      "Excited to bring product design leadership and systems thinking to Suba's client engagements.",
+      "Excited to bring product design leadership and systems thinking to DS General's client engagements.",
     status: "REVIEWING",
     createdAt: daysAgo(3),
   },
   {
     vacancySlug: "senior-product-designer",
     fullName: "Sara Abdella",
-    email: "sara.abdella@example.com",
-    resumeUrl: "https://example.com/resumes/sara-abdella.pdf",
+    email: "sara.abdella@dsgeneralplc.com",
+    resumeUrl: "https://dsgeneralplc.com/resumes/sara-abdella.pdf",
     portfolioUrl: "https://dribbble.com/sara-abdella",
     status: "SUBMITTED",
     createdAt: daysAgo(1),
@@ -852,9 +852,9 @@ export const vacancyApplicationSeeds: SeedVacancyApplication[] = [
   {
     vacancySlug: "frontend-engineer",
     fullName: "Yohannes Alemu",
-    email: "yohannes.alemu@example.com",
+    email: "yohannes.alemu@dsgeneralplc.com",
     phone: "+251-92-222-0098",
-    resumeUrl: "https://example.com/resumes/yohannes-alemu.pdf",
+    resumeUrl: "https://dsgeneralplc.com/resumes/yohannes-alemu.pdf",
     portfolioUrl: "https://github.com/yohannes-alemu",
     coverLetter: "Focused on accessible UI delivery and design system tooling.",
     status: "SHORTLISTED",
@@ -863,8 +863,8 @@ export const vacancyApplicationSeeds: SeedVacancyApplication[] = [
   {
     vacancySlug: "frontend-engineer",
     fullName: "Rahel Abebe",
-    email: "rahel.abebe@example.com",
-    resumeUrl: "https://example.com/resumes/rahel-abebe.pdf",
+    email: "rahel.abebe@dsgeneralplc.com",
+    resumeUrl: "https://dsgeneralplc.com/resumes/rahel-abebe.pdf",
     linkedinUrl: "https://www.linkedin.com/in/rahel-abebe",
     status: "SUBMITTED",
     createdAt: daysAgo(1),
@@ -872,8 +872,8 @@ export const vacancyApplicationSeeds: SeedVacancyApplication[] = [
   {
     vacancySlug: "brand-designer-contract",
     fullName: "Khalid Yimer",
-    email: "khalid.yimer@example.com",
-    resumeUrl: "https://example.com/resumes/khalid-yimer.pdf",
+    email: "khalid.yimer@dsgeneralplc.com",
+    resumeUrl: "https://dsgeneralplc.com/resumes/khalid-yimer.pdf",
     portfolioUrl: "https://dribbble.com/khalid-yimer",
     status: "REJECTED",
     createdAt: daysAgo(20),
@@ -882,8 +882,8 @@ export const vacancyApplicationSeeds: SeedVacancyApplication[] = [
   {
     vacancySlug: "product-marketing-intern",
     fullName: "Hanna Tesfaye",
-    email: "hanna.tesfaye@example.com",
-    resumeUrl: "https://example.com/resumes/hanna-tesfaye.pdf",
+    email: "hanna.tesfaye@dsgeneralplc.com",
+    resumeUrl: "https://dsgeneralplc.com/resumes/hanna-tesfaye.pdf",
     portfolioUrl: "https://hanna-tesfaye.notion.site",
     status: "SUBMITTED",
     createdAt: daysAgo(1),
@@ -919,9 +919,9 @@ export const socialSeeds: InferInsertModel<typeof socials>[] = [
 
 export const userSeeds: InferInsertModel<typeof user>[] = [
   {
-    id: "suba-admin",
-    name: "Suba Admin",
-    email: "admin@suba.studio",
+    id: "dsg-admin",
+    name: "DS General Admin",
+    email: "admin@dsgeneralplc.com",
     emailVerified: true,
     image:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
@@ -929,9 +929,9 @@ export const userSeeds: InferInsertModel<typeof user>[] = [
     updatedAt: now(),
   },
   {
-    id: "suba-editor",
-    name: "Suba Editor",
-    email: "editor@suba.studio",
+    id: "dsg-editor",
+    name: "DS General Editor",
+    email: "editor@dsgeneralplc.com",
     emailVerified: true,
     image:
       "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=80",
@@ -942,8 +942,8 @@ export const userSeeds: InferInsertModel<typeof user>[] = [
 
 export const userProfileSeeds: InferInsertModel<typeof userProfiles>[] = [
   {
-    userId: "suba-admin",
-    firstName: "Suba",
+    userId: "dsg-admin",
+    firstName: "DS",
     lastName: "Admin",
     headshotUrl:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
@@ -951,34 +951,34 @@ export const userProfileSeeds: InferInsertModel<typeof userProfiles>[] = [
     phoneNumber: "+251-90-000-0000",
   },
   {
-    userId: "suba-editor",
-    firstName: "Suba",
+    userId: "dsg-editor",
+    firstName: "DS",
     lastName: "Editor",
     headshotUrl:
       "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=200&q=80",
     role: "BLOGGER",
-    phoneNumber: "+1-404-555-0101",
+    phoneNumber: "+251-91-234-5678",
   },
 ];
 
 export const userSocialHandleSeeds = [
   {
-    userId: "suba-admin",
+    userId: "dsg-admin",
     socialTitle: "LinkedIn",
-    handle: "suba-design-development",
-    fullUrl: "https://www.linkedin.com/company/suba-design-development",
+    handle: "ds-general-plc",
+    fullUrl: "https://www.linkedin.com/company/ds-general-plc",
   },
   {
-    userId: "suba-admin",
+    userId: "dsg-admin",
     socialTitle: "X",
-    handle: "suba_studio",
-    fullUrl: "https://x.com/suba_studio",
+    handle: "ds_general_plc",
+    fullUrl: "https://x.com/ds_general_plc",
   },
   {
-    userId: "suba-editor",
+    userId: "dsg-editor",
     socialTitle: "Dribbble",
-    handle: "suba-design",
-    fullUrl: "https://dribbble.com/suba-design",
+    handle: "ds-general-plc",
+    fullUrl: "https://dribbble.com/ds-general-plc",
   },
 ];
 

@@ -8,6 +8,7 @@ import { defineConfig, loadEnv, type PluginOption } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, "../..");
 
 const plugins: PluginOption[] = [
   tsconfigPaths({ ignoreConfigErrors: true }) as PluginOption,
@@ -17,13 +18,9 @@ const plugins: PluginOption[] = [
 ];
 
 export default defineConfig(({ mode }) => {
-  // Load env from root directory (two levels up from apps/web)
-  const rootEnv = loadEnv(mode, path.resolve(__dirname, "../.."), "");
-  // Load env from current directory (apps/web) - these override root
-  const localEnv = loadEnv(mode, __dirname, "");
-
-  // Merge environments, local takes precedence
-  const env = { ...rootEnv, ...localEnv };
+  const rootEnv = loadEnv(mode, rootDir, "");
+  const prodEnv = mode === "production" ? loadEnv("prod", rootDir, "") : {};
+  const env = { ...rootEnv, ...prodEnv };
 
   return {
     plugins,

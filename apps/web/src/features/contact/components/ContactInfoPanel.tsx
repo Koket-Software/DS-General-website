@@ -2,6 +2,8 @@ import { Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { motion, type Variants } from "motion/react";
 import React from "react";
 
+import { COMPANY, SOCIAL_LINKS } from "@/config/template";
+
 // Company Logo SVG Component
 const CompanyLogo: React.FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -81,43 +83,48 @@ const DEFAULT_CONTACT_INFO: ContactInfoItem[] = [
     icon: <Phone size={16} className="text-muted-foreground flex-shrink-0" />,
     content: (
       <>
-        <p>+ 251 90 000 0000</p>
-        <p>+ 251 90 000 0000</p>
+        <p>{COMPANY.phone}</p>
       </>
     ),
   },
   {
     icon: <MapPin size={16} className="text-muted-foreground flex-shrink-0" />,
-    content: (
-      <p>
-        Bole Atlas, Addis Ababa.
-        <br />
-        Center Point Apartment 8th floor
-      </p>
-    ),
+    content: <p>{COMPANY.address}</p>,
   },
   {
     icon: <Mail size={16} className="text-muted-foreground flex-shrink-0" />,
-    content: <p>contact@example.com</p>,
+    content: <p>{COMPANY.email}</p>,
   },
 ];
 
 const DEFAULT_SOCIAL_LINKS: SocialLink[] = [
-  {
-    icon: <XIcon className="w-4 h-4" />,
-    label: "X (Formerly Twitter)",
-    href: "#",
-  },
-  {
-    icon: <Linkedin size={16} />,
-    label: "LinkedIn",
-    href: "#",
-  },
-  {
-    icon: <Instagram size={16} />,
-    label: "Instagram",
-    href: "#",
-  },
+  ...(SOCIAL_LINKS.twitter
+    ? [
+        {
+          icon: <XIcon className="w-4 h-4" />,
+          label: "X (Formerly Twitter)",
+          href: SOCIAL_LINKS.twitter,
+        },
+      ]
+    : []),
+  ...(SOCIAL_LINKS.linkedin
+    ? [
+        {
+          icon: <Linkedin size={16} />,
+          label: "LinkedIn",
+          href: SOCIAL_LINKS.linkedin,
+        },
+      ]
+    : []),
+  ...(SOCIAL_LINKS.instagram
+    ? [
+        {
+          icon: <Instagram size={16} />,
+          label: "Instagram",
+          href: SOCIAL_LINKS.instagram,
+        },
+      ]
+    : []),
 ];
 
 export const ContactInfoPanel: React.FC<ContactInfoPanelProps> = ({
@@ -167,9 +174,9 @@ export const ContactInfoPanel: React.FC<ContactInfoPanelProps> = ({
       </div>
     </motion.div>
 
-    {/* Social Medias */}
+    {/* Social Media */}
     <motion.div variants={itemVariants} className="space-y-4">
-      <p className="text-sm font-semibold text-foreground">Social Medias</p>
+      <p className="text-sm font-semibold text-foreground">Social Media</p>
       <div className="space-y-3">
         {socialLinks.map((link) => (
           <motion.a

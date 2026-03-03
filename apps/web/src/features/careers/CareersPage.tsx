@@ -76,7 +76,7 @@ export function CareersPage() {
               {openRoles.map((role) => (
                 <Link
                   key={role.id}
-                  to="/demo/careers/$slug"
+                  to="/careers/$slug"
                   params={{ slug: role.slug }}
                   onClick={() => {
                     window.scrollTo({
@@ -126,7 +126,7 @@ export function CareersPage() {
               {closedRoles.map((role) => (
                 <Link
                   key={role.id}
-                  to="/demo/careers/$slug"
+                  to="/careers/$slug"
                   params={{ slug: role.slug }}
                   onClick={() => {
                     window.scrollTo({

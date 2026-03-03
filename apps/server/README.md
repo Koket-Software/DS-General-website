@@ -1,4 +1,4 @@
-# Company Template API Server
+# DS General PLC API Server
 
 Hono-based REST API following a modular, domain-driven architecture.
 
@@ -107,6 +107,8 @@ export const registerModules = (app: Hono) => {
 ## Environment Variables
 
 Required variables (validated via Zod in `src/core/config/env.ts`):
+
+Load these from root env files: `.env` (development) and `.env.prod` (production).
 
 - `NODE_ENV` — Environment (development | production | test)
 - `PORT` — Server port (default: 3000)

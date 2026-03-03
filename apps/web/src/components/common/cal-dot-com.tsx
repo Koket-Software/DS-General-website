@@ -9,11 +9,14 @@
 import Cal, { getCalApi } from "@calcom/embed-react";
 import { useEffect } from "react";
 
+const CAL_NAMESPACE = "introductory-consultation";
+const CAL_LINK = "dsgeneralplc/introductory-consultation";
+
 export default function CalDotCom() {
   useEffect(() => {
     (async function () {
       const cal = await getCalApi({
-        namespace: "15-min-suba.et-introduction-meeting",
+        namespace: CAL_NAMESPACE,
       });
       cal("ui", {
         theme: "light",
@@ -28,8 +31,8 @@ export default function CalDotCom() {
   }, []);
   return (
     <Cal
-      namespace="15-min-suba.et-introduction-meeting"
-      calLink="negusnati/15-min-suba.et-introduction-meeting"
+      namespace={CAL_NAMESPACE}
+      calLink={CAL_LINK}
       style={{ width: "100%", height: "100%", overflow: "scroll" }}
       config={{ layout: "month_view", theme: "light" }}
     />

@@ -61,9 +61,20 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "../../../..");
+const rootEnvPath = path.join(root, ".env");
+const productionEnvPath = path.join(root, ".env.prod");
 
-// Load env from root .env file
-config({ path: path.join(root, ".env") });
+config({ path: rootEnvPath });
+
+const overrideEnvPath = process.env.ENV_FILE
+  ? path.resolve(root, process.env.ENV_FILE)
+  : process.env.NODE_ENV === "production"
+    ? productionEnvPath
+    : rootEnvPath;
+
+if (overrideEnvPath !== rootEnvPath) {
+  config({ path: overrideEnvPath, override: true });
+}
 
 const args = new Set(process.argv.slice(2));
 const fresh = args.has("--fresh") || !args.has("--append");

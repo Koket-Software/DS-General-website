@@ -52,7 +52,7 @@ export const FaqSection: React.FC = () => {
                   className="bg-[#6A8D39] hover:bg-[#5a7a30] text-white px-8 py-3 rounded-full text-sm font-medium transition-colors"
                 >
                   <Link
-                    to="/demo/contact"
+                    to="/contact"
                     onClick={() =>
                       window.scrollTo({
                         top: 0,

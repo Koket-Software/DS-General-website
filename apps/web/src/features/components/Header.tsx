@@ -39,14 +39,14 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
       transition={{ duration: 0.2, ease: "easeOut" }}
     >
       <div className="flex h-16 items-center justify-between px-6 max-w-7xl mx-auto">
-        {/* Logo - SUBA.ET */}
+        {/* Logo */}
         <Link
           to="/"
           className="flex items-center gap-2 cursor-pointer"
           onClick={handleScrollTop}
         >
           <span className="font-bold text-lg tracking-tight text-primary">
-            SUBA.ET
+            DS GENERAL
           </span>
         </Link>
 
@@ -109,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick, isMenuOpen }) => {
             {/* Work Samples link */}
             <motion.div layout="position" transition={{ duration: 0.2 }}>
               <Link
-                to="/demo/projects"
+                to="/projects"
                 className="text-sm font-medium text-gray-600 hover:text-primary transition-colors whitespace-nowrap"
                 onClick={handleScrollTop}
               >

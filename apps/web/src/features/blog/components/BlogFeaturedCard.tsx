@@ -29,7 +29,7 @@ export const BlogFeaturedCard: React.FC<BlogFeaturedCardProps> = ({
 }) => (
   <motion.div variants={itemVariants} initial="hidden" animate="show">
     <Link
-      to="/demo/blogs/$slug"
+      to="/blogs/$slug"
       params={{ slug }}
       className="group cursor-pointer md:grid md:grid-cols-2 md:gap-12 md:items-center block"
     >

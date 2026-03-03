@@ -29,22 +29,16 @@ export interface LandingCtaConfig {
   variant?: "primary" | "secondary" | "outline";
 }
 
-/**
- * Landing page paths relative to the demo route prefix.
- * In production, you may want to change the prefix or remove it entirely.
- */
-const DEMO_PREFIX = "/demo";
-
 export const landingPagePaths: Record<LandingPage, string> = {
-  home: `${DEMO_PREFIX}`,
-  about: `${DEMO_PREFIX}/about`,
-  services: `${DEMO_PREFIX}/services`,
-  sectors: `${DEMO_PREFIX}/sectors`,
-  blogs: `${DEMO_PREFIX}/blogs`,
-  blogDetail: `${DEMO_PREFIX}/blogs/$slug`,
-  careers: `${DEMO_PREFIX}/careers`,
-  booking: `${DEMO_PREFIX}/schedule`,
-  contact: `${DEMO_PREFIX}/contact`,
-  projects: `${DEMO_PREFIX}/projects`,
-  gallery: `${DEMO_PREFIX}/gallery`,
+  home: "/",
+  about: "/about",
+  services: "/services",
+  sectors: "/sectors",
+  blogs: "/blogs",
+  blogDetail: "/blogs/$slug",
+  careers: "/careers",
+  booking: "/schedule",
+  contact: "/contact",
+  projects: "/projects",
+  gallery: "/gallery",
 };

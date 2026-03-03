@@ -4,6 +4,8 @@ import { resolve } from "node:path";
 
 import axios from "axios";
 
+import "./load-root-env";
+
 import { generateFullSitemap } from "../src/utils/generate-sitemap";
 
 interface Product {

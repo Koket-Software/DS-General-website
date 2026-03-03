@@ -4,7 +4,7 @@
 
 - The monorepo uses Turborepo plus Bun workspaces; run shared commands from the root.
 - `apps/web` hosts the Vite + React frontend (routes under `src/routes`, UI in `src/components`).
-- `apps/server` contains the Hono API (`src/index.ts`) and expects environment variables in `apps/server/.env`.
+- `apps/server` contains the Hono API (`src/index.ts`) and loads environment variables from root `.env` (development) and `.env.prod` (production).
 - Shared logic lives in `packages/auth` (Better-Auth helpers) and `packages/db` (Drizzle schema, SQL utilities). Schema plans and onboarding notes sit in `docs/`.
 - Build outputs (`dist/`, `.turbo/`, `apps/web/dev-dist/`) are ignored by default; keep them out of commits.
 
@@ -92,8 +92,29 @@
 - Call out schema or environment changes explicitly and include required follow-up commands (`bun db:push`, migrations).
 - Ensure Husky hooks pass locally before requesting reviews; do not bypass lint or format steps.
 
+## Spec-First Workflow (Agents)
+
+- Before writing or modifying code, create a spec in `docs/specs/<kebab-name>.md` unless the task is purely editorial.
+- Specs must cover: context/problem, goals, non-goals, assumptions, dependencies, phases, and a markdown task list for progress tracking.
+- In both specs and implementation, prioritize maintainability and testability; prefer changes that stay easy to reason about, extend, and verify.
+- For each phase, identify and prepare the tests that should exist for that phase (new tests and/or updates to existing tests).
+- A phase is only complete after running its relevant tests and confirming they all pass.
+- If browser-based verification is needed, use the `atlas` skill to validate the work in the Atlas browser.
+- Use markdown checkboxes (`- [ ]`) and check items (`- [x]`) as tasks are completed to keep progress visible.
+- If scope changes materially, update the spec first, then proceed with code changes.
+
+## Agent Skills
+
+- Always review the available skills list before starting work and use any relevant skill instructions for the task at hand.
+
+## Environment Rules
+
+- Keep all environment files at the repository root only (`.env`, `.env.prod`, and templates).
+- Do not add or rely on `apps/**/.env*` or `packages/**/.env*` files.
+- For production commands and compose runs, use root `.env.prod` (for example with `docker compose --env-file .env.prod ...`).
+
 ## Security & Configuration Tips
 
-- Keep secrets in local `.env` files (`apps/server/.env`); never commit credentials.
+- Keep secrets in local root env files (`.env`, `.env.prod`); never commit credentials.
 - Update `docs/` when adding schema entities or environment variables so future agents align quickly.
 - Stop Docker resources after DB work (`bun db:stop`) and verify `.gitignore` covers any new generated artifacts.

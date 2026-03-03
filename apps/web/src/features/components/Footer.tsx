@@ -8,12 +8,12 @@ import { useLandingNavigation } from "../navigation/useLandingNavigation";
 
 import instagramIcon from "@/assets/external-company-logos/socials/insta.svg";
 import linkedinIcon from "@/assets/external-company-logos/socials/Linkedin.svg";
-import telegramIcon from "@/assets/external-company-logos/socials/tg.svg";
 import xIcon from "@/assets/external-company-logos/socials/x.svg";
 import footerBg from "@/assets/footer/footer.webp";
 import footerMobileBg from "@/assets/footer/footer_mobile.webp";
 import { AppImage } from "@/components/common/AppImage";
 import { Button } from "@/components/ui/button";
+import { COMPANY } from "@/config/template";
 
 const ROTATE_INTERVAL = 5000; // 10 seconds
 
@@ -27,18 +27,10 @@ export const Footer: React.FC = () => {
   const { navigateTo } = useLandingNavigation();
   const [isHovered, setIsHovered] = useState(false);
   const [showContactNow, setShowContactNow] = useState(false);
-  const footerSocials = [
-    ...landingSocials.map((social) => ({
-      ...social,
-      icon: socialIcons[social.id],
-    })),
-    {
-      id: "telegram",
-      label: "Telegram",
-      url: "#",
-      icon: telegramIcon,
-    },
-  ];
+  const footerSocials = landingSocials.map((social) => ({
+    ...social,
+    icon: socialIcons[social.id],
+  }));
 
   const toggleText = useCallback(() => {
     setShowContactNow((prev) => !prev);
@@ -105,7 +97,7 @@ export const Footer: React.FC = () => {
               >
                 <Button variant="ghost">
                   <Link
-                    to="/demo/contact"
+                    to="/contact"
                     className="font-bold text-5xl md:text-8xl tracking-tight text-primary hover:text-primary/90 transition-colors"
                   >
                     Contact Now
@@ -125,7 +117,7 @@ export const Footer: React.FC = () => {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="font-bold text-6xl md:text-8xl tracking-tight text-primary uppercase"
               >
-                YOUR COMPANY
+                {COMPANY.name}
               </motion.h1>
             )}
           </AnimatePresence>
@@ -156,7 +148,7 @@ export const Footer: React.FC = () => {
 
           {/* Copyright */}
           <p className="text-xs text-gray-400">
-            © 2025 Your Company, All rights reserved
+            © {new Date().getFullYear()} {COMPANY.name}, All rights reserved
           </p>
         </div>
       </div>

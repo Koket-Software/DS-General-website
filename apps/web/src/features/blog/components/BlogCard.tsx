@@ -19,7 +19,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, index }) => (
     transition={{ delay: index * 0.1 }}
   >
     <Link
-      to="/demo/blogs/$slug"
+      to="/blogs/$slug"
       params={{ slug: post.slug }}
       onClick={() =>
         window.scrollTo({

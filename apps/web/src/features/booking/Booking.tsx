@@ -27,7 +27,7 @@ export const Booking: React.FC = () => {
         <div className="flex flex-col gap-4 items-center justify-center mt-8">
           <p>Or</p>
           <Link
-            to="/demo/contact"
+            to="/contact"
             onClick={() => window.scrollTo(0, 0)}
             className="underline text-primary hover:text-primary/80 transition-colors"
           >

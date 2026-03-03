@@ -18,7 +18,7 @@ export function SectorCard({ sector }: SectorCardProps) {
 
   return (
     <Link
-      to="/demo/sectors/$slug"
+      to="/sectors/$slug"
       params={{ slug: sector.slug }}
       className="group overflow-hidden rounded-2xl border bg-card transition-all hover:-translate-y-1 hover:shadow-lg"
     >

@@ -118,7 +118,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({ blog }) => {
               {moreBlogs.map((item) => (
                 <Link
                   key={item.id}
-                  to="/demo/blogs/$slug"
+                  to="/blogs/$slug"
                   params={{ slug: item.slug }}
                   onClick={() =>
                     window.scrollTo({

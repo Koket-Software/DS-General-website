@@ -5,7 +5,21 @@ import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+const rootDir = path.resolve(__dirname, "../../..");
+const rootEnvPath = path.join(rootDir, ".env");
+const productionEnvPath = path.join(rootDir, ".env.prod");
+
+dotenv.config({ path: rootEnvPath });
+
+const overrideEnvPath = process.env.ENV_FILE
+  ? path.resolve(rootDir, process.env.ENV_FILE)
+  : process.env.NODE_ENV === "production"
+    ? productionEnvPath
+    : rootEnvPath;
+
+if (overrideEnvPath !== rootEnvPath) {
+  dotenv.config({ path: overrideEnvPath, override: true });
+}
 
 // Now import everything else
 import { createApp } from "./core/app";

@@ -25,9 +25,9 @@ type SocialLink = {
 };
 
 export const products = [
-  { label: "Product 1", href: "/demo/products/product-1" },
-  { label: "Product 2", href: "/demo/products/product-2" },
-  { label: "Product 3", href: "/demo/products/product-3" },
+  { label: "Product 1", href: "/products/product-1" },
+  { label: "Product 2", href: "/products/product-2" },
+  { label: "Product 3", href: "/products/product-3" },
 ];
 
 export const navigationConfig = {

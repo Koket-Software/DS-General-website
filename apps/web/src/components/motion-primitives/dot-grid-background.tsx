@@ -73,7 +73,7 @@ export function DotGridBackground({
   minOpacity = 0.12,
   maxOpacity = 0.4,
   color = "var(--primary)",
-  seed = "suba-dot-grid",
+  seed = "ds-general-dot-grid",
   fullBleed = true,
   edgePadding,
   stagger = true,

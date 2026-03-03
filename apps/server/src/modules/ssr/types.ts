@@ -36,16 +36,16 @@ export interface SsrConfig {
  * or loading from environment variables.
  */
 export const SSR_CONFIG: SsrConfig = {
-  siteName: process.env.SITE_NAME || "Your Company",
+  siteName: process.env.SITE_NAME || "DS General PLC",
   siteUrl: process.env.VITE_SITE_URL || "http://localhost:5173",
   defaultTitle:
     process.env.SITE_TITLE ||
-    "Your Company | Software Engineering & Digital Innovation",
+    "DS General PLC | Integrated Business & Industrial Solutions",
   defaultDescription:
     process.env.SITE_DESCRIPTION ||
-    "We craft intelligent software platforms, resilient digital products, and innovation ecosystems for forward-looking teams.",
+    "DS General PLC delivers reliable engineering, trading, and operational solutions for high-impact business sectors in Ethiopia.",
   defaultOgImage: "/api/og/default",
-  twitterHandle: process.env.TWITTER_HANDLE || "@yourcompany",
+  twitterHandle: process.env.TWITTER_HANDLE || "@dsgeneralplc",
   locale: "en_US",
 };
 

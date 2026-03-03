@@ -27,8 +27,8 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────────
-   LIGHT THEME — Suba Design & Development
-   Primary: #628B35 (Suba green)
+   LIGHT THEME — DS General PLC
+   Primary: #628B35
    Background: #FAFBF9 (soft fog)
    Foreground: #000C0F (ink)
    Muted: #EBF0E6 (sage mist)
@@ -98,7 +98,7 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────────
-   DARK THEME — Suba night (forest-inspired, high contrast)
+   DARK THEME — DS General (forest-inspired, high contrast)
    ────────────────────────────────────────────────────────────── */
 .dark {
   --background: #0c130d;

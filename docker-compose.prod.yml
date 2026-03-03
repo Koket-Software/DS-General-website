@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: Dockerfile.server
     env_file:
-      - .env
+      - .env.prod
     environment:
       NODE_ENV: production
       PORT: ${SERVER_PORT:-3000}

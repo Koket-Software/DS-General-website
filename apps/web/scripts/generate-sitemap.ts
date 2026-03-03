@@ -2,6 +2,8 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+import "./load-root-env";
+
 import { generateFullSitemap } from "../src/utils/generate-sitemap";
 
 async function main() {

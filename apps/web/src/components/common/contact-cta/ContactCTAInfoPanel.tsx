@@ -1,5 +1,7 @@
 import { Check, Mail, MapPin, Phone, Zap } from "lucide-react";
 
+import { COMPANY } from "@/config/template";
+
 export function ContactCTAInfoPanel() {
   return (
     <div className="flex-1 flex flex-col justify-center p-8 sm:p-12 lg:p-16 text-white min-h-[400px]">
@@ -35,15 +37,15 @@ export function ContactCTAInfoPanel() {
       <div className="mt-10 pt-8 border-t border-white/20 space-y-4">
         <div className="flex items-center gap-3 text-white/80">
           <Phone className="w-4 h-4" />
-          <span className="text-sm">+ 251 90 000 0000</span>
+          <span className="text-sm">{COMPANY.phone}</span>
         </div>
         <div className="flex items-center gap-3 text-white/80">
           <Mail className="w-4 h-4" />
-          <span className="text-sm">contact@example.com</span>
+          <span className="text-sm">{COMPANY.email}</span>
         </div>
         <div className="flex items-center gap-3 text-white/80">
           <MapPin className="w-4 h-4" />
-          <span className="text-sm">Addis Ababa, Ethiopia</span>
+          <span className="text-sm">{COMPANY.address}</span>
         </div>
       </div>
     </div>

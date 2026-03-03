@@ -78,7 +78,7 @@ export const createApp = () => {
   app.use("/uploads/*", serveStatic({ root: "./" }));
 
   app.get("/", (c) => {
-    return c.json({ success: true, message: "Company Website Template API" });
+    return c.json({ success: true, message: "DS General PLC Website API" });
   });
 
   app.notFound(() => {

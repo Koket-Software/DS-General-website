@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 
+import "./load-root-env";
+
 const WEB_SRC_DIR = path.resolve(import.meta.dir, "../src");
 const ROUTES_DIR = path.join(WEB_SRC_DIR, "routes");
 const ROOT_ROUTE_FILE = path.join(ROUTES_DIR, "__root.tsx");

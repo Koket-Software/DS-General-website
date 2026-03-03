@@ -70,7 +70,7 @@ export const DefaultTemplate = (): React.ReactElement => {
               color: BRAND_COLORS.primary,
             }}
           >
-            S
+            D
           </span>
         </div>
 
@@ -85,7 +85,7 @@ export const DefaultTemplate = (): React.ReactElement => {
             textShadow: "0 2px 10px rgba(0,0,0,0.3)",
           }}
         >
-          Your Company
+          DS General PLC
         </h1>
 
         {/* Tagline */}
@@ -97,7 +97,7 @@ export const DefaultTemplate = (): React.ReactElement => {
             maxWidth: "700px",
           }}
         >
-          Software Engineering & Digital Innovation
+          Integrated Business & Industrial Solutions
         </p>
 
         {/* Service highlights */}
@@ -110,29 +110,27 @@ export const DefaultTemplate = (): React.ReactElement => {
             justifyContent: "center",
           }}
         >
-          {["Software Development", "Digital Products", "Cloud Platforms"].map(
-            (service, index) => (
-              <div
-                key={index}
+          {["Engineering", "Trading", "Operations"].map((service, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "8px",
+                padding: "12px 24px",
+              }}
+            >
+              <span
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  borderRadius: "8px",
-                  padding: "12px 24px",
+                  fontSize: "18px",
+                  color: "rgba(255, 255, 255, 0.9)",
                 }}
               >
-                <span
-                  style={{
-                    fontSize: "18px",
-                    color: "rgba(255, 255, 255, 0.9)",
-                  }}
-                >
-                  {service}
-                </span>
-              </div>
-            ),
-          )}
+                {service}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

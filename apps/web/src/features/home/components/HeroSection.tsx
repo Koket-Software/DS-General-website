@@ -87,11 +87,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onBookClick }) => {
       >
         <AnimatedGroup variants={transitionVariants}>
           <Link
-            to="/demo/schedule"
+            to="/schedule"
             className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950 z-20"
           >
             <span className="text-foreground text-sm">
-              Available Starting on Nov 20
+              Available for new engagements
             </span>
             <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
@@ -120,8 +120,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onBookClick }) => {
           variants={item}
           className="text-gray-500 text-sm md:text-lg leading-relaxed max-w-[95%] md:max-w-2xl"
         >
-          Highly customizable components for building modern websites and
-          applications that look and feel the way you mean it.
+          DS General PLC helps organizations deliver practical, dependable
+          solutions across engineering, trading, and operations.
         </motion.p>
 
         <motion.div variants={item} className="flex items-center gap-3 pt-2">
@@ -141,7 +141,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onBookClick }) => {
             </div>
           </div>
           <span className="text-xs text-primary font-medium">
-            Over +10 satisfied clients
+            Trusted by clients across multiple sectors
           </span>
         </motion.div>
 
@@ -161,10 +161,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onBookClick }) => {
                 loading="eager"
               />
             </div>
-            <span className="font-medium text-sm">Book a Call</span>
+            <span className="font-medium text-sm">Request Consultation</span>
           </Button>
 
-          <Link to="/demo/projects">
+          <Link to="/projects">
             <Button
               variant="ghost"
               className="text-primary font-medium leading-4  hover:opacity-80 transition-opacity z-20"

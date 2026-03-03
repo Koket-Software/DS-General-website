@@ -1,3 +1,4 @@
+import { SOCIAL_LINKS } from "@/config/template";
 import type { LandingCtaConfig, LandingNavItem } from "@/types/navigation";
 import { landingPagePaths } from "@/types/navigation";
 
@@ -61,10 +62,10 @@ export const landingNavItems: LandingNavItem[] = [
 export const landingCtas: LandingCtaConfig[] = [
   {
     id: "book-call",
-    label: "Book a Call",
+    label: "Request Consultation",
     page: "booking",
     variant: "primary",
-    description: "Jump straight into the scheduling experience.",
+    description: "Jump straight into the consultation scheduling experience.",
   },
   {
     id: "contact-sales",
@@ -76,19 +77,31 @@ export const landingCtas: LandingCtaConfig[] = [
 ];
 
 export const landingSocials: SocialLink[] = [
-  {
-    id: "x",
-    label: "X (Formerly Twitter)",
-    url: "https://x.com/yourcompany",
-  },
-  {
-    id: "linkedin",
-    label: "LinkedIn",
-    url: "https://www.linkedin.com/company/yourcompany",
-  },
-  {
-    id: "instagram",
-    label: "Instagram",
-    url: "https://instagram.com/yourcompany",
-  },
+  ...(SOCIAL_LINKS.twitter
+    ? [
+        {
+          id: "x" as const,
+          label: "X (Formerly Twitter)",
+          url: SOCIAL_LINKS.twitter,
+        },
+      ]
+    : []),
+  ...(SOCIAL_LINKS.linkedin
+    ? [
+        {
+          id: "linkedin" as const,
+          label: "LinkedIn",
+          url: SOCIAL_LINKS.linkedin,
+        },
+      ]
+    : []),
+  ...(SOCIAL_LINKS.instagram
+    ? [
+        {
+          id: "instagram" as const,
+          label: "Instagram",
+          url: SOCIAL_LINKS.instagram,
+        },
+      ]
+    : []),
 ];

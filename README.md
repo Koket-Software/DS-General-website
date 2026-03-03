@@ -1,6 +1,6 @@
-# Company Website Template
+# DS General PLC Website
 
-A production-ready, full-stack company website template built with modern TypeScript technologies. Includes a complete CMS dashboard, blog system, careers portal, case studies, and more.
+A full-stack company website and CMS for DS General PLC, built with modern TypeScript tooling. It includes a public marketing site, an admin dashboard, blog/careers modules, and content management workflows.
 
 ## Features
 
@@ -51,8 +51,8 @@ The easiest way to get started is with the automated setup script:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/suba-company-template.git
-cd suba-company-template
+git clone https://github.com/NegusNati/DS-General-website.git
+cd DS-General-website
 
 # Run the setup script
 bun setup
@@ -63,9 +63,10 @@ The `bun setup` script will automatically:
 1. Check that prerequisites are installed (Bun, Docker)
 2. Install all workspace dependencies
 3. Create `.env` from `.env.example` at the project root
-4. Start PostgreSQL database via Docker Compose
-5. Push the database schema using Drizzle ORM
-6. Seed the database with sample content
+4. Create `.env.prod` from `.env.prod.example` at the project root (if missing)
+5. Start PostgreSQL database via Docker Compose
+6. Push the database schema using Drizzle ORM
+7. Seed the database with sample content
 
 Once setup completes, start the development servers:
 
@@ -81,15 +82,17 @@ If you prefer to set things up manually or need more control:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/suba-company-template.git
-cd suba-company-template
+git clone https://github.com/NegusNati/DS-General-website.git
+cd DS-General-website
 
 # Install dependencies
 bun install
 
-# Set up environment variables (single .env at root)
+# Set up environment variables at root
 cp .env.example .env
 # Edit .env with your configuration
+cp .env.prod.example .env.prod
+# Edit .env.prod for production values
 
 # Start the database (if using Docker)
 bun db:start
@@ -107,7 +110,7 @@ bun dev
 ## Project Structure
 
 ```
-suba-company-template/
+DS-General-website/
 ├── apps/
 │   ├── web/              # React frontend
 │   │   ├── src/
@@ -138,16 +141,22 @@ Customize the template by editing `apps/web/src/config/template.ts`:
 
 ```typescript
 export const COMPANY = {
-  name: "Your Company",
-  tagline: "Your Tagline",
-  email: "contact@yourcompany.com",
+  name: "DS General PLC",
+  tagline: "Integrated Business & Industrial Solutions",
+  email: "info@dsgeneralplc.com",
   // ...
 };
 ```
 
 ### Environment Variables
 
-All environment variables are configured in a single `.env` file at the project root. See `.env.example` for all available options:
+Environment variables are centralized at the repository root:
+
+- `.env` for local development
+- `.env.prod` for production execution
+- `.env.example` / `.env.prod.example` as tracked templates
+
+See `.env.example` for all available options:
 
 | Variable               | Description                           |
 | ---------------------- | ------------------------------------- |
@@ -160,7 +169,13 @@ All environment variables are configured in a single `.env` file at the project 
 | `GOOGLE_CLIENT_ID`     | Google OAuth client ID (optional)     |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret (optional) |
 
-The server, auth package, and database all load from this single root `.env` file.
+The server, auth package, database tooling, and web scripts load from root env files only.
+
+For production Docker runs, use the production env file explicitly:
+
+```bash
+docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
+```
 
 ## Available Scripts
 
@@ -197,12 +212,11 @@ This creates a complete module with:
 
 ## Routes Overview
 
-| Route                 | Description               |
-| --------------------- | ------------------------- |
-| `/`                   | OSS template landing page |
-| `/demo/*`             | Marketing site demo       |
-| `/dashboard/*`        | CMS admin dashboard       |
-| `/login`, `/register` | Authentication            |
+| Route                 | Description         |
+| --------------------- | ------------------- |
+| `/`                   | Marketing site home |
+| `/dashboard/*`        | CMS admin dashboard |
+| `/login`, `/register` | Authentication      |
 
 ## Contributing
 

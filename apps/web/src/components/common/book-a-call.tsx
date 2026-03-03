@@ -43,7 +43,7 @@ export default function BookACall() {
 
             {/* Primary CTA Button (Shadcn Button) */}
             <Link
-              to="/demo/schedule"
+              to="/schedule"
               className="mb-4"
               onClick={() =>
                 window.scrollTo({
@@ -61,7 +61,7 @@ export default function BookACall() {
                   alt="Google Meet"
                   className="w-5 h-5"
                 />
-                Book a Call
+                Request Consultation
               </Button>
             </Link>
 
@@ -70,7 +70,7 @@ export default function BookACall() {
 
             {/* Secondary Link */}
             <Link
-              to="/demo/contact"
+              to="/contact"
               onClick={() =>
                 window.scrollTo({
                   top: 0,
@@ -79,7 +79,7 @@ export default function BookACall() {
               }
               className="text-white underline underline-offset-2 hover:text-white/80 transition-colors text-sm cursor-pointer"
             >
-              Book a services quote
+              Request a service quote
             </Link>
           </div>
         </div>

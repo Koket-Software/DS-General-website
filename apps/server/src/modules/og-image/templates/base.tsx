@@ -271,7 +271,7 @@ export const OgFooter = ({
               color: BRAND_COLORS.primary,
             }}
           >
-            S
+            D
           </span>
         </div>
         <span
@@ -281,7 +281,7 @@ export const OgFooter = ({
             color: "#ffffff",
           }}
         >
-          Your Company
+          DS General PLC
         </span>
       </div>
     </div>

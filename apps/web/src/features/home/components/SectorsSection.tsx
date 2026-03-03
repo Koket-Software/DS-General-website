@@ -48,7 +48,7 @@ export function SectorsSection() {
             </p>
           </div>
           <Link
-            to="/demo/sectors"
+            to="/sectors"
             className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
           >
             View all sectors →
@@ -61,7 +61,7 @@ export function SectorsSection() {
             return (
               <Link
                 key={sector.id}
-                to="/demo/sectors/$slug"
+                to="/sectors/$slug"
                 params={{ slug: sector.slug }}
                 className="group overflow-hidden rounded-2xl border bg-card transition-all hover:-translate-y-1 hover:shadow-lg"
               >
