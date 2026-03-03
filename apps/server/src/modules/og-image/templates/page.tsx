@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
 import {
@@ -12,6 +13,7 @@ import type { OgImageData } from "../types";
 
 interface PageTemplateProps {
   data: OgImageData;
+  brand: BrandSeoConfig;
 }
 
 /**
@@ -19,11 +21,12 @@ interface PageTemplateProps {
  */
 export const PageTemplate = ({
   data,
+  brand,
 }: PageTemplateProps): React.ReactElement => {
   return (
-    <BaseTemplate data={data}>
+    <BaseTemplate data={data} brand={brand}>
       {/* Header */}
-      <OgHeader category={data.category} type={data.type} />
+      <OgHeader category={data.category} type={data.type} brand={brand} />
 
       {/* Main content */}
       <div
@@ -40,7 +43,7 @@ export const PageTemplate = ({
       </div>
 
       {/* Footer */}
-      <OgFooter />
+      <OgFooter brand={brand} />
     </BaseTemplate>
   );
 };

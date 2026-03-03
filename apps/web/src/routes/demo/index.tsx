@@ -2,7 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { publicCaseStudiesQueryOptions } from "@/lib/case-study/case-study-query";
 import { faqListQueryOptions } from "@/lib/faq/faq-query";
-import { getDefaultOgImageUrl, SITE_METADATA } from "@/lib/og-utils";
+import {
+  buildSeoMeta,
+  getDefaultOgImageUrl,
+  SITE_METADATA,
+} from "@/lib/og-utils";
 import { clientPartnersQueryOptions } from "@/lib/partners";
 import { testimonialListQueryOptions } from "@/lib/testimonial/testimonial-query";
 import { queryClient } from "@/main";
@@ -17,25 +21,11 @@ export const Route = createFileRoute("/demo/")({
       queryClient.ensureQueryData(publicCaseStudiesQueryOptions({ limit: 6 })),
     ]);
   },
-  head: () => ({
-    meta: [
-      { title: SITE_METADATA.defaultTitle },
-      { name: "description", content: SITE_METADATA.defaultDescription },
-      // Open Graph
-      { property: "og:title", content: SITE_METADATA.defaultTitle },
-      { property: "og:description", content: SITE_METADATA.defaultDescription },
-      { property: "og:image", content: getDefaultOgImageUrl() },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: SITE_METADATA.siteName },
-      { property: "og:url", content: SITE_METADATA.siteUrl },
-      // Twitter Card
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: SITE_METADATA.defaultTitle },
-      {
-        name: "twitter:description",
-        content: SITE_METADATA.defaultDescription,
-      },
-      { name: "twitter:image", content: getDefaultOgImageUrl() },
-    ],
-  }),
+  head: () =>
+    buildSeoMeta({
+      path: "/demo",
+      title: SITE_METADATA.defaultTitle,
+      description: SITE_METADATA.defaultDescription,
+      ogImage: getDefaultOgImageUrl(),
+    }),
 });

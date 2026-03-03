@@ -1,12 +1,14 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
-import { BRAND_COLORS } from "../types";
+interface DefaultTemplateProps {
+  brand: BrandSeoConfig;
+}
 
-/**
- * Default OG Image Template - Used when no specific page data is available
- */
-export const DefaultTemplate = (): React.ReactElement => {
+export const DefaultTemplate = ({
+  brand,
+}: DefaultTemplateProps): React.ReactElement => {
   return (
     <div
       style={{
@@ -14,125 +16,184 @@ export const DefaultTemplate = (): React.ReactElement => {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        background: `linear-gradient(135deg, ${BRAND_COLORS.secondary} 0%, ${BRAND_COLORS.primary} 100%)`,
-        fontFamily: '"Playfair Display", serif',
         position: "relative",
         overflow: "hidden",
+        fontFamily: '"Playfair Display", serif',
+        background: `linear-gradient(132deg, ${brand.brandSecondary} 0%, ${brand.brandPrimary} 72%, ${brand.brandAccent} 100%)`,
       }}
     >
-      {/* Background pattern */}
       <div
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.05,
+          inset: 0,
+          background:
+            "radial-gradient(circle at 12% 18%, rgba(255,255,255,0.2) 0%, transparent 45%), radial-gradient(circle at 84% 82%, rgba(255,255,255,0.14) 0%, transparent 42%)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: 0.22,
           backgroundImage:
-            "radial-gradient(circle at 25% 25%, white 2px, transparent 2px)",
-          backgroundSize: "50px 50px",
+            "linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(180deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+          backgroundSize: "46px 46px",
         }}
       />
 
-      {/* Content */}
       <div
         style={{
+          position: "relative",
+          zIndex: 2,
+          height: "100%",
+          padding: "68px 76px",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          padding: "60px",
-          position: "relative",
-          zIndex: 10,
-          textAlign: "center",
+          justifyContent: "space-between",
         }}
       >
-        {/* Logo */}
         <div
           style={{
-            width: "100px",
-            height: "100px",
-            borderRadius: "20px",
-            background: "linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)",
             display: "flex",
+            justifyContent: "space-between",
             alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "40px",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
           }}
         >
-          <span
+          <div
             style={{
-              fontSize: "56px",
-              fontWeight: 800,
-              color: BRAND_COLORS.primary,
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              borderRadius: "999px",
+              border: "1px solid rgba(255,255,255,0.35)",
+              backgroundColor: "rgba(0,0,0,0.2)",
+              padding: "10px 18px",
             }}
           >
-            S
+            <div
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "999px",
+                background: brand.brandAccent,
+                boxShadow: "0 0 20px rgba(255,255,255,0.7)",
+              }}
+            />
+            <span
+              style={{
+                color: "rgba(255,255,255,0.95)",
+                fontWeight: 700,
+                fontSize: "16px",
+                letterSpacing: "1.8px",
+                textTransform: "uppercase",
+                fontFamily: '"Manrope", sans-serif',
+              }}
+            >
+              Official Site
+            </span>
+          </div>
+          <span
+            style={{
+              color: "rgba(255,255,255,0.82)",
+              fontSize: "18px",
+              fontFamily: '"Manrope", sans-serif',
+            }}
+          >
+            {brand.siteUrl}
           </span>
         </div>
 
-        {/* Brand name */}
-        <h1
-          style={{
-            fontSize: "64px",
-            fontWeight: 700,
-            color: "#ffffff",
-            margin: 0,
-            marginBottom: "20px",
-            textShadow: "0 2px 10px rgba(0,0,0,0.3)",
-          }}
-        >
-          Your Company
-        </h1>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <h1
+            style={{
+              margin: 0,
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: "74px",
+              lineHeight: 1,
+              maxWidth: "860px",
+              textShadow: "0 14px 38px rgba(0,0,0,0.35)",
+            }}
+          >
+            {brand.siteName}
+          </h1>
+          <p
+            style={{
+              margin: 0,
+              maxWidth: "860px",
+              color: "rgba(255,255,255,0.9)",
+              fontSize: "30px",
+              lineHeight: 1.25,
+              fontFamily: '"Manrope", sans-serif',
+            }}
+          >
+            {brand.defaultDescription}
+          </p>
+        </div>
 
-        {/* Tagline */}
-        <p
-          style={{
-            fontSize: "28px",
-            color: "rgba(255, 255, 255, 0.8)",
-            margin: 0,
-            maxWidth: "700px",
-          }}
-        >
-          Software Engineering & Digital Innovation
-        </p>
-
-        {/* Service highlights */}
         <div
           style={{
             display: "flex",
-            gap: "20px",
-            marginTop: "50px",
-            flexWrap: "wrap",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          {["Software Development", "Digital Products", "Cloud Platforms"].map(
-            (service, index) => (
-              <div
-                key={index}
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            {brand.keywords.slice(0, 4).map((keyword, index) => (
+              <span
+                key={`${keyword}-${index}`}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  borderRadius: "8px",
-                  padding: "12px 24px",
+                  fontSize: "16px",
+                  color: "#fff",
+                  borderRadius: "999px",
+                  backgroundColor: "rgba(0,0,0,0.25)",
+                  border: `1px solid ${brand.brandAccent}`,
+                  padding: "8px 14px",
+                  fontFamily: '"Manrope", sans-serif',
                 }}
               >
-                <span
-                  style={{
-                    fontSize: "18px",
-                    color: "rgba(255, 255, 255, 0.9)",
-                  }}
-                >
-                  {service}
-                </span>
-              </div>
-            ),
-          )}
+                {keyword}
+              </span>
+            ))}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "10px 14px",
+              borderRadius: "14px",
+              border: "1px solid rgba(255,255,255,0.28)",
+              backgroundColor: "rgba(0,0,0,0.2)",
+            }}
+          >
+            <div
+              style={{
+                width: "34px",
+                height: "34px",
+                borderRadius: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: "19px",
+                background: `linear-gradient(130deg, ${brand.brandAccent} 0%, ${brand.brandPrimary} 100%)`,
+              }}
+            >
+              {brand.siteName.charAt(0).toUpperCase()}
+            </div>
+            <span
+              style={{
+                color: "#fff",
+                fontSize: "20px",
+                fontWeight: 600,
+              }}
+            >
+              {brand.siteName}
+            </span>
+          </div>
         </div>
       </div>
     </div>

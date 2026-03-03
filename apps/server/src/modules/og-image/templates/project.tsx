@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
 import {
@@ -13,6 +14,7 @@ import type { OgImageData } from "../types";
 
 interface ProjectTemplateProps {
   data: OgImageData;
+  brand: BrandSeoConfig;
 }
 
 /**
@@ -20,11 +22,16 @@ interface ProjectTemplateProps {
  */
 export const ProjectTemplate = ({
   data,
+  brand,
 }: ProjectTemplateProps): React.ReactElement => {
   return (
-    <BaseTemplate data={data}>
+    <BaseTemplate data={data} brand={brand}>
       {/* Header */}
-      <OgHeader category={data.category || "Case Study"} type={data.type} />
+      <OgHeader
+        category={data.category || "Case Study"}
+        type={data.type}
+        brand={brand}
+      />
 
       {/* Main content */}
       <div
@@ -38,11 +45,13 @@ export const ProjectTemplate = ({
       >
         <OgTitle title={data.title} />
         {data.description && <OgDescription description={data.description} />}
-        {data.tags && data.tags.length > 0 && <OgTags tags={data.tags} />}
+        {data.tags && data.tags.length > 0 && (
+          <OgTags tags={data.tags} brand={brand} />
+        )}
       </div>
 
       {/* Footer */}
-      <OgFooter />
+      <OgFooter brand={brand} />
     </BaseTemplate>
   );
 };

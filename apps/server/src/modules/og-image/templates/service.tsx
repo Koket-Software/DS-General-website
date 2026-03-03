@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
 import {
@@ -12,6 +13,7 @@ import type { OgImageData } from "../types";
 
 interface ServiceTemplateProps {
   data: OgImageData;
+  brand: BrandSeoConfig;
 }
 
 /**
@@ -19,11 +21,12 @@ interface ServiceTemplateProps {
  */
 export const ServiceTemplate = ({
   data,
+  brand,
 }: ServiceTemplateProps): React.ReactElement => {
   return (
-    <BaseTemplate data={data}>
+    <BaseTemplate data={data} brand={brand}>
       {/* Header */}
-      <OgHeader category="Service" type={data.type} />
+      <OgHeader category="Service" type={data.type} brand={brand} />
 
       {/* Main content */}
       <div
@@ -40,7 +43,7 @@ export const ServiceTemplate = ({
       </div>
 
       {/* Footer */}
-      <OgFooter />
+      <OgFooter brand={brand} />
     </BaseTemplate>
   );
 };

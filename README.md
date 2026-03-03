@@ -134,16 +134,17 @@ suba-company-template/
 
 ### Template Branding
 
-Customize the template by editing `apps/web/src/config/template.ts`:
+Brand/SEO defaults are centralized through:
 
-```typescript
-export const COMPANY = {
-  name: "Your Company",
-  tagline: "Your Tagline",
-  email: "contact@yourcompany.com",
-  // ...
-};
-```
+- `packages/types/src/brand-seo.ts` (shared contract + defaults)
+- `apps/web/src/lib/brand-seo-config.ts` (web adapter with env overrides)
+- `apps/server/src/shared/branding/brand-seo-config.ts` (server adapter with env overrides)
+
+Override precedence is:
+
+1. shared defaults
+2. template defaults (`apps/web/src/config/template.ts`) for web
+3. environment variables (`.env`)
 
 ### Environment Variables
 
@@ -157,6 +158,10 @@ All environment variables are configured in a single `.env` file at the project 
 | `CORS_ORIGIN`          | Comma-separated allowed origins       |
 | `VITE_SERVER_URL`      | API URL for frontend requests         |
 | `VITE_SITE_URL`        | Frontend URL for SEO/OG tags          |
+| `SITE_URL`             | Canonical frontend URL for server SSR |
+| `SITE_TITLE`           | Default SEO title (server-side)       |
+| `SITE_DESCRIPTION`     | Default SEO description (server-side) |
+| `TWITTER_HANDLE`       | Twitter/X handle for cards            |
 | `GOOGLE_CLIENT_ID`     | Google OAuth client ID (optional)     |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret (optional) |
 

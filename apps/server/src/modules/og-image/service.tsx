@@ -1,4 +1,8 @@
 /** @jsxImportSource react */
+import {
+  DEFAULT_BRAND_SEO_CONFIG,
+  type BrandSeoConfig,
+} from "@suba-company-template/types";
 import { ImageResponse } from "@vercel/og";
 import type React from "react";
 
@@ -14,93 +18,118 @@ import type { OgImageData, OgImageOptions, OgImageType } from "./types";
 import { DEFAULT_OG_OPTIONS } from "./types";
 import { logger } from "../../shared/logger";
 
-// Google Fonts URL for Playfair Display
 const PLAYFAIR_FONT_URL =
   "https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDXbtXK-F2qC0s.woff";
+const MANROPE_FONT_URL =
+  "https://fonts.gstatic.com/s/manrope/v15/xn7gYHE41ni1AdIRggexSvfedN4.woff2";
 
-/**
- * Fetch and cache the Playfair Display font
- */
-let fontCache: ArrayBuffer | null = null;
+let playfairFontCache: ArrayBuffer | null = null;
+let manropeFontCache: ArrayBuffer | null = null;
 
-async function getPlayfairFont(): Promise<ArrayBuffer> {
-  if (fontCache) {
-    return fontCache;
+async function fetchFont(
+  url: string,
+  cache: ArrayBuffer | null,
+): Promise<ArrayBuffer | null> {
+  if (cache) {
+    return cache;
   }
 
   try {
-    const response = await fetch(PLAYFAIR_FONT_URL);
+    const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Failed to fetch font: ${response.statusText}`);
+      throw new Error(`Failed to fetch font: ${response.status}`);
     }
-    fontCache = await response.arrayBuffer();
-    return fontCache;
+    return await response.arrayBuffer();
   } catch (error) {
-    logger.error("Error fetching Playfair font", error as Error);
-    throw error;
+    logger.warn("OG font fetch failed; rendering with fallback fonts", {
+      url,
+      message: (error as Error).message,
+    });
+    return null;
   }
 }
 
-/**
- * Get the appropriate template based on image type
- */
-function getTemplate(data: OgImageData): React.ReactElement {
+async function getFonts() {
+  const [playfair, manrope] = await Promise.all([
+    fetchFont(PLAYFAIR_FONT_URL, playfairFontCache),
+    fetchFont(MANROPE_FONT_URL, manropeFontCache),
+  ]);
+
+  if (playfair && !playfairFontCache) {
+    playfairFontCache = playfair;
+  }
+  if (manrope && !manropeFontCache) {
+    manropeFontCache = manrope;
+  }
+
+  const fonts: Array<{
+    name: string;
+    data: ArrayBuffer;
+    style: "normal";
+    weight: 500 | 700;
+  }> = [];
+  if (playfairFontCache) {
+    fonts.push({
+      name: "Playfair Display",
+      data: playfairFontCache,
+      style: "normal" as const,
+      weight: 700 as const,
+    });
+  }
+  if (manropeFontCache) {
+    fonts.push({
+      name: "Manrope",
+      data: manropeFontCache,
+      style: "normal" as const,
+      weight: 500 as const,
+    });
+  }
+
+  return fonts;
+}
+
+function getTemplate(
+  data: OgImageData,
+  brand: BrandSeoConfig,
+): React.ReactElement {
   switch (data.type) {
     case "blog":
-      return <BlogTemplate data={data} />;
+      return <BlogTemplate data={data} brand={brand} />;
     case "service":
-      return <ServiceTemplate data={data} />;
+      return <ServiceTemplate data={data} brand={brand} />;
     case "project":
-      return <ProjectTemplate data={data} />;
+      return <ProjectTemplate data={data} brand={brand} />;
     case "career":
-      return <CareerTemplate data={data} />;
+      return <CareerTemplate data={data} brand={brand} />;
     case "page":
-      return <PageTemplate data={data} />;
+      return <PageTemplate data={data} brand={brand} />;
     case "default":
     default:
-      return <DefaultTemplate />;
+      return <DefaultTemplate brand={brand} />;
   }
 }
 
-/**
- * Generate an OG image from the given data
- */
 export async function generateOgImage(
   data: OgImageData,
   options: OgImageOptions = {},
 ): Promise<ImageResponse> {
-  const { width, height, debug } = { ...DEFAULT_OG_OPTIONS, ...options };
+  const { width, height, debug, brand } = { ...DEFAULT_OG_OPTIONS, ...options };
+  const resolvedBrand = brand || DEFAULT_BRAND_SEO_CONFIG;
+  const template = getTemplate(data, resolvedBrand);
+  const fonts = await getFonts();
 
-  // Fetch the font
-  const playfairFont = await getPlayfairFont();
-
-  // Get the appropriate template
-  const template = getTemplate(data);
-
-  // Generate the image
   return new ImageResponse(template, {
     width,
     height,
     debug,
-    fonts: [
-      {
-        name: "Playfair Display",
-        data: playfairFont,
-        style: "normal",
-        weight: 700,
-      },
-    ],
+    ...(fonts.length > 0 ? { fonts } : {}),
     headers: {
-      // Cache for 1 week, allow stale content while revalidating
       "Cache-Control":
         "public, max-age=604800, s-maxage=604800, stale-while-revalidate=86400",
     },
   });
 }
 
-/**
- * Generate a default OG image
- */
 export async function generateDefaultOgImage(
   options: OgImageOptions = {},
 ): Promise<ImageResponse> {
