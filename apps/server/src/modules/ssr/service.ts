@@ -1,20 +1,15 @@
 import type { PageMeta, SsrConfig } from "./types";
-import { SSR_CONFIG } from "./types";
 
-/**
- * Generate the HTML shell with meta tags for social media crawlers
- */
-export function generateHtmlShell(
-  meta: PageMeta,
-  config: SsrConfig = SSR_CONFIG,
-): string {
-  const fullOgImage = meta.ogImage.startsWith("http")
-    ? meta.ogImage
-    : `${config.siteUrl}${meta.ogImage}`;
+const toAbsoluteUrl = (value: string, siteUrl: string): string => {
+  if (/^https?:\/\//i.test(value)) return value;
+  const normalized = value.startsWith("/") ? value : `/${value}`;
+  return `${siteUrl}${normalized}`;
+};
 
-  const fullCanonicalUrl = meta.canonicalUrl.startsWith("http")
-    ? meta.canonicalUrl
-    : `${config.siteUrl}${meta.canonicalUrl}`;
+export function generateHtmlShell(meta: PageMeta, config: SsrConfig): string {
+  const fullOgImage = toAbsoluteUrl(meta.ogImage, config.siteUrl);
+  const fullCanonicalUrl = toAbsoluteUrl(meta.canonicalUrl, config.siteUrl);
+  const keywords = meta.keywords || config.keywords.join(", ");
 
   return `<!doctype html>
 <html lang="en">
@@ -26,20 +21,19 @@ export function generateHtmlShell(
     <title>${escapeHtml(meta.title)}</title>
     <meta name="title" content="${escapeHtml(meta.title)}" />
     <meta name="description" content="${escapeHtml(meta.description)}" />
-    ${meta.keywords ? `<meta name="keywords" content="${escapeHtml(meta.keywords)}" />` : ""}
+    ${keywords ? `<meta name="keywords" content="${escapeHtml(keywords)}" />` : ""}
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="${escapeHtml(fullCanonicalUrl)}" />
 
     <meta name="application-name" content="${escapeHtml(config.siteName)}" />
-    <meta name="theme-color" content="#0600ab" />
+    <meta name="theme-color" content="${escapeHtml(config.themeColor)}" />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="${escapeHtml(meta.ogType)}" />
     <meta property="og:url" content="${escapeHtml(fullCanonicalUrl)}" />
     <meta property="og:title" content="${escapeHtml(meta.title)}" />
     <meta property="og:description" content="${escapeHtml(meta.description)}" />
     <meta property="og:site_name" content="${escapeHtml(config.siteName)}" />
-    <meta property="og:locale" content="${config.locale}" />
+    <meta property="og:locale" content="${escapeHtml(config.locale)}" />
     <meta property="og:image" content="${escapeHtml(fullOgImage)}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -50,23 +44,18 @@ export function generateHtmlShell(
     ${meta.section ? `<meta property="article:section" content="${escapeHtml(meta.section)}" />` : ""}
     ${meta.tags?.map((tag) => `<meta property="article:tag" content="${escapeHtml(tag)}" />`).join("\n    ") || ""}
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="${escapeHtml(fullCanonicalUrl)}" />
     <meta name="twitter:title" content="${escapeHtml(meta.title)}" />
     <meta name="twitter:description" content="${escapeHtml(meta.description)}" />
     <meta name="twitter:image" content="${escapeHtml(fullOgImage)}" />
-    <meta name="twitter:site" content="${config.twitterHandle}" />
-    <meta name="twitter:creator" content="${config.twitterHandle}" />
+    <meta name="twitter:site" content="${escapeHtml(config.twitterHandle)}" />
+    <meta name="twitter:creator" content="${escapeHtml(config.twitterHandle)}" />
     <meta name="twitter:image:alt" content="${escapeHtml(meta.title)}" />
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/site/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/site/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/site/favicon-16x16.png" />
-    <link rel="icon" type="image/x-icon" href="/site/favicon.ico" />
+    <link rel="icon" href="${escapeHtml(config.logoPath)}" />
+    <link rel="apple-touch-icon" href="${escapeHtml(config.logoPath)}" />
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
       ${generateStructuredData(meta, config)}
     </script>
@@ -84,32 +73,24 @@ export function generateHtmlShell(
 </html>`;
 }
 
-/**
- * Generate JSON-LD structured data
- */
 function generateStructuredData(meta: PageMeta, config: SsrConfig): string {
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": meta.ogType === "article" ? "BlogPosting" : "WebPage",
     name: meta.title,
     description: meta.description,
-    url: meta.canonicalUrl.startsWith("http")
-      ? meta.canonicalUrl
-      : `${config.siteUrl}${meta.canonicalUrl}`,
+    url: toAbsoluteUrl(meta.canonicalUrl, config.siteUrl),
     publisher: {
       "@type": "Organization",
       name: config.siteName,
       url: config.siteUrl,
+      logo: toAbsoluteUrl(config.logoPath, config.siteUrl),
     },
   };
 
   if (meta.ogType === "article") {
-    if (meta.publishedTime) {
-      data.datePublished = meta.publishedTime;
-    }
-    if (meta.modifiedTime) {
-      data.dateModified = meta.modifiedTime;
-    }
+    if (meta.publishedTime) data.datePublished = meta.publishedTime;
+    if (meta.modifiedTime) data.dateModified = meta.modifiedTime;
     if (meta.author) {
       data.author = {
         "@type": "Person",
@@ -121,11 +102,8 @@ function generateStructuredData(meta: PageMeta, config: SsrConfig): string {
   return JSON.stringify(data, null, 2);
 }
 
-/**
- * Escape HTML special characters
- */
-function escapeHtml(str: string): string {
-  return str
+function escapeHtml(value: string): string {
+  return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -133,24 +111,31 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
-/**
- * Create default page meta
- */
-export function createDefaultMeta(path: string): PageMeta {
+const toTitleCase = (value: string): string =>
+  value
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+const humanizePathSegment = (value: string): string => {
+  const decoded = decodeURIComponent(value);
+  return toTitleCase(decoded.replace(/[-_]+/g, " "));
+};
+
+export function createDefaultMeta(path: string, config: SsrConfig): PageMeta {
   return {
-    title: SSR_CONFIG.defaultTitle,
-    description: SSR_CONFIG.defaultDescription,
-    ogImage: SSR_CONFIG.defaultOgImage,
+    title: config.defaultTitle,
+    description: config.defaultDescription,
+    ogImage: config.ogDefaultPath,
     ogType: "website",
     canonicalUrl: path,
   };
 }
 
-/**
- * Create blog post meta
- */
 export function createBlogMeta(
   slug: string,
+  canonicalPath: string,
   blog: {
     title: string;
     excerpt: string | null;
@@ -158,13 +143,14 @@ export function createBlogMeta(
     publishDate: string | null;
     tags?: { name: string }[];
   },
+  config: SsrConfig,
 ): PageMeta {
   return {
-    title: `${blog.title} | ${SSR_CONFIG.siteName}`,
-    description: blog.excerpt || SSR_CONFIG.defaultDescription,
+    title: `${blog.title} | ${config.siteName}`,
+    description: blog.excerpt || config.defaultDescription,
     ogImage: `/api/og/blog/${slug}`,
     ogType: "article",
-    canonicalUrl: `/blogs/${slug}`,
+    canonicalUrl: canonicalPath,
     author: blog.author || undefined,
     publishedTime: blog.publishDate || undefined,
     section: "Blog",
@@ -172,87 +158,141 @@ export function createBlogMeta(
   };
 }
 
-/**
- * Create service page meta
- */
 export function createServiceMeta(
   slug: string,
+  canonicalPath: string,
   service: {
     title: string;
     excerpt: string | null;
   },
+  config: SsrConfig,
 ): PageMeta {
   return {
-    title: `${service.title} | ${SSR_CONFIG.siteName}`,
-    description: service.excerpt || SSR_CONFIG.defaultDescription,
+    title: `${service.title} | ${config.siteName}`,
+    description: service.excerpt || config.defaultDescription,
     ogImage: `/api/og/service/${slug}`,
     ogType: "website",
-    canonicalUrl: `/services/${slug}`,
+    canonicalUrl: canonicalPath,
     section: "Services",
   };
 }
 
-/**
- * Create project/case study meta
- */
 export function createProjectMeta(
   slug: string,
+  canonicalPath: string,
   project: {
     title: string;
     excerpt: string | null;
     tags?: { name: string }[];
   },
+  config: SsrConfig,
 ): PageMeta {
   return {
-    title: `${project.title} | ${SSR_CONFIG.siteName}`,
-    description: project.excerpt || SSR_CONFIG.defaultDescription,
+    title: `${project.title} | ${config.siteName}`,
+    description: project.excerpt || config.defaultDescription,
     ogImage: `/api/og/project/${slug}`,
     ogType: "article",
-    canonicalUrl: `/projects/${slug}`,
+    canonicalUrl: canonicalPath,
     section: "Projects",
     tags: project.tags?.map((t) => t.name),
   };
 }
 
-/**
- * Create career/vacancy meta
- */
 export function createCareerMeta(
   slug: string,
+  canonicalPath: string,
   career: {
     title: string;
     excerpt: string | null;
     department: string | null;
     location: string | null;
   },
+  config: SsrConfig,
 ): PageMeta {
   const description =
     career.excerpt ||
-    `${career.title}${career.department ? ` in ${career.department}` : ""}${career.location ? ` - ${career.location}` : ""} at ${SSR_CONFIG.siteName}`;
+    `${career.title}${career.department ? ` in ${career.department}` : ""}${career.location ? ` - ${career.location}` : ""} at ${config.siteName}`;
 
   return {
-    title: `${career.title} | Careers at ${SSR_CONFIG.siteName}`,
+    title: `${career.title} | Careers at ${config.siteName}`,
     description,
     ogImage: `/api/og/career/${slug}`,
     ogType: "website",
-    canonicalUrl: `/careers/${slug}`,
+    canonicalUrl: canonicalPath,
     section: "Careers",
   };
 }
 
-/**
- * Create static page meta
- */
+export function createSectorMeta(
+  canonicalPath: string,
+  sector: {
+    title: string;
+    excerpt: string | null;
+    featuredImageUrl?: string | null;
+  },
+  config: SsrConfig,
+): PageMeta {
+  const pageTitle = `${sector.title} | ${config.siteName}`;
+  const description = sector.excerpt || config.defaultDescription;
+  const searchParams = new URLSearchParams({
+    title: sector.title,
+    description,
+    category: "Business Sectors",
+  });
+  if (sector.featuredImageUrl) {
+    searchParams.set("image", sector.featuredImageUrl);
+  }
+
+  return {
+    title: pageTitle,
+    description,
+    ogImage: `/api/og/page?${searchParams.toString()}`,
+    ogType: "website",
+    canonicalUrl: canonicalPath,
+    section: "Business Sectors",
+  };
+}
+
 export function createStaticPageMeta(
   path: string,
   title: string,
   description: string,
+  config: SsrConfig,
 ): PageMeta {
   return {
-    title: `${title} | ${SSR_CONFIG.siteName}`,
+    title: `${title} | ${config.siteName}`,
     description,
     ogImage: `/api/og/page?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
     ogType: "website",
     canonicalUrl: path,
+  };
+}
+
+export function createGenericPathMeta(
+  path: string,
+  config: SsrConfig,
+): PageMeta {
+  const normalized = path.split("?")[0] || "/";
+  const withoutDemoPrefix = normalized.startsWith("/demo/")
+    ? normalized.replace(/^\/demo/, "")
+    : normalized;
+  const segments = withoutDemoPrefix.split("/").filter(Boolean);
+
+  if (segments.length === 0) {
+    return createDefaultMeta(path, config);
+  }
+
+  const lastSegment = humanizePathSegment(segments[segments.length - 1]!);
+  const title = `${lastSegment} | ${config.siteName}`;
+  const description = `Explore ${lastSegment.toLowerCase()} at ${config.siteName}.`;
+
+  return {
+    title,
+    description,
+    ogImage: `/api/og/page?title=${encodeURIComponent(lastSegment)}&description=${encodeURIComponent(description)}`,
+    ogType: "website",
+    canonicalUrl: path,
+    section:
+      segments.length > 1 ? humanizePathSegment(segments[0]!) : undefined,
   };
 }

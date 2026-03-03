@@ -2,7 +2,9 @@ import { createSsrController } from "./controller";
 import { createSsrRoutes } from "./routes";
 import { db } from "../../shared/db";
 import { createBlogRepository } from "../blogs/repository";
+import { createBusinessSectorRepository } from "../business-sectors/repository";
 import { createCaseStudyRepository } from "../case-studies/repository";
+import { createProductRepository } from "../products/repository";
 import { createServiceRepository } from "../services/repository";
 import type { ModuleDeps } from "../types";
 import { createVacancyRepository } from "../vacancies/repository";
@@ -12,7 +14,9 @@ export const initSsrModule = (deps: ModuleDeps = { db }) => {
   const blogRepository = createBlogRepository(deps.db);
   const serviceRepository = createServiceRepository(deps.db);
   const caseStudyRepository = createCaseStudyRepository(deps.db);
+  const productRepository = createProductRepository(deps.db);
   const vacancyRepository = createVacancyRepository(deps.db);
+  const businessSectorRepository = createBusinessSectorRepository(deps.db);
 
   // Create controller with repository adapters
   const controller = createSsrController({
@@ -52,6 +56,17 @@ export const initSsrModule = (deps: ModuleDeps = { db }) => {
         };
       },
     },
+    productRepository: {
+      findBySlug: async (slug: string) => {
+        const product = await productRepository.findBySlug(slug);
+        if (!product) return null;
+        return {
+          title: product.title,
+          excerpt: product.excerpt ?? product.description ?? null,
+          tags: product.tags,
+        };
+      },
+    },
     vacancyRepository: {
       findPublicBySlug: async (slug: string) => {
         const vacancy = await vacancyRepository.findPublicBySlug(slug);
@@ -61,6 +76,17 @@ export const initSsrModule = (deps: ModuleDeps = { db }) => {
           excerpt: vacancy.excerpt,
           department: vacancy.department,
           location: vacancy.location,
+        };
+      },
+    },
+    businessSectorRepository: {
+      findPublishedBySlug: async (slug: string) => {
+        const sector = await businessSectorRepository.findPublishedBySlug(slug);
+        if (!sector) return null;
+        return {
+          title: sector.title,
+          excerpt: sector.excerpt,
+          featuredImageUrl: sector.featuredImageUrl,
         };
       },
     },

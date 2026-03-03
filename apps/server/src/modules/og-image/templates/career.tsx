@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
 import {
@@ -12,6 +13,7 @@ import type { OgImageData } from "../types";
 
 interface CareerTemplateProps {
   data: OgImageData;
+  brand: BrandSeoConfig;
 }
 
 /**
@@ -19,17 +21,22 @@ interface CareerTemplateProps {
  */
 export const CareerTemplate = ({
   data,
+  brand,
 }: CareerTemplateProps): React.ReactElement => {
   return (
-    <BaseTemplate data={data}>
+    <BaseTemplate data={data} brand={brand}>
       {/* Header with hiring badge */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <OgHeader category={data.category || "Careers"} type={data.type} />
+        <OgHeader
+          category={data.category || "Careers"}
+          type={data.type}
+          brand={brand}
+        />
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            backgroundColor: "#22c55e",
+            backgroundColor: brand.brandAccent,
             borderRadius: "8px",
             padding: "8px 16px",
           }}
@@ -90,7 +97,7 @@ export const CareerTemplate = ({
       </div>
 
       {/* Footer */}
-      <OgFooter />
+      <OgFooter brand={brand} />
     </BaseTemplate>
   );
 };

@@ -2,6 +2,7 @@ import type { Context } from "hono";
 
 import { generateOgImage, generateDefaultOgImage } from "./service";
 import type { OgImageData } from "./types";
+import { getServerBrandSeoConfig } from "../../shared/branding/brand-seo-config";
 import type { DbClient } from "../../shared/db";
 import { logger } from "../../shared/logger";
 
@@ -54,6 +55,8 @@ export interface OgImageControllerDeps {
 }
 
 export const createOgImageController = (deps: OgImageControllerDeps) => {
+  const brand = getServerBrandSeoConfig();
+
   /**
    * Helper to format date for display
    */
@@ -91,6 +94,16 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
     });
   };
 
+  const getDefaultResponse = async (): Promise<Response> => {
+    const defaultImage = await generateDefaultOgImage({ brand });
+    return returnImageResponse(defaultImage);
+  };
+
+  const sanitizeText = (value: string | undefined, maxLength: number) => {
+    if (!value) return undefined;
+    return value.trim().slice(0, maxLength);
+  };
+
   return {
     /**
      * Generate OG image for a blog post
@@ -100,16 +113,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const blog = await deps.blogRepository.findPublishedBySlug(slug);
 
         if (!blog) {
-          // Return default image if blog not found
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const data: OgImageData = {
@@ -124,12 +134,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           tags: blog.tags?.map((t) => t.name) || [],
         };
 
-        const imageResponse = await generateOgImage(data);
+        const imageResponse = await generateOgImage(data, { brand });
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating blog OG image", error as Error);
-        const defaultImage = await generateDefaultOgImage();
-        return returnImageResponse(defaultImage);
+        return getDefaultResponse();
       }
     },
 
@@ -141,15 +150,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const service = await deps.serviceRepository.findPublishedBySlug(slug);
 
         if (!service) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const data: OgImageData = {
@@ -159,12 +166,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           type: "service",
         };
 
-        const imageResponse = await generateOgImage(data);
+        const imageResponse = await generateOgImage(data, { brand });
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating service OG image", error as Error);
-        const defaultImage = await generateDefaultOgImage();
-        return returnImageResponse(defaultImage);
+        return getDefaultResponse();
       }
     },
 
@@ -176,16 +182,14 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const project =
           await deps.caseStudyRepository.findPublishedBySlug(slug);
 
         if (!project) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const data: OgImageData = {
@@ -196,12 +200,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           tags: project.tags?.map((t) => t.name) || [],
         };
 
-        const imageResponse = await generateOgImage(data);
+        const imageResponse = await generateOgImage(data, { brand });
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating project OG image", error as Error);
-        const defaultImage = await generateDefaultOgImage();
-        return returnImageResponse(defaultImage);
+        return getDefaultResponse();
       }
     },
 
@@ -213,15 +216,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const vacancy = await deps.vacancyRepository.findPublishedBySlug(slug);
 
         if (!vacancy) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         // Build tags from job details
@@ -238,12 +239,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           tags: jobTags,
         };
 
-        const imageResponse = await generateOgImage(data);
+        const imageResponse = await generateOgImage(data, { brand });
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating career OG image", error as Error);
-        const defaultImage = await generateDefaultOgImage();
-        return returnImageResponse(defaultImage);
+        return getDefaultResponse();
       }
     },
 
@@ -251,15 +251,14 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
      * Generate OG image for a generic page
      */
     async getPageOgImage(c: Context): Promise<Response> {
-      const title = c.req.query("title");
-      const description = c.req.query("description");
-      const category = c.req.query("category");
+      const title = sanitizeText(c.req.query("title"), 120);
+      const description = sanitizeText(c.req.query("description"), 220);
+      const category = sanitizeText(c.req.query("category"), 50);
       const imageUrl = c.req.query("image");
 
       try {
         if (!title) {
-          const defaultImage = await generateDefaultOgImage();
-          return returnImageResponse(defaultImage);
+          return getDefaultResponse();
         }
 
         const data: OgImageData = {
@@ -270,12 +269,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           category: category || undefined,
         };
 
-        const imageResponse = await generateOgImage(data);
+        const imageResponse = await generateOgImage(data, { brand });
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating page OG image", error as Error);
-        const defaultImage = await generateDefaultOgImage();
-        return returnImageResponse(defaultImage);
+        return getDefaultResponse();
       }
     },
 
@@ -284,8 +282,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
      */
     async getDefaultOgImage(c: Context): Promise<Response> {
       try {
-        const imageResponse = await generateDefaultOgImage();
-        return returnImageResponse(imageResponse);
+        return getDefaultResponse();
       } catch (error) {
         logger.error("Error generating default OG image", error as Error);
         // Return a basic error response

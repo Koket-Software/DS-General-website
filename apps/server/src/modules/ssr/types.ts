@@ -1,12 +1,10 @@
-/**
- * SSR Types - For social media crawler pre-rendering
- */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 
 export interface PageMeta {
   title: string;
   description: string;
   ogImage: string;
-  ogType: string;
+  ogType: "website" | "article";
   canonicalUrl: string;
   keywords?: string;
   author?: string;
@@ -16,53 +14,16 @@ export interface PageMeta {
   tags?: string[];
 }
 
-export interface SsrConfig {
-  siteName: string;
-  siteUrl: string;
-  defaultTitle: string;
-  defaultDescription: string;
-  defaultOgImage: string;
-  twitterHandle: string;
-  locale: string;
-}
-
-/**
- * SSR Configuration
- *
- * These values are used for server-side rendering of meta tags for social crawlers.
- * Update these to match your company branding.
- *
- * NOTE: For a fully centralized config, consider moving these to a shared package
- * or loading from environment variables.
- */
-export const SSR_CONFIG: SsrConfig = {
-  siteName: process.env.SITE_NAME || "DS General PLC",
-  siteUrl: process.env.VITE_SITE_URL || "http://localhost:5173",
-  defaultTitle:
-    process.env.SITE_TITLE ||
-    "DS General PLC | Integrated Business & Industrial Solutions",
-  defaultDescription:
-    process.env.SITE_DESCRIPTION ||
-    "DS General PLC delivers reliable engineering, trading, and operational solutions for high-impact business sectors in Ethiopia.",
-  defaultOgImage: "/api/og/default",
-  twitterHandle: process.env.TWITTER_HANDLE || "@dsgeneralplc",
-  locale: "en_US",
-};
-
-/**
- * Routes that require dynamic SSR meta tags
- */
-export const SSR_ROUTES = {
-  HOME: "/",
-  ABOUT: "/about",
-  CONTACT: "/contact",
-  SCHEDULE: "/schedule",
-  BLOG_LIST: "/blogs",
-  BLOG_DETAIL: "/blogs/:slug",
-  SERVICE_LIST: "/services",
-  SERVICE_DETAIL: "/services/:slug",
-  PROJECT_LIST: "/projects",
-  PROJECT_DETAIL: "/projects/:slug",
-  CAREER_LIST: "/careers",
-  CAREER_DETAIL: "/careers/:slug",
-} as const;
+export type SsrConfig = Pick<
+  BrandSeoConfig,
+  | "siteName"
+  | "siteUrl"
+  | "defaultTitle"
+  | "defaultDescription"
+  | "twitterHandle"
+  | "locale"
+  | "themeColor"
+  | "ogDefaultPath"
+  | "logoPath"
+  | "keywords"
+>;

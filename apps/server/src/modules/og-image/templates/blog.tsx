@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
 import {
@@ -13,6 +14,7 @@ import type { OgImageData } from "../types";
 
 interface BlogTemplateProps {
   data: OgImageData;
+  brand: BrandSeoConfig;
 }
 
 /**
@@ -20,11 +22,16 @@ interface BlogTemplateProps {
  */
 export const BlogTemplate = ({
   data,
+  brand,
 }: BlogTemplateProps): React.ReactElement => {
   return (
-    <BaseTemplate data={data}>
+    <BaseTemplate data={data} brand={brand}>
       {/* Header with category */}
-      <OgHeader category={data.category || "Blog"} type={data.type} />
+      <OgHeader
+        category={data.category || "Blog"}
+        type={data.type}
+        brand={brand}
+      />
 
       {/* Main content area */}
       <div
@@ -38,7 +45,9 @@ export const BlogTemplate = ({
       >
         <OgTitle title={data.title} />
         {data.description && <OgDescription description={data.description} />}
-        {data.tags && data.tags.length > 0 && <OgTags tags={data.tags} />}
+        {data.tags && data.tags.length > 0 && (
+          <OgTags tags={data.tags} brand={brand} />
+        )}
       </div>
 
       {/* Footer with meta */}
@@ -46,6 +55,7 @@ export const BlogTemplate = ({
         author={data.author}
         date={data.date}
         readTime={data.readTime}
+        brand={brand}
       />
     </BaseTemplate>
   );

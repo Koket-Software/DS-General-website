@@ -1,22 +1,21 @@
 /** @jsxImportSource react */
+import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
 import type { OgImageData } from "../types";
-import { BRAND_COLORS } from "../types";
 
 interface BaseTemplateProps {
   data: OgImageData;
+  brand: BrandSeoConfig;
   children?: React.ReactNode;
 }
 
-/**
- * Base OG Image Template with company branding
- */
 export const BaseTemplate = ({
   data,
+  brand,
   children,
 }: BaseTemplateProps): React.ReactElement => {
-  const hasImage = !!data.imageUrl;
+  const hasImage = Boolean(data.imageUrl);
 
   return (
     <div
@@ -25,37 +24,38 @@ export const BaseTemplate = ({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        background: hasImage
-          ? `linear-gradient(135deg, ${BRAND_COLORS.secondary} 0%, ${BRAND_COLORS.primary} 100%)`
-          : `linear-gradient(135deg, ${BRAND_COLORS.secondary} 0%, ${BRAND_COLORS.primary} 100%)`,
-        fontFamily: '"Playfair Display", serif',
         position: "relative",
         overflow: "hidden",
+        fontFamily: '"Playfair Display", serif',
+        background: `linear-gradient(125deg, ${brand.brandSecondary} 0%, ${brand.brandPrimary} 70%, ${brand.brandAccent} 100%)`,
       }}
     >
-      {/* Background pattern */}
       <div
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.05,
+          inset: "-20%",
+          background:
+            "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 40%), radial-gradient(circle at 80% 85%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 35%)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          opacity: 0.2,
           backgroundImage:
-            "radial-gradient(circle at 25% 25%, white 2px, transparent 2px)",
-          backgroundSize: "50px 50px",
+            "linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(180deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+          backgroundSize: "42px 42px",
         }}
       />
 
-      {/* Featured image overlay */}
       {hasImage && (
         <div
           style={{
             position: "absolute",
             top: 0,
             right: 0,
-            width: "50%",
+            width: "48%",
             height: "100%",
             display: "flex",
           }}
@@ -73,27 +73,23 @@ export const BaseTemplate = ({
           <div
             style={{
               position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
+              inset: 0,
               background:
-                "linear-gradient(90deg, rgba(15,23,42,1) 0%, rgba(15,23,42,0.8) 50%, rgba(15,23,42,0.4) 100%)",
+                "linear-gradient(92deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.7) 52%, rgba(15,23,42,0.2) 100%)",
             }}
           />
         </div>
       )}
 
-      {/* Content */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
           height: "100%",
-          padding: "60px",
+          padding: "56px",
           position: "relative",
-          zIndex: 10,
+          zIndex: 3,
         }}
       >
         {children}
@@ -102,126 +98,137 @@ export const BaseTemplate = ({
   );
 };
 
-/**
- * Header section with category badge
- */
 export const OgHeader = ({
   category,
   type,
+  brand,
 }: {
   category?: string;
   type: string;
+  brand: BrandSeoConfig;
 }): React.ReactElement => {
   const displayCategory =
     category || type.charAt(0).toUpperCase() + type.slice(1);
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-      {/* Category badge */}
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "20px",
+      }}
+    >
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          borderRadius: "8px",
-          padding: "8px 16px",
-          backdropFilter: "blur(10px)",
+          borderRadius: "999px",
+          padding: "9px 18px",
+          border: "1px solid rgba(255,255,255,0.35)",
+          backgroundColor: "rgba(0, 0, 0, 0.18)",
         }}
       >
         <span
           style={{
             color: "#ffffff",
-            fontSize: "18px",
-            fontWeight: 600,
+            fontSize: "16px",
+            fontWeight: 700,
+            letterSpacing: "2.1px",
             textTransform: "uppercase",
-            letterSpacing: "2px",
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
           {displayCategory}
         </span>
       </div>
-    </div>
-  );
-};
 
-/**
- * Main title section
- */
-export const OgTitle = ({ title }: { title: string }): React.ReactElement => {
-  // Truncate title if too long
-  const displayTitle =
-    title.length > 80 ? `${title.substring(0, 77)}...` : title;
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
-        maxWidth: "800px",
-      }}
-    >
-      <h1
+      <div
         style={{
-          fontSize: displayTitle.length > 50 ? "48px" : "56px",
-          fontWeight: 700,
-          color: "#ffffff",
-          lineHeight: 1.2,
-          margin: 0,
-          textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          color: "rgba(255,255,255,0.9)",
+          fontSize: "18px",
         }}
       >
-        {displayTitle}
-      </h1>
+        <div
+          style={{
+            width: "8px",
+            height: "8px",
+            borderRadius: "999px",
+            background: brand.brandAccent,
+            boxShadow: "0 0 18px rgba(255,255,255,0.6)",
+          }}
+        />
+        <span>{brand.siteName}</span>
+      </div>
     </div>
   );
 };
 
-/**
- * Description section
- */
+export const OgTitle = ({ title }: { title: string }): React.ReactElement => {
+  const displayTitle =
+    title.length > 92 ? `${title.substring(0, 89).trim()}...` : title;
+
+  return (
+    <h1
+      style={{
+        margin: 0,
+        color: "#ffffff",
+        fontSize: displayTitle.length > 60 ? "50px" : "60px",
+        fontWeight: 700,
+        lineHeight: 1.1,
+        maxWidth: "790px",
+        textShadow: "0 12px 40px rgba(0, 0, 0, 0.35)",
+      }}
+    >
+      {displayTitle}
+    </h1>
+  );
+};
+
 export const OgDescription = ({
   description,
 }: {
   description: string;
 }): React.ReactElement => {
-  // Truncate description if too long
-  const displayDesc =
-    description.length > 150
-      ? `${description.substring(0, 147)}...`
+  const displayDescription =
+    description.length > 180
+      ? `${description.substring(0, 177).trim()}...`
       : description;
 
   return (
     <p
       style={{
-        fontSize: "24px",
-        color: "rgba(255, 255, 255, 0.8)",
-        lineHeight: 1.5,
         margin: 0,
-        maxWidth: "700px",
+        color: "rgba(255,255,255,0.9)",
+        fontSize: "24px",
+        lineHeight: 1.45,
+        maxWidth: "780px",
+        fontFamily: '"Manrope", sans-serif',
       }}
     >
-      {displayDesc}
+      {displayDescription}
     </p>
   );
 };
 
-/**
- * Footer section with branding
- */
 export const OgFooter = ({
   author,
   date,
   readTime,
+  brand,
 }: {
   author?: string;
   date?: string;
   readTime?: number;
+  brand: BrandSeoConfig;
 }): React.ReactElement => {
-  const metaItems: string[] = [];
-  if (author) metaItems.push(`By ${author}`);
-  if (date) metaItems.push(date);
-  if (readTime) metaItems.push(`${readTime} min read`);
+  const details: string[] = [];
+  if (author) details.push(`By ${author}`);
+  if (date) details.push(date);
+  if (readTime) details.push(`${readTime} min read`);
 
   return (
     <div
@@ -229,85 +236,104 @@ export const OgFooter = ({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        gap: "24px",
       }}
     >
-      {/* Meta info */}
-      {metaItems.length > 0 && (
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          {metaItems.map((item, index) => (
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        {details.length > 0 ? (
+          details.map((item, index) => (
             <span
-              key={index}
+              key={`${item}-${index}`}
               style={{
-                fontSize: "18px",
-                color: "rgba(255, 255, 255, 0.7)",
+                color: "rgba(255,255,255,0.78)",
+                fontSize: "17px",
+                fontWeight: 500,
+                fontFamily: '"Manrope", sans-serif',
               }}
             >
-              {item}
-              {index < metaItems.length - 1 && (
-                <span style={{ marginLeft: "20px", opacity: 0.5 }}>•</span>
-              )}
+              {index > 0 ? `• ${item}` : item}
             </span>
-          ))}
-        </div>
-      )}
+          ))
+        ) : (
+          <span
+            style={{
+              color: "rgba(255,255,255,0.78)",
+              fontSize: "17px",
+              fontWeight: 500,
+              fontFamily: '"Manrope", sans-serif',
+            }}
+          >
+            {brand.defaultDescription}
+          </span>
+        )}
+      </div>
 
-      {/* Brand logo/name */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          backgroundColor: "rgba(0,0,0,0.2)",
+          padding: "10px 14px",
+          borderRadius: "14px",
+          border: "1px solid rgba(255,255,255,0.25)",
+        }}
+      >
         <div
           style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "8px",
-            background: "linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)",
+            width: "34px",
+            height: "34px",
+            borderRadius: "9px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            fontWeight: 800,
+            fontSize: "18px",
+            color: "#fff",
+            background: `linear-gradient(130deg, ${brand.brandAccent} 0%, ${brand.brandPrimary} 100%)`,
           }}
         >
-          <span
-            style={{
-              fontSize: "20px",
-              fontWeight: 800,
-              color: BRAND_COLORS.primary,
-            }}
-          >
-            D
-          </span>
+          {brand.siteName.charAt(0).toUpperCase()}
         </div>
         <span
           style={{
+            color: "#fff",
             fontSize: "20px",
             fontWeight: 600,
-            color: "#ffffff",
           }}
         >
-          DS General PLC
+          {brand.siteName}
         </span>
       </div>
     </div>
   );
 };
 
-/**
- * Tags section
- */
-export const OgTags = ({ tags }: { tags: string[] }): React.ReactElement => {
-  const displayTags = tags.slice(0, 3); // Show max 3 tags
-
+export const OgTags = ({
+  tags,
+  brand,
+}: {
+  tags: string[];
+  brand: BrandSeoConfig;
+}): React.ReactElement => {
+  const displayTags = tags.slice(0, 4);
   return (
-    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+    <div style={{ display: "flex", gap: "11px", flexWrap: "wrap" }}>
       {displayTags.map((tag, index) => (
         <span
-          key={index}
+          key={`${tag}-${index}`}
           style={{
-            fontSize: "14px",
-            color: "rgba(255, 255, 255, 0.9)",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            padding: "6px 12px",
-            borderRadius: "6px",
+            fontSize: "15px",
+            fontWeight: 500,
+            color: "#ffffff",
+            borderRadius: "999px",
+            padding: "8px 14px",
+            backgroundColor: "rgba(0,0,0,0.22)",
+            border: `1px solid ${brand.brandAccent}`,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          #{tag}
+          {tag}
         </span>
       ))}
     </div>
