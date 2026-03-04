@@ -73,8 +73,14 @@ type DashboardFormOptions<TFormData, TSubmitMeta = unknown> = FormOptions<
   TSubmitMeta
 >;
 
-export function useDashboardForm<TFormData, TSubmitMeta = unknown>(
+export function useAppForm<TFormData, TSubmitMeta = unknown>(
   opts?: DashboardFormOptions<TFormData, TSubmitMeta>,
 ) {
   return useTanstackForm(opts);
+}
+
+export function useDashboardForm<TFormData, TSubmitMeta = unknown>(
+  opts?: DashboardFormOptions<TFormData, TSubmitMeta>,
+) {
+  return useAppForm(opts);
 }

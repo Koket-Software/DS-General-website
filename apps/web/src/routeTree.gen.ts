@@ -12,31 +12,27 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as SiteRouteImport } from './routes/_site'
-import { Route as SiteIndexRouteImport } from './routes/_site/index'
-import { Route as SiteScheduleRouteImport } from './routes/_site/schedule'
-import { Route as SiteContactRouteImport } from './routes/_site/contact'
-import { Route as SiteAboutRouteImport } from './routes/_site/about'
+import { Route as LandingRouteImport } from './routes/_landing'
+import { Route as LandingIndexRouteImport } from './routes/_landing/index'
+import { Route as LandingTermsOfServiceRouteImport } from './routes/_landing/terms-of-service'
+import { Route as LandingPrivacyPolicyRouteImport } from './routes/_landing/privacy-policy'
+import { Route as LandingGalleryRouteImport } from './routes/_landing/gallery'
+import { Route as LandingContactRouteImport } from './routes/_landing/contact'
+import { Route as LandingCareerRouteImport } from './routes/_landing/career'
+import { Route as LandingArticlesRouteImport } from './routes/_landing/articles'
+import { Route as LandingAboutRouteImport } from './routes/_landing/about'
 import { Route as DashboardVacanciesIndexRouteImport } from './routes/dashboard/vacancies/index'
 import { Route as DashboardServicesIndexRouteImport } from './routes/dashboard/services/index'
 import { Route as DashboardProductsIndexRouteImport } from './routes/dashboard/products/index'
 import { Route as DashboardGalleryIndexRouteImport } from './routes/dashboard/gallery/index'
 import { Route as DashboardBusinessSectorsIndexRouteImport } from './routes/dashboard/business-sectors/index'
 import { Route as DashboardBlogsIndexRouteImport } from './routes/dashboard/blogs/index'
-import { Route as SiteServicesIndexRouteImport } from './routes/_site/services.index'
-import { Route as SiteSectorsIndexRouteImport } from './routes/_site/sectors.index'
-import { Route as SiteProjectsIndexRouteImport } from './routes/_site/projects.index'
-import { Route as SiteGalleryIndexRouteImport } from './routes/_site/gallery.index'
-import { Route as SiteCareersIndexRouteImport } from './routes/_site/careers.index'
-import { Route as SiteBlogsIndexRouteImport } from './routes/_site/blogs.index'
 import { Route as DashboardServicesCreateRouteImport } from './routes/dashboard/services/create'
 import { Route as DashboardGalleryCategoriesRouteImport } from './routes/dashboard/gallery/categories'
 import { Route as DashboardBusinessSectorsCreateRouteImport } from './routes/dashboard/business-sectors/create'
-import { Route as SiteServicesSlugRouteImport } from './routes/_site/services.$slug'
-import { Route as SiteSectorsSlugRouteImport } from './routes/_site/sectors.$slug'
-import { Route as SiteProjectsSlugRouteImport } from './routes/_site/projects.$slug'
-import { Route as SiteCareersSlugRouteImport } from './routes/_site/careers.$slug'
-import { Route as SiteBlogsSlugRouteImport } from './routes/_site/blogs.$slug'
+import { Route as LandingSectorsSourcingLogisticsRouteImport } from './routes/_landing/sectors.sourcing-logistics'
+import { Route as LandingCareerIdRouteImport } from './routes/_landing/career.$id'
+import { Route as LandingArticlesIdRouteImport } from './routes/_landing/articles.$id'
 import { Route as DashboardVacanciesSlugIndexRouteImport } from './routes/dashboard/vacancies/$slug/index'
 import { Route as DashboardUserManagementUserIdIndexRouteImport } from './routes/dashboard/user-management/$userId/index'
 import { Route as DashboardTestimonialsIdIndexRouteImport } from './routes/dashboard/testimonials/$id/index'
@@ -142,8 +138,8 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SiteRoute = SiteRouteImport.update({
-  id: '/_site',
+const LandingRoute = LandingRouteImport.update({
+  id: '/_landing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexLazyRoute = DashboardIndexLazyRouteImport.update({
@@ -153,28 +149,46 @@ const DashboardIndexLazyRoute = DashboardIndexLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/dashboard/index.lazy').then((d) => d.Route),
 )
-const SiteIndexRoute = SiteIndexRouteImport.update({
+const LandingIndexRoute = LandingIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() => import('./routes/_site/index.lazy').then((d) => d.Route))
-const SiteScheduleRoute = SiteScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/schedule.lazy').then((d) => d.Route),
-)
-const SiteContactRoute = SiteContactRouteImport.update({
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingTermsOfServiceRoute = LandingTermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingPrivacyPolicyRoute = LandingPrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingGalleryRoute = LandingGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingContactRoute = LandingContactRouteImport.update({
   id: '/contact',
   path: '/contact',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() => import('./routes/_site/contact.lazy').then((d) => d.Route))
-const SiteAboutRoute = SiteAboutRouteImport.update({
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingCareerRoute = LandingCareerRouteImport.update({
+  id: '/career',
+  path: '/career',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingArticlesRoute = LandingArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingAboutRoute = LandingAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() => import('./routes/_site/about.lazy').then((d) => d.Route))
+  getParentRoute: () => LandingRoute,
+} as any)
 const DashboardUserManagementIndexLazyRoute =
   DashboardUserManagementIndexLazyRouteImport.update({
     id: '/user-management/',
@@ -296,48 +310,6 @@ const DashboardBlogsIndexRoute = DashboardBlogsIndexRouteImport.update({
 } as any).lazy(() =>
   import('./routes/dashboard/blogs/index.lazy').then((d) => d.Route),
 )
-const SiteServicesIndexRoute = SiteServicesIndexRouteImport.update({
-  id: '/services/',
-  path: '/services/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/services.index.lazy').then((d) => d.Route),
-)
-const SiteSectorsIndexRoute = SiteSectorsIndexRouteImport.update({
-  id: '/sectors/',
-  path: '/sectors/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/sectors.index.lazy').then((d) => d.Route),
-)
-const SiteProjectsIndexRoute = SiteProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/projects.index.lazy').then((d) => d.Route),
-)
-const SiteGalleryIndexRoute = SiteGalleryIndexRouteImport.update({
-  id: '/gallery/',
-  path: '/gallery/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/gallery.index.lazy').then((d) => d.Route),
-)
-const SiteCareersIndexRoute = SiteCareersIndexRouteImport.update({
-  id: '/careers/',
-  path: '/careers/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/careers.index.lazy').then((d) => d.Route),
-)
-const SiteBlogsIndexRoute = SiteBlogsIndexRouteImport.update({
-  id: '/blogs/',
-  path: '/blogs/',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/blogs.index.lazy').then((d) => d.Route),
-)
 const DashboardVacanciesCreateLazyRoute =
   DashboardVacanciesCreateLazyRouteImport.update({
     id: '/vacancies/create',
@@ -439,41 +411,22 @@ const DashboardBusinessSectorsCreateRoute =
       (d) => d.Route,
     ),
   )
-const SiteServicesSlugRoute = SiteServicesSlugRouteImport.update({
-  id: '/services/$slug',
-  path: '/services/$slug',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/services.$slug.lazy').then((d) => d.Route),
-)
-const SiteSectorsSlugRoute = SiteSectorsSlugRouteImport.update({
-  id: '/sectors/$slug',
-  path: '/sectors/$slug',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/sectors.$slug.lazy').then((d) => d.Route),
-)
-const SiteProjectsSlugRoute = SiteProjectsSlugRouteImport.update({
-  id: '/projects/$slug',
-  path: '/projects/$slug',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/projects.$slug.lazy').then((d) => d.Route),
-)
-const SiteCareersSlugRoute = SiteCareersSlugRouteImport.update({
-  id: '/careers/$slug',
-  path: '/careers/$slug',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/careers.$slug.lazy').then((d) => d.Route),
-)
-const SiteBlogsSlugRoute = SiteBlogsSlugRouteImport.update({
-  id: '/blogs/$slug',
-  path: '/blogs/$slug',
-  getParentRoute: () => SiteRoute,
-} as any).lazy(() =>
-  import('./routes/_site/blogs.$slug.lazy').then((d) => d.Route),
-)
+const LandingSectorsSourcingLogisticsRoute =
+  LandingSectorsSourcingLogisticsRouteImport.update({
+    id: '/sectors/sourcing-logistics',
+    path: '/sectors/sourcing-logistics',
+    getParentRoute: () => LandingRoute,
+  } as any)
+const LandingCareerIdRoute = LandingCareerIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LandingCareerRoute,
+} as any)
+const LandingArticlesIdRoute = LandingArticlesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LandingArticlesRoute,
+} as any)
 const DashboardVacanciesSlugIndexRoute =
   DashboardVacanciesSlugIndexRouteImport.update({
     id: '/vacancies/$slug/',
@@ -680,16 +633,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginLazyRoute
   '/rate-limit': typeof RateLimitLazyRoute
   '/register': typeof RegisterLazyRoute
-  '/about': typeof SiteAboutRoute
-  '/contact': typeof SiteContactRoute
-  '/schedule': typeof SiteScheduleRoute
-  '/': typeof SiteIndexRoute
+  '/about': typeof LandingAboutRoute
+  '/articles': typeof LandingArticlesRouteWithChildren
+  '/career': typeof LandingCareerRouteWithChildren
+  '/contact': typeof LandingContactRoute
+  '/gallery': typeof LandingGalleryRoute
+  '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/terms-of-service': typeof LandingTermsOfServiceRoute
+  '/': typeof LandingIndexRoute
   '/dashboard/': typeof DashboardIndexLazyRoute
-  '/blogs/$slug': typeof SiteBlogsSlugRoute
-  '/careers/$slug': typeof SiteCareersSlugRoute
-  '/projects/$slug': typeof SiteProjectsSlugRoute
-  '/sectors/$slug': typeof SiteSectorsSlugRoute
-  '/services/$slug': typeof SiteServicesSlugRoute
+  '/articles/$id': typeof LandingArticlesIdRoute
+  '/career/$id': typeof LandingCareerIdRoute
+  '/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
   '/dashboard/services/create': typeof DashboardServicesCreateRoute
@@ -702,12 +657,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/testimonials/create': typeof DashboardTestimonialsCreateLazyRoute
   '/dashboard/user-management/create': typeof DashboardUserManagementCreateLazyRoute
   '/dashboard/vacancies/create': typeof DashboardVacanciesCreateLazyRoute
-  '/blogs': typeof SiteBlogsIndexRoute
-  '/careers': typeof SiteCareersIndexRoute
-  '/gallery': typeof SiteGalleryIndexRoute
-  '/projects': typeof SiteProjectsIndexRoute
-  '/sectors': typeof SiteSectorsIndexRoute
-  '/services': typeof SiteServicesIndexRoute
   '/dashboard/blogs': typeof DashboardBlogsIndexRoute
   '/dashboard/business-sectors': typeof DashboardBusinessSectorsIndexRoute
   '/dashboard/gallery': typeof DashboardGalleryIndexRoute
@@ -752,16 +701,18 @@ export interface FileRoutesByTo {
   '/login': typeof LoginLazyRoute
   '/rate-limit': typeof RateLimitLazyRoute
   '/register': typeof RegisterLazyRoute
-  '/about': typeof SiteAboutRoute
-  '/contact': typeof SiteContactRoute
-  '/schedule': typeof SiteScheduleRoute
-  '/': typeof SiteIndexRoute
+  '/about': typeof LandingAboutRoute
+  '/articles': typeof LandingArticlesRouteWithChildren
+  '/career': typeof LandingCareerRouteWithChildren
+  '/contact': typeof LandingContactRoute
+  '/gallery': typeof LandingGalleryRoute
+  '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/terms-of-service': typeof LandingTermsOfServiceRoute
+  '/': typeof LandingIndexRoute
   '/dashboard': typeof DashboardIndexLazyRoute
-  '/blogs/$slug': typeof SiteBlogsSlugRoute
-  '/careers/$slug': typeof SiteCareersSlugRoute
-  '/projects/$slug': typeof SiteProjectsSlugRoute
-  '/sectors/$slug': typeof SiteSectorsSlugRoute
-  '/services/$slug': typeof SiteServicesSlugRoute
+  '/articles/$id': typeof LandingArticlesIdRoute
+  '/career/$id': typeof LandingCareerIdRoute
+  '/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
   '/dashboard/services/create': typeof DashboardServicesCreateRoute
@@ -774,12 +725,6 @@ export interface FileRoutesByTo {
   '/dashboard/testimonials/create': typeof DashboardTestimonialsCreateLazyRoute
   '/dashboard/user-management/create': typeof DashboardUserManagementCreateLazyRoute
   '/dashboard/vacancies/create': typeof DashboardVacanciesCreateLazyRoute
-  '/blogs': typeof SiteBlogsIndexRoute
-  '/careers': typeof SiteCareersIndexRoute
-  '/gallery': typeof SiteGalleryIndexRoute
-  '/projects': typeof SiteProjectsIndexRoute
-  '/sectors': typeof SiteSectorsIndexRoute
-  '/services': typeof SiteServicesIndexRoute
   '/dashboard/blogs': typeof DashboardBlogsIndexRoute
   '/dashboard/business-sectors': typeof DashboardBusinessSectorsIndexRoute
   '/dashboard/gallery': typeof DashboardGalleryIndexRoute
@@ -821,22 +766,24 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_site': typeof SiteRouteWithChildren
+  '/_landing': typeof LandingRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/forbidden': typeof ForbiddenLazyRoute
   '/login': typeof LoginLazyRoute
   '/rate-limit': typeof RateLimitLazyRoute
   '/register': typeof RegisterLazyRoute
-  '/_site/about': typeof SiteAboutRoute
-  '/_site/contact': typeof SiteContactRoute
-  '/_site/schedule': typeof SiteScheduleRoute
-  '/_site/': typeof SiteIndexRoute
+  '/_landing/about': typeof LandingAboutRoute
+  '/_landing/articles': typeof LandingArticlesRouteWithChildren
+  '/_landing/career': typeof LandingCareerRouteWithChildren
+  '/_landing/contact': typeof LandingContactRoute
+  '/_landing/gallery': typeof LandingGalleryRoute
+  '/_landing/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/_landing/terms-of-service': typeof LandingTermsOfServiceRoute
+  '/_landing/': typeof LandingIndexRoute
   '/dashboard/': typeof DashboardIndexLazyRoute
-  '/_site/blogs/$slug': typeof SiteBlogsSlugRoute
-  '/_site/careers/$slug': typeof SiteCareersSlugRoute
-  '/_site/projects/$slug': typeof SiteProjectsSlugRoute
-  '/_site/sectors/$slug': typeof SiteSectorsSlugRoute
-  '/_site/services/$slug': typeof SiteServicesSlugRoute
+  '/_landing/articles/$id': typeof LandingArticlesIdRoute
+  '/_landing/career/$id': typeof LandingCareerIdRoute
+  '/_landing/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
   '/dashboard/services/create': typeof DashboardServicesCreateRoute
@@ -849,12 +796,6 @@ export interface FileRoutesById {
   '/dashboard/testimonials/create': typeof DashboardTestimonialsCreateLazyRoute
   '/dashboard/user-management/create': typeof DashboardUserManagementCreateLazyRoute
   '/dashboard/vacancies/create': typeof DashboardVacanciesCreateLazyRoute
-  '/_site/blogs/': typeof SiteBlogsIndexRoute
-  '/_site/careers/': typeof SiteCareersIndexRoute
-  '/_site/gallery/': typeof SiteGalleryIndexRoute
-  '/_site/projects/': typeof SiteProjectsIndexRoute
-  '/_site/sectors/': typeof SiteSectorsIndexRoute
-  '/_site/services/': typeof SiteServicesIndexRoute
   '/dashboard/blogs/': typeof DashboardBlogsIndexRoute
   '/dashboard/business-sectors/': typeof DashboardBusinessSectorsIndexRoute
   '/dashboard/gallery/': typeof DashboardGalleryIndexRoute
@@ -903,15 +844,17 @@ export interface FileRouteTypes {
     | '/rate-limit'
     | '/register'
     | '/about'
+    | '/articles'
+    | '/career'
     | '/contact'
-    | '/schedule'
+    | '/gallery'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/'
     | '/dashboard/'
-    | '/blogs/$slug'
-    | '/careers/$slug'
-    | '/projects/$slug'
-    | '/sectors/$slug'
-    | '/services/$slug'
+    | '/articles/$id'
+    | '/career/$id'
+    | '/sectors/sourcing-logistics'
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
     | '/dashboard/services/create'
@@ -924,12 +867,6 @@ export interface FileRouteTypes {
     | '/dashboard/testimonials/create'
     | '/dashboard/user-management/create'
     | '/dashboard/vacancies/create'
-    | '/blogs'
-    | '/careers'
-    | '/gallery'
-    | '/projects'
-    | '/sectors'
-    | '/services'
     | '/dashboard/blogs'
     | '/dashboard/business-sectors'
     | '/dashboard/gallery'
@@ -975,15 +912,17 @@ export interface FileRouteTypes {
     | '/rate-limit'
     | '/register'
     | '/about'
+    | '/articles'
+    | '/career'
     | '/contact'
-    | '/schedule'
+    | '/gallery'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/'
     | '/dashboard'
-    | '/blogs/$slug'
-    | '/careers/$slug'
-    | '/projects/$slug'
-    | '/sectors/$slug'
-    | '/services/$slug'
+    | '/articles/$id'
+    | '/career/$id'
+    | '/sectors/sourcing-logistics'
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
     | '/dashboard/services/create'
@@ -996,12 +935,6 @@ export interface FileRouteTypes {
     | '/dashboard/testimonials/create'
     | '/dashboard/user-management/create'
     | '/dashboard/vacancies/create'
-    | '/blogs'
-    | '/careers'
-    | '/gallery'
-    | '/projects'
-    | '/sectors'
-    | '/services'
     | '/dashboard/blogs'
     | '/dashboard/business-sectors'
     | '/dashboard/gallery'
@@ -1042,22 +975,24 @@ export interface FileRouteTypes {
     | '/dashboard/vacancies/$slug'
   id:
     | '__root__'
-    | '/_site'
+    | '/_landing'
     | '/dashboard'
     | '/forbidden'
     | '/login'
     | '/rate-limit'
     | '/register'
-    | '/_site/about'
-    | '/_site/contact'
-    | '/_site/schedule'
-    | '/_site/'
+    | '/_landing/about'
+    | '/_landing/articles'
+    | '/_landing/career'
+    | '/_landing/contact'
+    | '/_landing/gallery'
+    | '/_landing/privacy-policy'
+    | '/_landing/terms-of-service'
+    | '/_landing/'
     | '/dashboard/'
-    | '/_site/blogs/$slug'
-    | '/_site/careers/$slug'
-    | '/_site/projects/$slug'
-    | '/_site/sectors/$slug'
-    | '/_site/services/$slug'
+    | '/_landing/articles/$id'
+    | '/_landing/career/$id'
+    | '/_landing/sectors/sourcing-logistics'
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
     | '/dashboard/services/create'
@@ -1070,12 +1005,6 @@ export interface FileRouteTypes {
     | '/dashboard/testimonials/create'
     | '/dashboard/user-management/create'
     | '/dashboard/vacancies/create'
-    | '/_site/blogs/'
-    | '/_site/careers/'
-    | '/_site/gallery/'
-    | '/_site/projects/'
-    | '/_site/sectors/'
-    | '/_site/services/'
     | '/dashboard/blogs/'
     | '/dashboard/business-sectors/'
     | '/dashboard/gallery/'
@@ -1117,7 +1046,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  SiteRoute: typeof SiteRouteWithChildren
+  LandingRoute: typeof LandingRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
   ForbiddenLazyRoute: typeof ForbiddenLazyRoute
   LoginLazyRoute: typeof LoginLazyRoute
@@ -1162,11 +1091,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_site': {
-      id: '/_site'
+    '/_landing': {
+      id: '/_landing'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof SiteRouteImport
+      preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -1176,33 +1105,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexLazyRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_site/': {
-      id: '/_site/'
+    '/_landing/': {
+      id: '/_landing/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof SiteIndexRouteImport
-      parentRoute: typeof SiteRoute
+      preLoaderRoute: typeof LandingIndexRouteImport
+      parentRoute: typeof LandingRoute
     }
-    '/_site/schedule': {
-      id: '/_site/schedule'
-      path: '/schedule'
-      fullPath: '/schedule'
-      preLoaderRoute: typeof SiteScheduleRouteImport
-      parentRoute: typeof SiteRoute
+    '/_landing/terms-of-service': {
+      id: '/_landing/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof LandingTermsOfServiceRouteImport
+      parentRoute: typeof LandingRoute
     }
-    '/_site/contact': {
-      id: '/_site/contact'
+    '/_landing/privacy-policy': {
+      id: '/_landing/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof LandingPrivacyPolicyRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/gallery': {
+      id: '/_landing/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof LandingGalleryRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/contact': {
+      id: '/_landing/contact'
       path: '/contact'
       fullPath: '/contact'
-      preLoaderRoute: typeof SiteContactRouteImport
-      parentRoute: typeof SiteRoute
+      preLoaderRoute: typeof LandingContactRouteImport
+      parentRoute: typeof LandingRoute
     }
-    '/_site/about': {
-      id: '/_site/about'
+    '/_landing/career': {
+      id: '/_landing/career'
+      path: '/career'
+      fullPath: '/career'
+      preLoaderRoute: typeof LandingCareerRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/articles': {
+      id: '/_landing/articles'
+      path: '/articles'
+      fullPath: '/articles'
+      preLoaderRoute: typeof LandingArticlesRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/about': {
+      id: '/_landing/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof SiteAboutRouteImport
-      parentRoute: typeof SiteRoute
+      preLoaderRoute: typeof LandingAboutRouteImport
+      parentRoute: typeof LandingRoute
     }
     '/dashboard/user-management/': {
       id: '/dashboard/user-management/'
@@ -1309,48 +1266,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBlogsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_site/services/': {
-      id: '/_site/services/'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof SiteServicesIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/sectors/': {
-      id: '/_site/sectors/'
-      path: '/sectors'
-      fullPath: '/sectors'
-      preLoaderRoute: typeof SiteSectorsIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/projects/': {
-      id: '/_site/projects/'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof SiteProjectsIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/gallery/': {
-      id: '/_site/gallery/'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof SiteGalleryIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/careers/': {
-      id: '/_site/careers/'
-      path: '/careers'
-      fullPath: '/careers'
-      preLoaderRoute: typeof SiteCareersIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/blogs/': {
-      id: '/_site/blogs/'
-      path: '/blogs'
-      fullPath: '/blogs'
-      preLoaderRoute: typeof SiteBlogsIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
     '/dashboard/vacancies/create': {
       id: '/dashboard/vacancies/create'
       path: '/vacancies/create'
@@ -1435,40 +1350,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBusinessSectorsCreateRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_site/services/$slug': {
-      id: '/_site/services/$slug'
-      path: '/services/$slug'
-      fullPath: '/services/$slug'
-      preLoaderRoute: typeof SiteServicesSlugRouteImport
-      parentRoute: typeof SiteRoute
+    '/_landing/sectors/sourcing-logistics': {
+      id: '/_landing/sectors/sourcing-logistics'
+      path: '/sectors/sourcing-logistics'
+      fullPath: '/sectors/sourcing-logistics'
+      preLoaderRoute: typeof LandingSectorsSourcingLogisticsRouteImport
+      parentRoute: typeof LandingRoute
     }
-    '/_site/sectors/$slug': {
-      id: '/_site/sectors/$slug'
-      path: '/sectors/$slug'
-      fullPath: '/sectors/$slug'
-      preLoaderRoute: typeof SiteSectorsSlugRouteImport
-      parentRoute: typeof SiteRoute
+    '/_landing/career/$id': {
+      id: '/_landing/career/$id'
+      path: '/$id'
+      fullPath: '/career/$id'
+      preLoaderRoute: typeof LandingCareerIdRouteImport
+      parentRoute: typeof LandingCareerRoute
     }
-    '/_site/projects/$slug': {
-      id: '/_site/projects/$slug'
-      path: '/projects/$slug'
-      fullPath: '/projects/$slug'
-      preLoaderRoute: typeof SiteProjectsSlugRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/careers/$slug': {
-      id: '/_site/careers/$slug'
-      path: '/careers/$slug'
-      fullPath: '/careers/$slug'
-      preLoaderRoute: typeof SiteCareersSlugRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/blogs/$slug': {
-      id: '/_site/blogs/$slug'
-      path: '/blogs/$slug'
-      fullPath: '/blogs/$slug'
-      preLoaderRoute: typeof SiteBlogsSlugRouteImport
-      parentRoute: typeof SiteRoute
+    '/_landing/articles/$id': {
+      id: '/_landing/articles/$id'
+      path: '/$id'
+      fullPath: '/articles/$id'
+      preLoaderRoute: typeof LandingArticlesIdRouteImport
+      parentRoute: typeof LandingArticlesRoute
     }
     '/dashboard/vacancies/$slug/': {
       id: '/dashboard/vacancies/$slug/'
@@ -1634,43 +1535,56 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface SiteRouteChildren {
-  SiteAboutRoute: typeof SiteAboutRoute
-  SiteContactRoute: typeof SiteContactRoute
-  SiteScheduleRoute: typeof SiteScheduleRoute
-  SiteIndexRoute: typeof SiteIndexRoute
-  SiteBlogsSlugRoute: typeof SiteBlogsSlugRoute
-  SiteCareersSlugRoute: typeof SiteCareersSlugRoute
-  SiteProjectsSlugRoute: typeof SiteProjectsSlugRoute
-  SiteSectorsSlugRoute: typeof SiteSectorsSlugRoute
-  SiteServicesSlugRoute: typeof SiteServicesSlugRoute
-  SiteBlogsIndexRoute: typeof SiteBlogsIndexRoute
-  SiteCareersIndexRoute: typeof SiteCareersIndexRoute
-  SiteGalleryIndexRoute: typeof SiteGalleryIndexRoute
-  SiteProjectsIndexRoute: typeof SiteProjectsIndexRoute
-  SiteSectorsIndexRoute: typeof SiteSectorsIndexRoute
-  SiteServicesIndexRoute: typeof SiteServicesIndexRoute
+interface LandingArticlesRouteChildren {
+  LandingArticlesIdRoute: typeof LandingArticlesIdRoute
 }
 
-const SiteRouteChildren: SiteRouteChildren = {
-  SiteAboutRoute: SiteAboutRoute,
-  SiteContactRoute: SiteContactRoute,
-  SiteScheduleRoute: SiteScheduleRoute,
-  SiteIndexRoute: SiteIndexRoute,
-  SiteBlogsSlugRoute: SiteBlogsSlugRoute,
-  SiteCareersSlugRoute: SiteCareersSlugRoute,
-  SiteProjectsSlugRoute: SiteProjectsSlugRoute,
-  SiteSectorsSlugRoute: SiteSectorsSlugRoute,
-  SiteServicesSlugRoute: SiteServicesSlugRoute,
-  SiteBlogsIndexRoute: SiteBlogsIndexRoute,
-  SiteCareersIndexRoute: SiteCareersIndexRoute,
-  SiteGalleryIndexRoute: SiteGalleryIndexRoute,
-  SiteProjectsIndexRoute: SiteProjectsIndexRoute,
-  SiteSectorsIndexRoute: SiteSectorsIndexRoute,
-  SiteServicesIndexRoute: SiteServicesIndexRoute,
+const LandingArticlesRouteChildren: LandingArticlesRouteChildren = {
+  LandingArticlesIdRoute: LandingArticlesIdRoute,
 }
 
-const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
+const LandingArticlesRouteWithChildren = LandingArticlesRoute._addFileChildren(
+  LandingArticlesRouteChildren,
+)
+
+interface LandingCareerRouteChildren {
+  LandingCareerIdRoute: typeof LandingCareerIdRoute
+}
+
+const LandingCareerRouteChildren: LandingCareerRouteChildren = {
+  LandingCareerIdRoute: LandingCareerIdRoute,
+}
+
+const LandingCareerRouteWithChildren = LandingCareerRoute._addFileChildren(
+  LandingCareerRouteChildren,
+)
+
+interface LandingRouteChildren {
+  LandingAboutRoute: typeof LandingAboutRoute
+  LandingArticlesRoute: typeof LandingArticlesRouteWithChildren
+  LandingCareerRoute: typeof LandingCareerRouteWithChildren
+  LandingContactRoute: typeof LandingContactRoute
+  LandingGalleryRoute: typeof LandingGalleryRoute
+  LandingPrivacyPolicyRoute: typeof LandingPrivacyPolicyRoute
+  LandingTermsOfServiceRoute: typeof LandingTermsOfServiceRoute
+  LandingIndexRoute: typeof LandingIndexRoute
+  LandingSectorsSourcingLogisticsRoute: typeof LandingSectorsSourcingLogisticsRoute
+}
+
+const LandingRouteChildren: LandingRouteChildren = {
+  LandingAboutRoute: LandingAboutRoute,
+  LandingArticlesRoute: LandingArticlesRouteWithChildren,
+  LandingCareerRoute: LandingCareerRouteWithChildren,
+  LandingContactRoute: LandingContactRoute,
+  LandingGalleryRoute: LandingGalleryRoute,
+  LandingPrivacyPolicyRoute: LandingPrivacyPolicyRoute,
+  LandingTermsOfServiceRoute: LandingTermsOfServiceRoute,
+  LandingIndexRoute: LandingIndexRoute,
+  LandingSectorsSourcingLogisticsRoute: LandingSectorsSourcingLogisticsRoute,
+}
+
+const LandingRouteWithChildren =
+  LandingRoute._addFileChildren(LandingRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardIndexLazyRoute: typeof DashboardIndexLazyRoute
@@ -1792,7 +1706,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  SiteRoute: SiteRouteWithChildren,
+  LandingRoute: LandingRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
   ForbiddenLazyRoute: ForbiddenLazyRoute,
   LoginLazyRoute: LoginLazyRoute,

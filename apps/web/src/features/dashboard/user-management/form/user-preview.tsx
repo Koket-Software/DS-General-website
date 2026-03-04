@@ -24,9 +24,10 @@ export function UserPreview({
   headshotPreview,
 }: UserPreviewProps) {
   const roleStyles = {
-    admin: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-    blogger: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    user: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+    admin:
+      "bg-destructive/15 text-destructive dark:bg-destructive/25 dark:text-destructive-foreground",
+    blogger: "bg-info/15 text-info dark:bg-info/25 dark:text-info-foreground",
+    user: "bg-muted text-foreground/90 dark:bg-secondary dark:text-secondary-foreground",
   };
 
   const roleLabels = {
@@ -39,17 +40,17 @@ export function UserPreview({
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold mb-4">Preview</h2>
-        <div className="border rounded-lg p-6 space-y-4 bg-white dark:bg-gray-950">
+        <div className="border rounded-lg p-6 space-y-4 bg-background dark:bg-card">
           {/* Avatar */}
           <div className="flex items-center gap-4">
             {avatarPreview ? (
               <AppImage
                 src={avatarPreview}
                 alt={name || "User avatar"}
-                className="h-16 w-16 rounded-full object-cover border-2 border-gray-200"
+                className="h-16 w-16 rounded-full object-cover border-2 border-border"
               />
             ) : (
-              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-medium text-primary border-2 border-gray-200">
+              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-medium text-primary border-2 border-border">
                 {name ? name.charAt(0).toUpperCase() : "?"}
               </div>
             )}
@@ -83,8 +84,8 @@ export function UserPreview({
             <span
               className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                 emailVerified
-                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                  ? "bg-success/15 text-success dark:bg-success/25 dark:text-success-foreground"
+                  : "bg-warning/15 text-warning dark:bg-warning/25 dark:text-warning-foreground"
               }`}
             >
               {emailVerified ? "Verified" : "Unverified"}

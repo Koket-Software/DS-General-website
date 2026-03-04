@@ -43,6 +43,7 @@
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",
     "@lexical/html": "^0.38.2",
+    "@tanstack/react-devtools": "^0.9.9",
     "@tanstack/react-router": "^1.133.22",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.2",

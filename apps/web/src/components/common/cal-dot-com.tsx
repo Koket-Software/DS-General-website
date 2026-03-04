@@ -21,8 +21,8 @@ export default function CalDotCom() {
       cal("ui", {
         theme: "light",
         cssVarsPerTheme: {
-          light: { "cal-brand": "#628B35" },
-          dark: { "cal-brand": "#628B35" },
+          light: { "cal-brand": "#4962E1" },
+          dark: { "cal-brand": "#4962E1" },
         },
         hideEventTypeDetails: false,
         layout: "month_view",

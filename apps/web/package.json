@@ -14,7 +14,8 @@
     "start": "vite",
     "check-types": "tsc --noEmit",
     "generate-sitemap": "bun run scripts/generate-sitemap.ts",
-    "generate-sitemap:dynamic": "bun run scripts/generate-sitemap-with-data.ts"
+    "generate-sitemap:dynamic": "bun run scripts/generate-sitemap-with-data.ts",
+    "lint:ui-primitives": "bun run scripts/check-no-raw-interactive-tags.ts"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",

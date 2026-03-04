@@ -87,7 +87,7 @@ export default function UserDetail() {
   if (isError || !data?.data) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-lg text-red-600">
+        <div className="text-lg text-destructive">
           Failed to load user details. Please try again.
         </div>
       </div>
@@ -104,9 +104,10 @@ export default function UserDetail() {
       : "";
 
   const roleStyles = {
-    admin: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-    blogger: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    user: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+    admin:
+      "bg-destructive/15 text-destructive dark:bg-destructive/25 dark:text-destructive-foreground",
+    blogger: "bg-info/15 text-info dark:bg-info/25 dark:text-info-foreground",
+    user: "bg-muted text-foreground/90 dark:bg-secondary dark:text-secondary-foreground",
   };
   const roleLabels = {
     admin: "Admin",
@@ -154,17 +155,17 @@ export default function UserDetail() {
         </div>
 
         {/* User information card */}
-        <div className="border rounded-lg p-6 bg-white dark:bg-gray-950 space-y-6">
+        <div className="border rounded-lg p-6 bg-background dark:bg-card space-y-6">
           {/* Avatar and basic info */}
           <div className="flex items-start gap-6">
             {user.image ? (
               <AppImage
                 src={resolveImageUrl(user.image)}
                 alt={user.name}
-                className="h-24 w-24 rounded-full object-cover border-2 border-gray-200"
+                className="h-24 w-24 rounded-full object-cover border-2 border-border"
               />
             ) : (
-              <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center text-3xl font-medium text-primary border-2 border-gray-200">
+              <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center text-3xl font-medium text-primary border-2 border-border">
                 {user.name.charAt(0).toUpperCase()}
               </div>
             )}
@@ -180,15 +181,15 @@ export default function UserDetail() {
                 <div className="flex items-center gap-1">
                   {user.emailVerified ? (
                     <>
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-green-600">
+                      <CheckCircle2 className="h-4 w-4 text-success" />
+                      <span className="text-sm text-success">
                         Email Verified
                       </span>
                     </>
                   ) : (
                     <>
-                      <XCircle className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">
+                      <XCircle className="h-4 w-4 text-muted-foreground/75" />
+                      <span className="text-sm text-muted-foreground">
                         Email Not Verified
                       </span>
                     </>

@@ -8,9 +8,9 @@ export const Route = createLazyFileRoute("/forbidden")({
 function Forbidden() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
-      <AlertTriangle className="h-12 w-12 text-amber-500" />
+      <AlertTriangle className="h-12 w-12 text-warning" />
       <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-amber-600">
+        <p className="text-sm font-semibold uppercase tracking-wide text-warning">
           403 — Forbidden
         </p>
         <h1 className="text-2xl font-bold">You don&apos;t have access</h1>
@@ -21,7 +21,7 @@ function Forbidden() {
       </div>
       <Link
         to="/"
-        className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90"
+        className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90"
       >
         Go Home
       </Link>

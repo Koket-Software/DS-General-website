@@ -84,7 +84,7 @@ export const Columns = (
       return (
         <Badge
           variant={isHandled ? "default" : "secondary"}
-          className={`whitespace-nowrap ${isHandled ? "bg-green-600" : ""}`}
+          className={`whitespace-nowrap ${isHandled ? "bg-success" : ""}`}
         >
           {isHandled ? (
             <>

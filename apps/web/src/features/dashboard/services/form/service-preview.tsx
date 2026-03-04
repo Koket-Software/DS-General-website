@@ -26,14 +26,14 @@ export default function ServicePreview({
             {imagePreviews.map((src, index) => (
               <div
                 key={src + index}
-                className="relative aspect-video rounded-lg overflow-hidden bg-gray-200"
+                className="relative aspect-video rounded-lg overflow-hidden bg-muted/80"
               >
                 <AppImage
                   src={src}
                   alt={`Service image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
-                <span className="absolute bottom-1 left-1 text-[10px] bg-black/60 text-white px-1 rounded">
+                <span className="absolute bottom-1 left-1 text-[10px] bg-foreground/70 text-primary-foreground px-1 rounded">
                   #{index + 1}
                 </span>
               </div>

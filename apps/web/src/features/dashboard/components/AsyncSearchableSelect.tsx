@@ -83,7 +83,7 @@ export const AsyncSearchableSelect: React.FC<AsyncSearchableSelectProps> = ({
             placeholder={placeholder}
             onClick={() => setOpen(true)}
             className={cn(
-              "cursor-pointer bg-white pr-10",
+              "cursor-pointer bg-background pr-10",
               error && "border-destructive",
             )}
             disabled={disabled}

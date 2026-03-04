@@ -288,7 +288,7 @@ export function BusinessSectorForm({
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="sticky top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-8">
+      <div className="sticky top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-border bg-background p-8">
         <h1 className="text-2xl font-bold">
           {mode === "create"
             ? "Create Business Sector"
@@ -323,7 +323,7 @@ export function BusinessSectorForm({
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-full overflow-y-auto border-r border-gray-200 p-8 lg:w-2/3">
+        <div className="w-full overflow-y-auto border-r border-border p-8 lg:w-2/3">
           <form
             id="business-sector-form"
             onSubmit={(event) => {

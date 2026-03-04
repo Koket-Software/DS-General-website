@@ -1,6 +1,8 @@
 import { HelpCircle } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+
 const MARKDOWN_SHORTCUTS = [
   { syntax: "# ", description: "Heading 1" },
   { syntax: "## ", description: "Heading 2" },
@@ -22,7 +24,8 @@ export function MarkdownHelpTooltip() {
 
   return (
     <div className="relative">
-      <button
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         onBlur={() => setTimeout(() => setIsOpen(false), 200)}
@@ -31,7 +34,7 @@ export function MarkdownHelpTooltip() {
         aria-expanded={isOpen}
       >
         <HelpCircle className="h-4 w-4" />
-      </button>
+      </Button>
 
       {isOpen && (
         <div

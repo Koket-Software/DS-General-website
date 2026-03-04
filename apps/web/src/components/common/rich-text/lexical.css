@@ -36,7 +36,7 @@
 
 .lexical-editor code,
 .lexical-viewer code {
-  background-color: hsl(var(--muted));
+  background-color: var(--muted);
   padding: 0.125rem 0.375rem;
   font-family: "Menlo", "Consolas", "Monaco", monospace;
   font-size: 0.875rem;
@@ -45,7 +45,7 @@
 
 .lexical-editor pre,
 .lexical-viewer pre {
-  background-color: hsl(var(--muted));
+  background-color: var(--muted);
   padding: 1rem;
   margin: 1rem 0;
   border-radius: 0.5rem;
@@ -64,8 +64,8 @@
 .lexical-viewer blockquote {
   margin: 1rem 0;
   padding-left: 1rem;
-  border-left: 4px solid hsl(var(--border));
-  color: hsl(var(--muted-foreground));
+  border-left: 4px solid var(--border);
+  color: var(--muted-foreground);
   font-style: italic;
 }
 

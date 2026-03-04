@@ -93,7 +93,6 @@ export default function GalleryDetail() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <Button
-                variant="ghost"
                 onClick={() => navigate({ to: "/dashboard/gallery" })}
                 className="mb-2"
               >
@@ -147,7 +146,7 @@ export default function GalleryDetail() {
             {galleryImages.length > 1 && (
               <div className="grid grid-cols-4 gap-3">
                 {galleryImages.map((imageUrl, index) => (
-                  <button
+                  <Button
                     key={`${imageUrl}-${index}`}
                     type="button"
                     onClick={() => setActiveIndex(index)}
@@ -162,7 +161,7 @@ export default function GalleryDetail() {
                       alt={`${item.title} thumbnail ${index + 1}`}
                       className="h-20 w-full object-cover"
                     />
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}

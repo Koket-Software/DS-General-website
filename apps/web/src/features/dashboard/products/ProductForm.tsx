@@ -221,7 +221,7 @@ export function ProductForm({
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="p-8 flex items-center justify-between border-b border-gray-200 sticky top-0 left-0 right-0 bg-white">
+      <div className="p-8 flex items-center justify-between border-b border-border sticky top-0 left-0 right-0 bg-background">
         <h1 className="text-2xl font-bold">
           {mode === "create"
             ? "Create Product"
@@ -230,10 +230,7 @@ export function ProductForm({
               : "View Product"}
         </h1>
         <div className="flex gap-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/dashboard/products" })}
-          >
+          <Button onClick={() => navigate({ to: "/dashboard/products" })}>
             Back
           </Button>
           {mode !== "view" && (
@@ -250,7 +247,7 @@ export function ProductForm({
         </div>
       </div>
       <div className="flex flex-1">
-        <div className="w-full lg:w-1/2 p-8 border-r border-gray-200 overflow-y-auto">
+        <div className="w-full lg:w-1/2 p-8 border-r border-border overflow-y-auto">
           <form
             id="product-form"
             onSubmit={(e) => {
@@ -428,7 +425,7 @@ export function ProductForm({
             {selectedTags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {selectedTags.map((tag) => (
-                  <button
+                  <Button
                     key={tag.id}
                     type="button"
                     onClick={() =>
@@ -443,7 +440,7 @@ export function ProductForm({
                   >
                     <span className="mr-1">{tag.name}</span>
                     {!isReadOnly && <span aria-hidden>×</span>}
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -454,7 +451,7 @@ export function ProductForm({
         <div className="hidden lg:block lg:w-1/2 p-8 overflow-y-auto bg-muted/30">
           <div className="space-y-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground border-b pb-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse" />
               Live Preview
             </div>
 
@@ -468,14 +465,14 @@ export function ProductForm({
                   {currentPreviews.map((src, index) => (
                     <div
                       key={src + index}
-                      className="relative aspect-video rounded-lg overflow-hidden bg-gray-200"
+                      className="relative aspect-video rounded-lg overflow-hidden bg-muted/80"
                     >
                       <AppImage
                         src={src}
                         alt={`Product image ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
-                      <span className="absolute bottom-1 left-1 text-[10px] bg-black/60 text-white px-1 rounded">
+                      <span className="absolute bottom-1 left-1 text-[10px] bg-foreground/70 text-primary-foreground px-1 rounded">
                         #{index + 1}
                       </span>
                     </div>
@@ -493,9 +490,11 @@ export function ProductForm({
               <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Title
               </h4>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-foreground">
                 {form.state.values.title || (
-                  <span className="text-gray-400 italic">Enter a title...</span>
+                  <span className="text-muted-foreground/75 italic">
+                    Enter a title...
+                  </span>
                 )}
               </h2>
             </div>
@@ -506,7 +505,9 @@ export function ProductForm({
                 <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                   Overview
                 </h4>
-                <p className="text-gray-600">{form.state.values.overview}</p>
+                <p className="text-muted-foreground">
+                  {form.state.values.overview}
+                </p>
               </div>
             )}
 
@@ -552,11 +553,11 @@ export function ProductForm({
                 Description
               </h4>
               {form.state.values.description ? (
-                <div className="prose prose-sm max-w-none text-gray-700">
+                <div className="prose prose-sm max-w-none text-foreground/80">
                   <LexicalViewer content={form.state.values.description} />
                 </div>
               ) : (
-                <p className="text-gray-400 italic text-sm">
+                <p className="text-muted-foreground/75 italic text-sm">
                   Write a description...
                 </p>
               )}

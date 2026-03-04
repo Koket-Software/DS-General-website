@@ -98,14 +98,14 @@ export function SectorServicesManager({
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     {!isReadOnly && (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => moveUp(index)}
                         disabled={index === 0}
                         className="transition-colors hover:text-foreground disabled:opacity-30"
                       >
                         <GripVertical className="h-4 w-4" />
-                      </button>
+                      </Button>
                     )}
                     <span>Service #{index + 1}</span>
                   </div>
@@ -113,7 +113,6 @@ export function SectorServicesManager({
                   {!isReadOnly && (
                     <Button
                       type="button"
-                      variant="ghost"
                       size="icon"
                       onClick={() => removeService(index)}
                     >

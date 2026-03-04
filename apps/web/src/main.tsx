@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import Loader from "./components/loader";
 import { routeTree } from "./routeTree.gen";
 
+import { ThemeProvider } from "@/context/theme-context";
 import { installRateLimitHandler } from "@/lib/rate-limit-tracker";
 
 installRateLimitHandler();
@@ -53,9 +54,11 @@ export const queryClient = new QueryClient({
 function App() {
   return (
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>
   );
 }

@@ -22,12 +22,12 @@ export function DeleteDialog({
 
   return (
     <div className="fixed inset-0 bg-black/32 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-lg">
+      <div className="bg-background rounded-2xl p-6 max-w-md w-full shadow-lg">
         <div className="flex items-center gap-2 mb-4">
-          <AlertTriangle className="w-6 h-6 text-red-500" />
+          <AlertTriangle className="w-6 h-6 text-destructive" />
           <h2 className="text-lg font-semibold">Confirm Deletion </h2>
         </div>
-        <p className="text-gray-600 mb-6">
+        <p className="text-muted-foreground mb-6">
           Are you sure you want to delete this item? This action cannot be
           undone.
         </p>

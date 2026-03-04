@@ -37,9 +37,9 @@ export const BRAND_SEO_CONFIG: BrandSeoConfig = buildBrandSeoConfig({
   brandPrimary:
     getEnvValue("VITE_BRAND_PRIMARY") ||
     getEnvValue("VITE_THEME_COLOR") ||
-    "#0600ab",
-  brandSecondary: getEnvValue("VITE_BRAND_SECONDARY") || "#0f172a",
-  brandAccent: getEnvValue("VITE_BRAND_ACCENT") || "#2dd4bf",
+    "#4962E1",
+  brandSecondary: getEnvValue("VITE_BRAND_SECONDARY") || "#1D1D1D",
+  brandAccent: getEnvValue("VITE_BRAND_ACCENT") || "#F6F7FD",
   logoPath: getEnvValue("VITE_SITE_LOGO_PATH") || "/favicon.ico",
   keywords: parseKeywords(getEnvValue("VITE_SITE_KEYWORDS")) || [
     ...SITE.keywords,

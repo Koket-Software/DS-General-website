@@ -57,6 +57,8 @@ import { FONT_FAMILY_OPTIONS, FONT_SIZE_OPTIONS, useFont } from "./FontPlugin";
 import { INSERT_IMAGE_COMMAND, INSERT_VIDEO_COMMAND } from "./ImagesPlugin";
 import { MarkdownHelpTooltip } from "./MarkdownHelpTooltip";
 
+import { Button } from "@/components/ui/button";
+
 const LowPriority = 1;
 
 function Divider() {
@@ -399,7 +401,8 @@ export function ToolbarPlugin() {
 
   return (
     <div className="border-border bg-muted/30 flex flex-wrap items-center gap-1 border-b p-2">
-      <button
+      <Button
+        variant="ghost"
         type="button"
         disabled={!canUndo}
         onClick={() => {
@@ -422,8 +425,9 @@ export function ToolbarPlugin() {
           <path d="M3 7v6h6" />
           <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
         </svg>
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         disabled={!canRedo}
         onClick={() => {
@@ -446,13 +450,14 @@ export function ToolbarPlugin() {
           <path d="M21 7v6h-6" />
           <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
         </svg>
-      </button>
+      </Button>
 
       <Divider />
 
       {/* Font Family Dropdown */}
       <div className="relative" ref={fontFamilyRef}>
-        <button
+        <Button
+          variant="ghost"
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => {
@@ -467,11 +472,12 @@ export function ToolbarPlugin() {
               "Default"}
           </span>
           <ChevronDown className="h-3 w-3" />
-        </button>
+        </Button>
         {showFontFamilyDropdown && (
           <div className="absolute top-full left-0 z-50 mt-1 max-h-64 w-48 overflow-y-auto rounded-md border bg-popover p-1 shadow-md">
             {FONT_FAMILY_OPTIONS.map((option) => (
-              <button
+              <Button
+                variant="ghost"
                 key={option.value}
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
@@ -482,7 +488,7 @@ export function ToolbarPlugin() {
                 style={{ fontFamily: option.value }}
               >
                 {option.label}
-              </button>
+              </Button>
             ))}
           </div>
         )}
@@ -490,7 +496,8 @@ export function ToolbarPlugin() {
 
       {/* Font Size Dropdown */}
       <div className="relative" ref={fontSizeRef}>
-        <button
+        <Button
+          variant="ghost"
           type="button"
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => {
@@ -502,11 +509,12 @@ export function ToolbarPlugin() {
         >
           <span>{fontSize.replace("px", "")}</span>
           <ChevronDown className="h-3 w-3" />
-        </button>
+        </Button>
         {showFontSizeDropdown && (
           <div className="absolute top-full left-0 z-50 mt-1 max-h-64 w-20 overflow-y-auto rounded-md border bg-popover p-1 shadow-md">
             {FONT_SIZE_OPTIONS.map((option) => (
-              <button
+              <Button
+                variant="ghost"
                 key={option.value}
                 type="button"
                 onMouseDown={(e) => e.preventDefault()}
@@ -516,7 +524,7 @@ export function ToolbarPlugin() {
                 }`}
               >
                 {option.label}
-              </button>
+              </Button>
             ))}
           </div>
         )}
@@ -524,127 +532,141 @@ export function ToolbarPlugin() {
 
       <Divider />
 
-      <button
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatText("bold")}
         className={`hover:bg-muted rounded p-2 ${isBold ? "bg-muted" : ""}`}
         aria-label="Format Bold"
       >
         <Bold className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatText("italic")}
         className={`hover:bg-muted rounded p-2 ${isItalic ? "bg-muted" : ""}`}
         aria-label="Format Italic"
       >
         <Italic className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatText("underline")}
         className={`hover:bg-muted rounded p-2 ${isUnderline ? "bg-muted" : ""}`}
         aria-label="Format Underline"
       >
         <Underline className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatText("strikethrough")}
         className={`hover:bg-muted rounded p-2 ${isStrikethrough ? "bg-muted" : ""}`}
         aria-label="Format Strikethrough"
       >
         <Strikethrough className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatText("code")}
         className={`hover:bg-muted rounded p-2 ${isCode ? "bg-muted" : ""}`}
         aria-label="Format Code"
       >
         <Code className="h-4 w-4" />
-      </button>
+      </Button>
 
       <Divider />
 
-      <button
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatHeading("h1")}
         className={`hover:bg-muted rounded p-2 ${blockType === "h1" ? "bg-muted" : ""}`}
         aria-label="Heading 1"
       >
         <Heading1 className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatHeading("h2")}
         className={`hover:bg-muted rounded p-2 ${blockType === "h2" ? "bg-muted" : ""}`}
         aria-label="Heading 2"
       >
         <Heading2 className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={() => formatHeading("h3")}
         className={`hover:bg-muted rounded p-2 ${blockType === "h3" ? "bg-muted" : ""}`}
         aria-label="Heading 3"
       >
         <Heading3 className="h-4 w-4" />
-      </button>
+      </Button>
 
       <Divider />
 
-      <button
+      <Button
+        variant="ghost"
         type="button"
         onClick={formatBulletList}
         className={`hover:bg-muted rounded p-2 ${blockType === "bullet" ? "bg-muted" : ""}`}
         aria-label="Bullet List"
       >
         <List className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={formatNumberedList}
         className={`hover:bg-muted rounded p-2 ${blockType === "number" ? "bg-muted" : ""}`}
         aria-label="Numbered List"
       >
         <ListOrdered className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={formatQuote}
         className={`hover:bg-muted rounded p-2 ${blockType === "quote" ? "bg-muted" : ""}`}
         aria-label="Quote"
       >
         <Quote className="h-4 w-4" />
-      </button>
+      </Button>
 
       <Divider />
 
-      <button
+      <Button
+        variant="ghost"
         type="button"
         onClick={insertLink}
         className={`hover:bg-muted rounded p-2 ${isLink ? "bg-muted" : ""}`}
         aria-label={isLink ? "Remove Link" : "Insert Link"}
       >
         <LinkIcon className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={insertImage}
         className="hover:bg-muted rounded p-2"
         aria-label="Insert Image"
       >
         <ImageIcon className="h-4 w-4" />
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="ghost"
         type="button"
         onClick={insertVideo}
         className="hover:bg-muted rounded p-2"
         aria-label="Insert Video"
       >
         <VideoIcon className="h-4 w-4" />
-      </button>
+      </Button>
 
       <Divider />
 

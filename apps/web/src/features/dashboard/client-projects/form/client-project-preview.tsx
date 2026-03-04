@@ -46,14 +46,14 @@ export default function ClientProjectPreview({
             {imagePreviews.map((src, index) => (
               <div
                 key={src + index}
-                className="relative aspect-video rounded-lg overflow-hidden bg-gray-200"
+                className="relative aspect-video rounded-lg overflow-hidden bg-muted/80"
               >
                 <AppImage
                   src={src}
                   alt={`Project image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
-                <span className="absolute bottom-1 left-1 text-[10px] bg-black/60 text-white px-1 rounded">
+                <span className="absolute bottom-1 left-1 text-[10px] bg-foreground/70 text-primary-foreground px-1 rounded">
                   #{index + 1}
                 </span>
               </div>
@@ -73,7 +73,7 @@ export default function ClientProjectPreview({
       {overview && (
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Overview</h3>
-          <p className="text-base text-gray-700">{overview}</p>
+          <p className="text-base text-foreground/80">{overview}</p>
         </div>
       )}
 
@@ -110,28 +110,28 @@ export default function ClientProjectPreview({
       {projectScope && (
         <div className="space-y-1">
           <h4 className="text-xs uppercase text-muted-foreground">Scope</h4>
-          <p className="text-sm text-gray-700">{projectScope}</p>
+          <p className="text-sm text-foreground/80">{projectScope}</p>
         </div>
       )}
 
       {impact && (
         <div className="space-y-1">
           <h4 className="text-xs uppercase text-muted-foreground">Impact</h4>
-          <p className="text-sm text-gray-700">{impact}</p>
+          <p className="text-sm text-foreground/80">{impact}</p>
         </div>
       )}
 
       {problem && (
         <div className="space-y-1">
           <h4 className="text-xs uppercase text-muted-foreground">Problem</h4>
-          <p className="text-sm text-gray-700">{problem}</p>
+          <p className="text-sm text-foreground/80">{problem}</p>
         </div>
       )}
 
       {process && (
         <div className="space-y-1">
           <h4 className="text-xs uppercase text-muted-foreground">Process</h4>
-          <p className="text-sm text-gray-700">{process}</p>
+          <p className="text-sm text-foreground/80">{process}</p>
         </div>
       )}
 
@@ -140,14 +140,14 @@ export default function ClientProjectPreview({
           <h4 className="text-xs uppercase text-muted-foreground">
             Deliverable
           </h4>
-          <p className="text-sm text-gray-700">{deliverable}</p>
+          <p className="text-sm text-foreground/80">{deliverable}</p>
         </div>
       )}
 
       {/* Rich content viewer placeholders */}
       <div className="space-y-1">
         <h4 className="text-xs uppercase text-muted-foreground">Rich Notes</h4>
-        <div className="prose prose-sm max-w-none text-gray-700">
+        <div className="prose prose-sm max-w-none text-foreground/80">
           <LexicalViewer content={overview || ""} />
         </div>
       </div>

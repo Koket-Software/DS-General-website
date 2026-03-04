@@ -134,8 +134,10 @@ main() {
     # Run database migrations
     print_step "Pushing database schema..."
     cd packages/db
+    set +e
     DB_PUSH_OUTPUT=$(bun run db:push 2>&1)
     DB_PUSH_EXIT_CODE=$?
+    set -e
     
     # Check for both exit code and error patterns in output
     if [ $DB_PUSH_EXIT_CODE -ne 0 ] || echo "$DB_PUSH_OUTPUT" | grep -qiE "(error:|password authentication failed|connection refused|ECONNREFUSED)"; then
@@ -154,8 +156,10 @@ main() {
     # Seed database
     print_step "Seeding database with sample data..."
     cd packages/db
+    set +e
     SEED_OUTPUT=$(bun run db:seed 2>&1)
     SEED_EXIT_CODE=$?
+    set -e
     
     if [ $SEED_EXIT_CODE -ne 0 ] || echo "$SEED_OUTPUT" | grep -qiE "(error:|password authentication failed|connection refused)"; then
         echo "$SEED_OUTPUT"

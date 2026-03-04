@@ -22,10 +22,10 @@ export function ProgressiveBlur({
       className={cn("pointer-events-none absolute z-10", className)}
       style={{
         background: `linear-gradient(${gradientMap[direction]},
-          rgba(255, 255, 255, 0.32) 0%,
-          rgba(255, 255, 255, 0.18) 18%,
-          rgba(255, 255, 255, 0.06) 34%,
-          rgba(255, 255, 255, 0) 52%)`,
+          oklch(from var(--background) l c h / 0.32) 0%,
+          oklch(from var(--background) l c h / 0.18) 18%,
+          oklch(from var(--background) l c h / 0.06) 34%,
+          oklch(from var(--background) l c h / 0) 52%)`,
       }}
     />
   );

@@ -89,20 +89,19 @@ export function SectorGalleryManager({
               >
                 <div className="mb-2 flex items-center justify-between">
                   {!isReadOnly && (
-                    <button
+                    <Button
                       type="button"
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
                       className="text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"
                     >
                       <GripVertical className="h-4 w-4" />
-                    </button>
+                    </Button>
                   )}
 
                   {!isReadOnly && (
                     <Button
                       type="button"
-                      variant="ghost"
                       size="icon"
                       onClick={() => removeImage(index)}
                     >

@@ -250,7 +250,7 @@ export function GalleryImagesManager({
     <div className="space-y-4 rounded-xl border bg-card p-4">
       <div className="flex items-center justify-between">
         <FieldLabel>
-          Images <span className="text-red-500">*</span>
+          Images <span className="text-destructive">*</span>
         </FieldLabel>
 
         {!isReadOnly && (
@@ -279,7 +279,7 @@ export function GalleryImagesManager({
             </Button>
 
             {allowBulkAdd && (
-              <input
+              <Input
                 ref={bulkFileInputRef}
                 type="file"
                 accept={ACCEPTED_IMAGE_MIME_TYPES.join(",")}
@@ -307,14 +307,16 @@ export function GalleryImagesManager({
               >
                 {!isReadOnly && (
                   <div className="flex flex-col justify-center">
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
                       className="text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
                     >
                       <GripVertical className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </div>
                 )}
 

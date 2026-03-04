@@ -280,7 +280,7 @@ export function VacancyForm({
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="flex items-center justify-between border-b border-gray-200 bg-white p-8">
+      <div className="flex items-center justify-between border-b border-border bg-background p-8">
         <h1 className="text-2xl font-bold">
           {mode === "create"
             ? "Create Vacancy"
@@ -300,10 +300,7 @@ export function VacancyForm({
               </Button>
             </Link>
           )}
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/dashboard/vacancies" })}
-          >
+          <Button onClick={() => navigate({ to: "/dashboard/vacancies" })}>
             Back
           </Button>
           {mode !== "view" && (
@@ -318,7 +315,7 @@ export function VacancyForm({
         </div>
       </div>
       <div className="flex flex-1">
-        <div className="w-full lg:w-1/2 overflow-y-auto border-r border-gray-200 p-8">
+        <div className="w-full lg:w-1/2 overflow-y-auto border-r border-border p-8">
           <form
             id="vacancy-form"
             onSubmit={(e) => {
@@ -765,7 +762,7 @@ export function VacancyForm({
               {(form.state.values.tagIds?.length ?? 0) > 0 && (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {selectedTags.map((tag) => (
-                    <button
+                    <Button
                       key={tag.id}
                       type="button"
                       onClick={() => {
@@ -780,7 +777,7 @@ export function VacancyForm({
                     >
                       <span>{tag.name}</span>
                       {!isReadOnly && <span aria-hidden>×</span>}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}

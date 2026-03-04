@@ -59,7 +59,7 @@ export const SITE = {
   locale: "en_US",
 
   /** Primary theme color (used in meta tags, PWA) */
-  themeColor: "#0600ab",
+  themeColor: "#4962E1",
 
   /** Keywords for SEO */
   keywords: [

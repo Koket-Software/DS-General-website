@@ -273,7 +273,7 @@ export function ClientProjectForm({
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="p-8 flex items-center justify-between border-b border-gray-200 sticky top-0 left-0 right-0 bg-white">
+      <div className="p-8 flex items-center justify-between border-b border-border sticky top-0 left-0 right-0 bg-background">
         <h1 className="text-2xl font-bold">
           {mode === "create"
             ? "Create Client Project"
@@ -283,7 +283,6 @@ export function ClientProjectForm({
         </h1>
         <div className="flex gap-4">
           <Button
-            variant="ghost"
             onClick={() => navigate({ to: "/dashboard/client-projects" })}
           >
             Back
@@ -306,7 +305,7 @@ export function ClientProjectForm({
         </div>
       </div>
       <div className="flex flex-1">
-        <div className="w-full lg:w-1/2 p-8 border-r border-gray-200 overflow-y-auto">
+        <div className="w-full lg:w-1/2 p-8 border-r border-border overflow-y-auto">
           <form
             id="client-project-form"
             onSubmit={(e) => {
@@ -500,7 +499,7 @@ export function ClientProjectForm({
               {selectedTags.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {selectedTags.map((tag) => (
-                    <button
+                    <Button
                       key={tag.id}
                       type="button"
                       onClick={() =>
@@ -517,7 +516,7 @@ export function ClientProjectForm({
                     >
                       <span>{tag.name}</span>
                       {!isReadOnly && <span aria-hidden>×</span>}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}

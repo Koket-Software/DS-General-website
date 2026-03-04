@@ -15,7 +15,11 @@ export function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    const themeColor = theme === "dark" ? "#020817" : "#fff";
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    const effectiveDark = theme === "system" ? prefersDark : theme === "dark";
+    const themeColor = effectiveDark ? "#0E132A" : "#FFFFFF";
     const metaThemeColor = document.querySelector("meta[name='theme-color']");
     if (metaThemeColor) metaThemeColor.setAttribute("content", themeColor);
   }, [theme]);

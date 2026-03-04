@@ -10,7 +10,7 @@ export default function BookACall() {
   return (
     <section className="w-full py-16">
       <div className="max-w-6xl mx-auto">
-        <div className="relative bg-gradient-to-br from-primary to-primary/90 rounded-2xl py-16 md:py-24 px-8 text-center text-white overflow-hidden">
+        <div className="relative bg-gradient-to-br from-primary to-primary/90 rounded-2xl py-16 md:py-24 px-8 text-center text-primary-foreground overflow-hidden">
           {/* Decorative Background Pattern */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
             <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/90" />
@@ -36,14 +36,14 @@ export default function BookACall() {
             />
 
             {/* Subheading */}
-            <p className="text-sm md:text- text-white/90 mb-8 max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm md:text- text-primary-foreground/90 mb-8 max-w-xl mx-auto leading-relaxed">
               Experience World-Class Software, Construction, And Design
               Delivered At Startup Speed. Schedule A Call Today.
             </p>
 
             {/* Primary CTA Button (Shadcn Button) */}
             <Link
-              to="/schedule"
+              to="/contact"
               className="mb-4"
               onClick={() =>
                 window.scrollTo({
@@ -54,7 +54,7 @@ export default function BookACall() {
             >
               <Button
                 variant="secondary"
-                className="bg-white text-primary px-6 py-3 rounded-full font-semibold inline-flex items-center gap-2 hover:bg-primary-foreground/95 transition-colors duration-300 hover:shadow-lg cursor-pointer hover:scale-103"
+                className="bg-background text-primary px-6 py-3 rounded-full font-semibold inline-flex items-center gap-2 hover:bg-primary-foreground/95 transition-colors duration-300 hover:shadow-lg cursor-pointer hover:scale-103"
               >
                 <AppImage
                   src={googleMeet}
@@ -66,7 +66,7 @@ export default function BookACall() {
             </Link>
 
             {/* "Or" Divider */}
-            <p className="text-white/70 text-sm my-2">Or</p>
+            <p className="text-primary-foreground/70 text-sm my-2">Or</p>
 
             {/* Secondary Link */}
             <Link
@@ -77,7 +77,7 @@ export default function BookACall() {
                   behavior: "smooth",
                 })
               }
-              className="text-white underline underline-offset-2 hover:text-white/80 transition-colors text-sm cursor-pointer"
+              className="text-primary-foreground underline underline-offset-2 hover:text-primary-foreground/80 transition-colors text-sm cursor-pointer"
             >
               Request a service quote
             </Link>

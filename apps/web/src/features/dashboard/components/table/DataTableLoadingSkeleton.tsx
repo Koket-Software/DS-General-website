@@ -21,8 +21,8 @@ export function DataTableLoadingSkeleton<TData, TValue>({
           className={
             "h-12 py-4" +
             `${
-              rowIndex % 2 === 0 ? "bg-white" : "bg-gray-100"
-            } hover:bg-gray-50 border-0`
+              rowIndex % 2 === 0 ? "bg-background" : "bg-muted"
+            } hover:bg-muted/50 border-0`
           }
         >
           {columns.map((_, colIndex) => (
@@ -33,7 +33,7 @@ export function DataTableLoadingSkeleton<TData, TValue>({
                 colIndex === columns.length - 1 && "rounded-r-2xl",
               )}
             >
-              <Skeleton className="h-4 w-[80%] bg-gray-300" />
+              <Skeleton className="h-4 w-[80%] bg-muted-foreground/20" />
             </TableCell>
           ))}
         </TableRow>

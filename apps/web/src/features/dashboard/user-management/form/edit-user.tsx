@@ -21,7 +21,7 @@ export default function EditUser() {
   if (isError || !data?.data) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-lg text-red-600">
+        <div className="text-lg text-destructive">
           Failed to load user data. Please try again.
         </div>
       </div>

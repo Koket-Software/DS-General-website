@@ -62,46 +62,52 @@ export function getDefaultRoutes(): SitemapUrl[] {
       priority: 1.0,
     },
     {
-      loc: "/about-us",
-      lastmod: today,
-      changefreq: "monthly",
-      priority: 0.8,
-    },
-    {
-      loc: "/services",
+      loc: "/about",
       lastmod: today,
       changefreq: "weekly",
       priority: 0.9,
     },
     {
-      loc: "/products",
-      lastmod: today,
-      changefreq: "weekly",
-      priority: 0.9,
-    },
-    {
-      loc: "/projects",
+      loc: "/articles",
       lastmod: today,
       changefreq: "weekly",
       priority: 0.8,
     },
     {
-      loc: "/blogs",
+      loc: "/career",
       lastmod: today,
-      changefreq: "daily",
-      priority: 0.7,
+      changefreq: "weekly",
+      priority: 0.8,
     },
     {
-      loc: "/contact-us",
+      loc: "/contact",
+      lastmod: today,
+      changefreq: "weekly",
+      priority: 0.8,
+    },
+    {
+      loc: "/gallery",
+      lastmod: today,
+      changefreq: "weekly",
+      priority: 0.8,
+    },
+    {
+      loc: "/sectors/sourcing-logistics",
       lastmod: today,
       changefreq: "monthly",
       priority: 0.7,
     },
     {
-      loc: "/schedule-a-call",
+      loc: "/privacy-policy",
       lastmod: today,
-      changefreq: "monthly",
-      priority: 0.6,
+      changefreq: "yearly",
+      priority: 0.3,
+    },
+    {
+      loc: "/terms-of-service",
+      lastmod: today,
+      changefreq: "yearly",
+      priority: 0.3,
     },
   ];
 }
@@ -128,24 +134,30 @@ export async function generateFullSitemap(
     products?: Array<{ slug: string; updatedAt?: Date | string }>;
     projects?: Array<{ slug: string; updatedAt?: Date | string }>;
     blogs?: Array<{ slug: string; updatedAt?: Date | string }>;
+    extraRoutes?: SitemapUrl[];
     prettyPrint?: boolean;
   },
 ): Promise<string> {
   const routes: SitemapUrl[] = [...getDefaultRoutes()];
 
-  if (options?.products) {
+  if (options?.extraRoutes?.length) {
+    routes.push(...options.extraRoutes);
+  }
+
+  // Legacy dynamic sections are optional and only included when explicitly passed.
+  if (options?.products?.length) {
     routes.push(
       ...getDynamicRoutes(options.products, "/products", "weekly", 0.8),
     );
   }
 
-  if (options?.projects) {
+  if (options?.projects?.length) {
     routes.push(
       ...getDynamicRoutes(options.projects, "/projects", "monthly", 0.7),
     );
   }
 
-  if (options?.blogs) {
+  if (options?.blogs?.length) {
     routes.push(...getDynamicRoutes(options.blogs, "/blogs", "daily", 0.6));
   }
 

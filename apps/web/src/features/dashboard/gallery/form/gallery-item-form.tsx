@@ -175,7 +175,7 @@ export function GalleryItemForm({
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="sticky top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-8">
+      <div className="sticky top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-border bg-background p-8">
         <h1 className="text-2xl font-bold">
           {mode === "create"
             ? "Add Gallery Entry"
@@ -206,7 +206,7 @@ export function GalleryItemForm({
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-full overflow-y-auto border-r border-gray-200 p-8 lg:w-1/2">
+        <div className="w-full overflow-y-auto border-r border-border p-8 lg:w-1/2">
           <form
             id="gallery-form"
             onSubmit={(event) => {
@@ -224,7 +224,7 @@ export function GalleryItemForm({
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>
-                      Title <span className="text-red-500">*</span>
+                      Title <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Input
                       id={field.name}
@@ -254,7 +254,7 @@ export function GalleryItemForm({
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel>
-                      Category <span className="text-red-500">*</span>
+                      Category <span className="text-destructive">*</span>
                     </FieldLabel>
                     <Select
                       value={

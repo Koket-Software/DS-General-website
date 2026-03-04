@@ -105,10 +105,11 @@ export const Columns = (
     cell: ({ row }) => {
       const role = row.getValue("role") as User["role"];
       const roleStyles = {
-        admin: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+        admin:
+          "bg-destructive/15 text-destructive dark:bg-destructive/25 dark:text-destructive-foreground",
         blogger:
-          "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-        user: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+          "bg-info/15 text-info dark:bg-info/25 dark:text-info-foreground",
+        user: "bg-muted text-foreground/90 dark:bg-secondary dark:text-secondary-foreground",
       };
       const roleLabels = {
         admin: "Admin",
@@ -138,9 +139,9 @@ export const Columns = (
       return (
         <div className="flex items-center">
           {verified ? (
-            <CheckCircle2 className="h-5 w-5 text-green-600" />
+            <CheckCircle2 className="h-5 w-5 text-success" />
           ) : (
-            <XCircle className="h-5 w-5 text-gray-400" />
+            <XCircle className="h-5 w-5 text-muted-foreground/75" />
           )}
         </div>
       );

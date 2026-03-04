@@ -158,7 +158,7 @@ export function AmharicLetterAnimation({
   maxSize = 48,
   minDuration = 3,
   maxDuration = 8,
-  color = "rgb(98 139 53 / 0.06)",
+  color = "oklch(from var(--primary) l c h / 0.06)",
   className = "",
   style,
 }: AmharicLetterAnimationProps) {

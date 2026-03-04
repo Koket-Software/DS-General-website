@@ -43,7 +43,7 @@ export const PageHero: React.FC<PageHeroProps> = ({
         maxSize={24}
         minDuration={2}
         maxDuration={12}
-        color="rgb(98 139 53/0.2)"
+        color="oklch(from var(--primary) l c h / 0.2)"
         className="translate-y-[-20px] z-10"
       />
 

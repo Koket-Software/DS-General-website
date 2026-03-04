@@ -1,66 +1,80 @@
-import { useNavigate, Link, createLazyFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/api-base";
 import { authClient } from "@/lib/auth-client";
+import { useAppForm } from "@/lib/forms";
 
 export const Route = createLazyFileRoute("/register")({
   component: RegisterPage,
 });
 
+type RegisterFormValues = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 function RegisterPage() {
   const navigate = useNavigate();
   const { data: session, isPending } = authClient.useSession();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+
+  const form = useAppForm<RegisterFormValues>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    onSubmit: async ({ value }) => {
+      if (isPending || isSubmitting) return;
+      setIsSubmitting(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/v1/auth/sign-up/email`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: value.email,
+              password: value.password,
+              name: value.name,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => null);
+          const message =
+            payload?.error?.message || payload?.message || "Failed to register";
+          throw new Error(message);
+        }
+
+        await authClient.getSession();
+        navigate({ to: "/dashboard" });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to register");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+  });
 
   useEffect(() => {
     if (session) {
       navigate({ to: "/dashboard" });
     }
   }, [session, navigate]);
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (isPending || isSubmitting) return;
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/v1/auth/sign-up/email`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password, name }),
-        },
-      );
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        const message =
-          payload?.error?.message || payload?.message || "Failed to register";
-        throw new Error(message);
-      }
-
-      await authClient.getSession();
-      navigate({ to: "/dashboard" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to register");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleGoogleSignIn = async () => {
     if (isPending || isGoogleSubmitting) return;
@@ -87,7 +101,9 @@ function RegisterPage() {
             Register with your email to access the dashboard.
           </p>
         </div>
+
         {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+
         <div className="mt-6">
           <Button
             type="button"
@@ -104,47 +120,74 @@ function RegisterPage() {
             <span className="h-px flex-1 bg-border" />
           </div>
         </div>
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <Field>
-            <FieldLabel htmlFor="name">Full Name</FieldLabel>
-            <Input
-              id="name"
-              type="text"
-              autoComplete="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              required
-              disabled={isSubmitting}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="email">Work Email</FieldLabel>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              disabled={isSubmitting}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              disabled={isSubmitting}
-            />
-          </Field>
+
+        <form
+          className="mt-8 space-y-5"
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.Field name="name">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
+                <Input
+                  id={field.name}
+                  type="text"
+                  autoComplete="name"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  required
+                  disabled={isSubmitting}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <form.Field name="email">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Work Email</FieldLabel>
+                <Input
+                  id={field.name}
+                  type="email"
+                  autoComplete="email"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  required
+                  disabled={isSubmitting}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <form.Field name="password">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                <Input
+                  id={field.name}
+                  type="password"
+                  autoComplete="new-password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  required
+                  disabled={isSubmitting}
+                />
+              </Field>
+            )}
+          </form.Field>
+
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Creating account..." : "Create Account"}
           </Button>
         </form>
+
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Already have an account?{" "}
           <Link to="/login" className="font-medium text-primary">

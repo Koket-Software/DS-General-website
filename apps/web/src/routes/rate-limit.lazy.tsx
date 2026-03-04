@@ -7,6 +7,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   useRateLimitEvents,
   type RateLimitEvent,
@@ -23,21 +24,21 @@ function RateLimitPage() {
   const uniquePaths = new Set(events.map((event) => event.path));
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.25),_transparent_55%)]" />
-        <div className="absolute inset-0 backdrop-blur-3xl bg-[rgba(6,11,25,0.85)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/15 via-background/85 to-background" />
+        <div className="absolute inset-0 backdrop-blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-6 py-12">
         <header className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-400">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-info">
             Error 429
           </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             You&apos;re on fire! 🔥
           </h1>
-          <p className="mt-3 text-base text-slate-300 md:text-lg">
+          <p className="mt-3 text-base text-muted-foreground/90 md:text-lg">
             We&apos;ve temporarily paused requests because the system detected a
             spike in traffic from your session. Take a breather, then try
             again—your progress is safe.
@@ -54,9 +55,9 @@ function RateLimitPage() {
             <TimelineCard events={events} />
           </div>
         ) : (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-slate-200">
+          <div className="rounded-3xl border border-border/10 bg-background/5 p-8 text-center text-muted-foreground/85">
             <p className="text-lg font-semibold">No rate limit events yet</p>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-muted-foreground/75">
               When a 429 error happens we&apos;ll capture the details here so
               you can share them with support.
             </p>
@@ -66,19 +67,20 @@ function RateLimitPage() {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-200"
+            className="inline-flex items-center gap-2 rounded-full bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to safety
           </Link>
-          <button
+          <Button
+            variant="ghost"
             type="button"
-            className="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/60 hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-full border border-border/30 px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-border/60 hover:bg-background/10"
             onClick={() => window.location.reload()}
           >
             <RefreshCcw className="h-4 w-4" />
             Retry request
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -95,16 +97,16 @@ function HeroCard({
   unique: number;
 }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-6 shadow-2xl">
+    <div className="rounded-3xl border border-border/10 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-2xl">
       <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-300">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-destructive/20 text-destructive">
           <TriangleAlert className="h-6 w-6" />
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-rose-300">
+          <p className="text-sm font-semibold uppercase tracking-wide text-destructive">
             Latest spike
           </p>
-          <p className="text-xl font-semibold text-white">
+          <p className="text-xl font-semibold text-foreground">
             {new Date(event.timestamp).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
@@ -122,7 +124,7 @@ function HeroCard({
         />
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-black/30 p-4">
+      <div className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-border/10 bg-background/20 p-4">
         <Stat
           label="Hits this session"
           value={totalHits.toString()}
@@ -140,9 +142,9 @@ function HeroCard({
 
 function TimelineCard({ events }: { events: RateLimitEvent[] }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-      <h2 className="text-lg font-semibold text-white">Recent activity</h2>
-      <p className="text-sm text-slate-400">
+    <div className="rounded-3xl border border-border/10 bg-background/5 p-6 backdrop-blur">
+      <h2 className="text-lg font-semibold text-foreground">Recent activity</h2>
+      <p className="text-sm text-muted-foreground/75">
         Latest 429 responses captured from this browser.
       </p>
 
@@ -150,26 +152,28 @@ function TimelineCard({ events }: { events: RateLimitEvent[] }) {
         {events.slice(0, 6).map((event) => (
           <div
             key={event.id}
-            className="rounded-2xl border border-white/5 bg-slate-900/40 p-4"
+            className="rounded-2xl border border-border/5 bg-card/40 p-4"
           >
             <div className="flex items-center justify-between gap-4">
-              <div className="text-sm font-semibold text-white">
+              <div className="text-sm font-semibold text-foreground">
                 {event.method ?? "REQUEST"} · {event.status ?? 429}
               </div>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-muted-foreground/75">
                 {formatRelativeTime(event.timestamp)}
               </div>
             </div>
-            <div className="mt-1 text-xs font-mono text-slate-300">
+            <div className="mt-1 text-xs font-mono text-muted-foreground/90">
               {event.path}
             </div>
             {event.message ? (
-              <p className="mt-2 text-sm text-slate-400">{event.message}</p>
+              <p className="mt-2 text-sm text-muted-foreground/75">
+                {event.message}
+              </p>
             ) : null}
           </div>
         ))}
         {events.length === 0 && (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground/75">
             You&apos;re all clear—no rate limiting has been detected.
           </p>
         )}
@@ -191,14 +195,16 @@ function DetailItem({
 }) {
   return (
     <div>
-      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="text-xs uppercase tracking-wide text-muted-foreground/75">
+        {label}
+      </p>
       {badge ? (
-        <span className="mt-1 inline-flex items-center rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white">
+        <span className="mt-1 inline-flex items-center rounded-full bg-background/10 px-2.5 py-1 text-xs font-semibold text-foreground">
           {value}
         </span>
       ) : (
         <p
-          className={`mt-1 text-sm text-white ${
+          className={`mt-1 text-sm text-foreground ${
             mono ? "font-mono tracking-tight" : ""
           }`}
         >
@@ -220,11 +226,11 @@ function Stat({
 }) {
   return (
     <div>
-      <div className="flex items-center gap-2 text-sm text-slate-400">
-        <Icon className="h-4 w-4 text-sky-300" />
+      <div className="flex items-center gap-2 text-sm text-muted-foreground/75">
+        <Icon className="h-4 w-4 text-info" />
         {label}
       </div>
-      <p className="mt-1 text-2xl font-semibold text-white">{value}</p>
+      <p className="mt-1 text-2xl font-semibold text-foreground">{value}</p>
     </div>
   );
 }

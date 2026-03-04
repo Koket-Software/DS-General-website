@@ -19,7 +19,7 @@ export const DottedBackground: React.FC<DottedBackgroundProps> = ({
     <div
       className={cn("relative", className)}
       style={{
-        backgroundImage: `radial-gradient(circle, hsl(var(--primary) / ${dotOpacity}) ${dotSize}px, transparent ${dotSize}px)`,
+        backgroundImage: `radial-gradient(circle, oklch(from var(--primary) l c h / ${dotOpacity}) ${dotSize}px, transparent ${dotSize}px)`,
         backgroundSize: `${dotSpacing}px ${dotSpacing}px`,
       }}
     >

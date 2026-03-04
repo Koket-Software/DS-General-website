@@ -197,7 +197,7 @@ export function UserForm({ mode = "create", initialData }: UserFormProps) {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="p-8 flex items-center justify-between border-b border-gray-200 sticky top-0 left-0 right-0 bg-white">
+      <div className="p-8 flex items-center justify-between border-b border-border sticky top-0 left-0 right-0 bg-background">
         <h1 className="text-2xl font-bold">
           {mode === "create" ? "Create" : "Update"} User
         </h1>
@@ -218,7 +218,7 @@ export function UserForm({ mode = "create", initialData }: UserFormProps) {
       </div>
       <div className="flex flex-1">
         {/* Scrollable form section */}
-        <div className="w-1/2 p-8 border-r border-gray-200 overflow-y-auto">
+        <div className="w-1/2 p-8 border-r border-border overflow-y-auto">
           <form
             id="user-form"
             onSubmit={(e) => {
