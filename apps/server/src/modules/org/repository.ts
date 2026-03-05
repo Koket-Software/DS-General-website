@@ -182,6 +182,7 @@ export const createOrgRepository = (db: DbClient) => {
           lastName: companyMembers.lastName,
           title: companyMembers.title,
           headshotUrl: companyMembers.headshotUrl,
+          managerId: companyMembers.managerId,
         })
         .from(companyMembers);
 

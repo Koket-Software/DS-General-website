@@ -5,6 +5,7 @@ import type {
   PublicProductListItem,
 } from "./products-schema";
 
+import { LANDING_API_ENDPOINTS } from "@/lib/API_ENDPOINTS";
 import apiClient from "@/lib/axios";
 
 export type PublicProductsListResponse = ApiSuccessResponse<
@@ -25,7 +26,7 @@ export interface PublicProductsParams {
  */
 export const fetchPublicProducts = async (params?: PublicProductsParams) => {
   const { data } = await apiClient.get<PublicProductsListResponse>(
-    "/api/v1/products/client",
+    LANDING_API_ENDPOINTS.PRODUCTS_CLIENT,
     { params },
   );
 
@@ -37,7 +38,7 @@ export const fetchPublicProducts = async (params?: PublicProductsParams) => {
  */
 export const fetchPublicProductBySlug = async (slug: string) => {
   const { data } = await apiClient.get<PublicProductDetailResponse>(
-    `/api/v1/products/client/${slug}`,
+    `${LANDING_API_ENDPOINTS.PRODUCTS_CLIENT}/${slug}`,
   );
 
   return data;

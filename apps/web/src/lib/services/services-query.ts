@@ -1,4 +1,9 @@
-import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  queryOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import type { PublicServicesParams } from "./services-api";
 import { fetchPublicServices, fetchPublicServiceBySlug } from "./services-api";
@@ -45,6 +50,7 @@ export const publicServicesQueryOptions = (params?: PublicServicesParams) => {
   return queryOptions({
     queryKey: servicesKeys.list(normalizedParams),
     queryFn: () => fetchPublicServices(normalizedParams),
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 2, // 2 minutes
   });
 };

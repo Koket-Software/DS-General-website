@@ -1,4 +1,5 @@
 import {
+  keepPreviousData,
   queryOptions,
   useQuery,
   type UseQueryResult,
@@ -47,6 +48,8 @@ export const faqListQueryOptions = (params?: {
   return queryOptions({
     queryKey: faqKeys.list(normalized),
     queryFn: () => fetchPublicFaqs(normalized),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
   });
 };
 

@@ -61,6 +61,7 @@ export const PublicCaseStudyListItemSchema = z.object({
   excerpt: z.string().nullable(),
   clientName: z.string().nullable(),
   serviceName: z.string().nullable(),
+  createdAt: z.string(),
   featuredImage: z.string().nullable(),
 });
 

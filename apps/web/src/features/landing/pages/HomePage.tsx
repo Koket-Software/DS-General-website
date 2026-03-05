@@ -1,5 +1,4 @@
 import { AboutSection } from "../components/about-section";
-import { ArticleDetailSection } from "../components/article-detail-section";
 import { CTASection } from "../components/cta-section";
 import { FAQSection } from "../components/faq-section";
 import { HeroSection } from "../components/hero-section";
@@ -19,7 +18,6 @@ export function HomePage() {
       <HomeArticleSection />
       <FAQSection />
       <CTASection />
-      <ArticleDetailSection />
     </>
   );
 }

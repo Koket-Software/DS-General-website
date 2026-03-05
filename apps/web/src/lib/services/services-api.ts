@@ -5,6 +5,7 @@ import type {
   PublicServiceListItem,
 } from "./services-schema";
 
+import { LANDING_API_ENDPOINTS } from "@/lib/API_ENDPOINTS";
 import apiClient from "@/lib/axios";
 
 export type PublicServicesListResponse = ApiSuccessResponse<
@@ -27,7 +28,7 @@ export interface PublicServicesParams {
  */
 export const fetchPublicServices = async (params?: PublicServicesParams) => {
   const { data } = await apiClient.get<PublicServicesListResponse>(
-    "/api/v1/services/client",
+    LANDING_API_ENDPOINTS.SERVICES_CLIENT,
     { params },
   );
 
@@ -39,7 +40,7 @@ export const fetchPublicServices = async (params?: PublicServicesParams) => {
  */
 export const fetchPublicServiceBySlug = async (slug: string) => {
   const { data } = await apiClient.get<PublicServiceDetailResponse>(
-    `/api/v1/services/client/${slug}`,
+    `${LANDING_API_ENDPOINTS.SERVICES_CLIENT}/${slug}`,
   );
 
   return data;

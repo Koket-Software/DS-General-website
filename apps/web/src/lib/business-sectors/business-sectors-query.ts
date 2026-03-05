@@ -1,4 +1,9 @@
-import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  queryOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
   fetchPublicBusinessSectorBySlug,
@@ -39,6 +44,7 @@ export const publicBusinessSectorsQueryOptions = (
   return queryOptions({
     queryKey: businessSectorsKeys.list(normalizedParams),
     queryFn: () => fetchPublicBusinessSectors(normalizedParams),
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 2,
   });
 };

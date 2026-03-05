@@ -1,4 +1,5 @@
 import {
+  keepPreviousData,
   queryOptions,
   useQuery,
   type UseQueryResult,
@@ -57,6 +58,8 @@ export const publicCaseStudiesQueryOptions = (
   return queryOptions({
     queryKey: caseStudyKeys.list(normalized),
     queryFn: () => fetchPublicCaseStudies(normalized),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 2,
   });
 };
 
@@ -65,6 +68,7 @@ export const publicCaseStudyDetailQueryOptions = (slug: string) =>
     queryKey: caseStudyKeys.detailBySlug(slug),
     queryFn: () => fetchPublicCaseStudyBySlug(slug),
     enabled: Boolean(slug),
+    staleTime: 1000 * 60 * 5,
   });
 
 // ============================================================================

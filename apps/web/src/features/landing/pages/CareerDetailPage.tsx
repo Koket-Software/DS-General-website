@@ -1,9 +1,9 @@
 import { CareerDetailSection } from "../components/career-detail-section";
 
 interface CareerDetailPageProps {
-  id: string;
+  slug: string;
 }
 
-export function CareerDetailPage({ id }: CareerDetailPageProps) {
-  return <CareerDetailSection id={id} />;
+export function CareerDetailPage({ slug }: CareerDetailPageProps) {
+  return <CareerDetailSection slug={slug} />;
 }

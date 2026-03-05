@@ -2,6 +2,7 @@ import type { ApiSuccessResponse } from "@suba-company-template/types/api";
 
 import type { Testimonial } from "./testimonial-schema";
 
+import { LANDING_API_ENDPOINTS } from "@/lib/API_ENDPOINTS";
 import apiClient from "@/lib/axios";
 
 export type PublicTestimonialListResponse = ApiSuccessResponse<Testimonial[]>;
@@ -12,7 +13,7 @@ export const fetchPublicTestimonials = async (params?: {
   search?: string;
 }) => {
   const { data } = await apiClient.get<PublicTestimonialListResponse>(
-    "/api/v1/testimonials/client",
+    LANDING_API_ENDPOINTS.TESTIMONIALS_CLIENT,
     { params },
   );
 

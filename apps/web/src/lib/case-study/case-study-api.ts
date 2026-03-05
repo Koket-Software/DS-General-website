@@ -5,6 +5,7 @@ import type {
   PublicCaseStudyListItem,
 } from "./case-study-schema";
 
+import { LANDING_API_ENDPOINTS } from "@/lib/API_ENDPOINTS";
 import apiClient from "@/lib/axios";
 
 export type PublicCaseStudiesListResponse = ApiSuccessResponse<
@@ -29,7 +30,7 @@ export const fetchPublicCaseStudies = async (
   params?: PublicCaseStudiesParams,
 ) => {
   const { data } = await apiClient.get<PublicCaseStudiesListResponse>(
-    "/api/v1/case-studies/client",
+    LANDING_API_ENDPOINTS.CASE_STUDIES_CLIENT,
     { params },
   );
 
@@ -41,7 +42,7 @@ export const fetchPublicCaseStudies = async (
  */
 export const fetchPublicCaseStudyBySlug = async (slug: string) => {
   const { data } = await apiClient.get<PublicCaseStudyDetailResponse>(
-    `/api/v1/case-studies/client/${slug}`,
+    `${LANDING_API_ENDPOINTS.CASE_STUDIES_CLIENT}/${slug}`,
   );
 
   return data;

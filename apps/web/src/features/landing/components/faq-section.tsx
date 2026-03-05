@@ -7,36 +7,18 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-
-const faqs = [
-  {
-    question: "How long does it take to build a website?",
-    answer:
-      "It depends on the project's size and complexity. A typical business website takes 3–6 weeks, while more complex, custom-built platforms can take longer. We'll provide a clear timeline after the discovery phase.",
-  },
-  {
-    question: "Do you provide custom or template-based websites?",
-    answer:
-      "We offer both custom and template-based solutions depending on your needs and budget. Our team works closely with you to determine the best approach for your project.",
-  },
-  {
-    question: "Will my website be mobile-friendly and SEO-ready?",
-    answer:
-      "Absolutely. Every website we build is fully responsive and optimized for search engines from the ground up.",
-  },
-  {
-    question: "Do you help with app store publishing?",
-    answer:
-      "Yes, we provide end-to-end support including app store submission, optimization, and ongoing maintenance.",
-  },
-  {
-    question: "What's included in your branding service?",
-    answer:
-      "Our branding service includes logo design, brand guidelines, color palette, typography selection, and comprehensive brand strategy.",
-  },
-];
+import { useFaqListQuery } from "@/lib/faq/faq-query";
 
 export function FAQSection() {
+  const faqQuery = useFaqListQuery({
+    page: 1,
+    limit: 8,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+
+  const faqs = faqQuery.data?.data ?? [];
+
   const contactBox = (
     <div className="flex flex-col items-start gap-4 bg-primary/5 px-6 py-6 md:items-auto md:py-4">
       <p className="font-sans text-[16px] font-normal text-foreground">
@@ -72,18 +54,34 @@ export function FAQSection() {
             </h2>
           </div>
 
-          <Accordion type="single" collapsible defaultValue={faqs[0]?.question}>
-            {faqs.map((faq) => (
-              <AccordionItem key={faq.question} value={faq.question}>
-                <AccordionTrigger className="font-sans text-left text-[16px] font-semibold text-foreground md:text-[17px]">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="font-sans text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {faqQuery.isError ? (
+            <p className="text-sm text-muted-foreground">
+              Unable to load FAQs right now.
+            </p>
+          ) : faqQuery.isPending ? (
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="h-12 bg-muted/50 animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue={faqs[0]?.question}
+            >
+              {faqs.map((faq) => (
+                <AccordionItem key={faq.id} value={faq.question}>
+                  <AccordionTrigger className="font-sans text-left text-[16px] font-semibold text-foreground md:text-[17px]">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="font-sans text-[14px] leading-relaxed text-muted-foreground md:text-[15px]">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
 
           <div className="mt-10 lg:hidden">{contactBox}</div>
         </div>

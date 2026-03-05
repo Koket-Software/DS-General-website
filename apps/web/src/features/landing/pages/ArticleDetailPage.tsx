@@ -1,9 +1,9 @@
 import { ArticleDetailSection } from "../components/article-detail-section";
 
 interface ArticleDetailPageProps {
-  id: string;
+  slug: string;
 }
 
-export function ArticleDetailPage({ id }: ArticleDetailPageProps) {
-  return <ArticleDetailSection id={id} />;
+export function ArticleDetailPage({ slug }: ArticleDetailPageProps) {
+  return <ArticleDetailSection slug={slug} />;
 }

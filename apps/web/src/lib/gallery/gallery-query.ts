@@ -1,4 +1,8 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  queryOptions,
+  useQuery,
+} from "@tanstack/react-query";
 
 import {
   fetchPublicGallery,
@@ -29,6 +33,8 @@ export const publicGalleryQueryOptions = (
   return queryOptions({
     queryKey: publicGalleryKeys.itemList(normalizedParams),
     queryFn: () => fetchPublicGallery(normalizedParams),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 2,
   });
 };
 
@@ -39,6 +45,8 @@ export const publicGalleryCategoriesQueryOptions = (
   return queryOptions({
     queryKey: publicGalleryKeys.categoryList(normalizedParams),
     queryFn: () => fetchPublicGalleryCategories(normalizedParams),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
   });
 };
 

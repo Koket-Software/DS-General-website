@@ -4,13 +4,24 @@ import { Logo, YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
+
+function socialIcon(title: string) {
+  const normalized = title.toLowerCase();
+
+  if (normalized.includes("youtube")) return <YoutubeIcon />;
+  if (normalized.includes("instagram")) return <InstagramIcon />;
+  if (normalized.includes("linkedin")) return <LinkedinIcon />;
+  return <XIcon />;
+}
 
 export function Footer() {
+  const socialsQuery = usePublicSocialsQuery({ page: 1, limit: 20 });
+  const socials = socialsQuery.data?.data ?? [];
+
   return (
     <footer className="bg-background max-w-360 mx-auto px-6 md:px-24 pt-6">
-      {/* Main footer content */}
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
-        {/* Brand */}
         <div className="flex flex-col gap-6 shrink-0">
           <div className="flex flex-col gap-3">
             <div className="flex gap-3 items-center">
@@ -25,22 +36,35 @@ export function Footer() {
             </p>
           </div>
           <div className="flex gap-2">
-            <div className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5">
-              <YoutubeIcon />
-            </div>
-            <div className="w-10.5 h-10.5 shrink-0">
-              <XIcon />
-            </div>
-            <div className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5">
-              <InstagramIcon />
-            </div>
-            <div className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5">
-              <LinkedinIcon />
-            </div>
+            {socialsQuery.isError ? (
+              <p className="text-sm text-muted-foreground">
+                Socials unavailable
+              </p>
+            ) : (
+              socials.slice(0, 4).map((social) => (
+                <a
+                  key={social.id}
+                  href={social.baseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.title}
+                  className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
+                >
+                  {social.iconUrl ? (
+                    <img
+                      src={social.iconUrl}
+                      alt={social.title}
+                      className="h-5 w-5 object-contain"
+                    />
+                  ) : (
+                    socialIcon(social.title)
+                  )}
+                </a>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Company links */}
         <div className="flex flex-col gap-6">
           <p className="font-sans font-semibold text-foreground text-[16px]">
             Company
@@ -64,27 +88,30 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Business Sectors */}
         <div className="flex flex-col gap-6">
           <p className="font-sans font-semibold text-foreground text-[16px]">
             Business Sectors
           </p>
           <div className="flex flex-col gap-4 font-sans font-normal text-foreground text-[14px]">
-            {["Import & Export", "General Contracting", "Material Imports"].map(
-              (item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="hover:text-primary transition-colors"
-                >
-                  {item}
-                </a>
-              ),
-            )}
+            {[
+              {
+                label: "Sourcing & Logistics",
+                path: "/sectors/sourcing-logistics",
+              },
+              { label: "General Contracting", path: "/about" },
+              { label: "Material Imports", path: "/about" },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                to={item.path}
+                className="hover:text-primary transition-colors no-underline text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* Newsletter */}
         <div className="flex-1">
           <div className="bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
             <Input
@@ -106,10 +133,8 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Divider */}
       <div className="mt-10 border-t border-primary/10" />
 
-      {/* Bottom bar */}
       <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="font-sans font-normal text-foreground text-[14px]">
           &copy; 2025 DS General PLC. All Rights Reserved
@@ -130,7 +155,6 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Large brand text */}
       <p className="text-center font-sans font-semibold text-[80px] md:text-[140px] lg:text-[170px] leading-[0.8] bg-linear-to-b from-primary/10 to-primary/0 bg-clip-text text-transparent select-none overflow-hidden">
         DS General PLC
       </p>

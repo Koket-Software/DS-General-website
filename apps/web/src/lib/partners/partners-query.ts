@@ -26,6 +26,7 @@ export const clientPartnersQueryOptions = () =>
   queryOptions({
     queryKey: partnerKeys.clients(),
     queryFn: fetchClientPartners,
+    staleTime: 1000 * 60 * 5,
   });
 
 // ============================================================================

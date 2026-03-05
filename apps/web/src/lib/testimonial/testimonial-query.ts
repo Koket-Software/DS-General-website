@@ -1,4 +1,5 @@
 import {
+  keepPreviousData,
   queryOptions,
   useQuery,
   type UseQueryResult,
@@ -38,6 +39,8 @@ export const testimonialListQueryOptions = (params?: {
   return queryOptions({
     queryKey: testimonialKeys.list(normalized),
     queryFn: () => fetchPublicTestimonials(normalized),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 2,
   });
 };
 

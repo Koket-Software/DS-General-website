@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 
 import { YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
 import imgMap from "../../../../assets/1996b890973697a0ece35083743bf5f2cd592a73.png";
@@ -7,7 +7,9 @@ import svgPaths from "../../../../imports/svg-b3plelej3t";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useAppForm } from "@/lib/forms";
+import { useCreatePublicContactMutation } from "@/lib/contacts/contacts-query";
+import { createPublicContactSchema } from "@/lib/contacts/contacts-schema";
+import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
 
 function PhoneIcon() {
   return (
@@ -51,6 +53,24 @@ function MapPinIcon() {
   );
 }
 
+function socialIcon(title: string) {
+  const normalized = title.toLowerCase();
+
+  if (normalized.includes("youtube")) {
+    return <YoutubeIcon />;
+  }
+
+  if (normalized.includes("instagram")) {
+    return <InstagramIcon />;
+  }
+
+  if (normalized.includes("linkedin")) {
+    return <LinkedinIcon />;
+  }
+
+  return <XIcon />;
+}
+
 type ContactFormValues = {
   fullName: string;
   emailOrPhone: string;
@@ -59,22 +79,59 @@ type ContactFormValues = {
 
 export function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [values, setValues] = useState<ContactFormValues>({
+    fullName: "",
+    emailOrPhone: "",
+    message: "",
+  });
 
-  const form = useAppForm<ContactFormValues>({
-    defaultValues: {
-      fullName: "",
-      emailOrPhone: "",
-      message: "",
-    },
-    onSubmit: async () => {
+  const socialsQuery = usePublicSocialsQuery({
+    page: 1,
+    limit: 20,
+  });
+
+  const createContactMutation = useCreatePublicContactMutation({
+    onMutate: () => {
+      setSubmitError(null);
       setSubmitted(true);
+    },
+    onError: (error) => {
+      setSubmitted(false);
+      setSubmitError(error.message || "Failed to submit your message.");
     },
   });
 
   const canSubmit =
-    form.state.values.fullName.trim().length > 0 &&
-    form.state.values.emailOrPhone.trim().length > 0 &&
-    form.state.values.message.trim().length > 0;
+    values.fullName.trim().length > 0 &&
+    values.emailOrPhone.trim().length > 0 &&
+    values.message.trim().length > 0;
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!canSubmit || createContactMutation.isPending) {
+      return;
+    }
+
+    const parsed = createPublicContactSchema.safeParse({
+      fullName: values.fullName,
+      contact: values.emailOrPhone,
+      message: values.message,
+      serviceId: null,
+    });
+
+    if (!parsed.success) {
+      const issue =
+        parsed.error.issues[0]?.message ?? "Invalid contact payload.";
+      setSubmitError(issue);
+      return;
+    }
+
+    createContactMutation.mutate(parsed.data);
+  };
+
+  const socials = socialsQuery.data?.data ?? [];
 
   return (
     <section className="max-w-[1440px] mx-auto px-6 md:px-24 py-10 md:py-16">
@@ -131,31 +188,33 @@ export function ContactSection() {
             <p className="font-sans font-medium text-foreground text-[16px]">
               Follow Us
             </p>
-            <div className="flex gap-2 items-center">
-              <a
-                href="#"
-                className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
-              >
-                <YoutubeIcon />
-              </a>
-              <a
-                href="#"
-                className="flex items-center justify-center w-10.5 h-10.5"
-              >
-                <XIcon />
-              </a>
-              <a
-                href="#"
-                className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
-              >
-                <InstagramIcon />
-              </a>
-              <a
-                href="#"
-                className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
-              >
-                <LinkedinIcon />
-              </a>
+            <div className="flex gap-2 items-center flex-wrap">
+              {socialsQuery.isError ? (
+                <p className="text-sm text-muted-foreground">
+                  Could not load social links.
+                </p>
+              ) : (
+                socials.slice(0, 6).map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.baseUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
+                    aria-label={social.title}
+                  >
+                    {social.iconUrl ? (
+                      <img
+                        src={social.iconUrl}
+                        alt={social.title}
+                        className="h-5 w-5 object-contain"
+                      />
+                    ) : (
+                      socialIcon(social.title)
+                    )}
+                  </a>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -164,81 +223,76 @@ export function ContactSection() {
           {submitted ? (
             <div className="text-center py-10">
               <p className="font-sans font-medium text-primary text-[18px] mb-2">
-                Message Sent!
+                {createContactMutation.isPending
+                  ? "Sending Message..."
+                  : "Message Sent"}
               </p>
               <p className="font-sans text-muted-foreground text-[14px]">
-                Thank you for reaching out. We will get back to you shortly.
+                {createContactMutation.isPending
+                  ? "Your message is being submitted."
+                  : "Thank you for reaching out. We will get back to you shortly."}
               </p>
             </div>
           ) : (
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                form.handleSubmit();
-              }}
-              className="flex flex-col gap-9"
-            >
+            <form onSubmit={onSubmit} className="flex flex-col gap-9">
               <h2 className="font-sans font-semibold text-foreground text-[28px] md:text-[32px] capitalize">
                 Get in touch with us
               </h2>
 
+              {submitError ? (
+                <p className="text-sm text-destructive">{submitError}</p>
+              ) : null}
+
               <div className="flex flex-col gap-3">
-                <form.Field name="fullName">
-                  {(field) => (
-                    <Input
-                      type="text"
-                      name={field.name}
-                      placeholder="Full name"
-                      required
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
-                    />
-                  )}
-                </form.Field>
+                <Input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full name"
+                  required
+                  value={values.fullName}
+                  onChange={(event) =>
+                    setValues((prev) => ({
+                      ...prev,
+                      fullName: event.target.value,
+                    }))
+                  }
+                  className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
+                />
 
-                <form.Field name="emailOrPhone">
-                  {(field) => (
-                    <Input
-                      type="text"
-                      name={field.name}
-                      placeholder="Email or phone number"
-                      required
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
-                    />
-                  )}
-                </form.Field>
+                <Input
+                  type="text"
+                  name="emailOrPhone"
+                  placeholder="Email or phone number"
+                  required
+                  value={values.emailOrPhone}
+                  onChange={(event) =>
+                    setValues((prev) => ({
+                      ...prev,
+                      emailOrPhone: event.target.value,
+                    }))
+                  }
+                  className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
+                />
 
-                <form.Field name="message">
-                  {(field) => (
-                    <Textarea
-                      name={field.name}
-                      placeholder="Your Message"
-                      required
-                      rows={6}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      className="min-h-0 resize-none rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
-                    />
-                  )}
-                </form.Field>
+                <Textarea
+                  name="message"
+                  placeholder="Your Message"
+                  required
+                  rows={6}
+                  value={values.message}
+                  onChange={(event) =>
+                    setValues((prev) => ({
+                      ...prev,
+                      message: event.target.value,
+                    }))
+                  }
+                  className="min-h-0 resize-none rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
+                />
               </div>
 
               <Button
                 type="submit"
-                disabled={!canSubmit}
+                disabled={!canSubmit || createContactMutation.isPending}
                 className="h-auto w-full rounded-none bg-primary py-3 font-sans text-[20px] font-medium capitalize text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Send Message

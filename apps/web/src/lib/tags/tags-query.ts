@@ -1,4 +1,5 @@
 import {
+  keepPreviousData,
   queryOptions,
   useQuery,
   type UseQueryResult,
@@ -34,6 +35,7 @@ export const publicTagsQueryOptions = (params?: PublicTagsParams) => {
   return queryOptions({
     queryKey: tagKeys.list(normalized),
     queryFn: () => fetchPublicTags(normalized),
+    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5, // Tags are relatively static, cache for 5 minutes
   });
 };

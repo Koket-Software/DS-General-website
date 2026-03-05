@@ -1,4 +1,5 @@
 import {
+  keepPreviousData,
   queryOptions,
   useQuery,
   type UseQueryResult,
@@ -51,6 +52,8 @@ export const publicProductsQueryOptions = (params?: PublicProductsParams) => {
   return queryOptions({
     queryKey: productKeys.list(normalized),
     queryFn: () => fetchPublicProducts(normalized),
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 2,
   });
 };
 
@@ -59,6 +62,7 @@ export const publicProductDetailQueryOptions = (slug: string) =>
     queryKey: productKeys.detailBySlug(slug),
     queryFn: () => fetchPublicProductBySlug(slug),
     enabled: Boolean(slug),
+    staleTime: 1000 * 60 * 5,
   });
 
 // ============================================================================

@@ -1,154 +1,170 @@
-import { useState } from "react";
-
-import imgRectangle102 from "../../../../assets/19ed85147ca6cb029c73a2af61d31bfd43e14f40.png";
-import imgRectangle109 from "../../../../assets/25af978ee963f4a417c22daef2f639aec0e39ee9.png";
-import imgRectangle103 from "../../../../assets/3de0d12bd55569ea9125561565de24ffa212e752.png";
-import imgRectangle111 from "../../../../assets/5598b873ff5cddb76f43b250bcc66b7d8eda2b0e.png";
-import imgRectangle112 from "../../../../assets/5958b2361487a693fca536be76e3a52d63cc4e6a.png";
-import imgRectangle105 from "../../../../assets/64957996f40225ab6342b9a204cc3f4c47c8c953.png";
-import imgRectangle104 from "../../../../assets/7db0d184c1232702beb766cd2e3994783854fe63.png";
-import imgRectangle101 from "../../../../assets/808f120efb1a0cf9fbe7e4ff02d7d20a0c33aee7.png";
-import imgRectangle106 from "../../../../assets/9cf0203ab58ee55083b83f44a22225cdcd1adbe8.png";
-import imgRectangle110 from "../../../../assets/a3296f8ef8e5747c93f81b2676ef2a295561a9cd.png";
-import imgRectangle107 from "../../../../assets/c6339572864faaa07565913ef951f136797e9428.png";
-import imgRectangle108 from "../../../../assets/c844aa40afdc9573f828f66cbb8d362800577897.png";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  publicGalleryQueryOptions,
+  usePublicGalleryCategoriesQuery,
+  usePublicGalleryQuery,
+} from "@/lib/gallery";
+import { Route as GalleryRoute } from "@/routes/_landing/gallery";
 
-const filterTabs = [
-  "All Projects",
-  "Global Sourcing & Logistics",
-  "Structural & Civil Works",
-  "Material Supply & Inventory",
-];
-
-const galleryImages = [
-  {
-    src: imgRectangle101,
-    alt: "Warehouse interior with stacked pallets",
-    category: "Global Sourcing & Logistics",
-  },
-  {
-    src: imgRectangle102,
-    alt: "Construction workers in safety gear",
-    category: "Structural & Civil Works",
-  },
-  {
-    src: imgRectangle103,
-    alt: "Large warehouse logistics center",
-    category: "Global Sourcing & Logistics",
-  },
-  {
-    src: imgRectangle104,
-    alt: "Office and cosmetic supplies",
-    category: "Material Supply & Inventory",
-  },
-  {
-    src: imgRectangle105,
-    alt: "Industrial packaging materials",
-    category: "Material Supply & Inventory",
-  },
-  {
-    src: imgRectangle106,
-    alt: "Construction safety equipment",
-    category: "Structural & Civil Works",
-  },
-  {
-    src: imgRectangle107,
-    alt: "Warehouse storage facility",
-    category: "Global Sourcing & Logistics",
-  },
-  {
-    src: imgRectangle108,
-    alt: "Cosmetic products display",
-    category: "Material Supply & Inventory",
-  },
-  {
-    src: imgRectangle109,
-    alt: "Construction workers on site",
-    category: "Structural & Civil Works",
-  },
-  {
-    src: imgRectangle110,
-    alt: "Steel reinforcement construction",
-    category: "Structural & Civil Works",
-  },
-  {
-    src: imgRectangle111,
-    alt: "Building under construction",
-    category: "Structural & Civil Works",
-  },
-  {
-    src: imgRectangle112,
-    alt: "Architectural blueprints",
-    category: "Material Supply & Inventory",
-  },
-];
+const ALL_TAB = "all";
 
 export function GallerySection() {
-  const [activeTab, setActiveTab] = useState("All Projects");
+  const navigate = useNavigate();
+  const search = GalleryRoute.useSearch();
+  const queryClient = useQueryClient();
 
-  const filteredImages =
-    activeTab === "All Projects"
-      ? galleryImages
-      : galleryImages.filter((img) => img.category === activeTab);
+  const page = search.page ?? 1;
+  const limit = search.limit ?? 60;
+  const categorySlug = search.categorySlug;
+
+  const galleryQuery = usePublicGalleryQuery({
+    page,
+    limit,
+    search: search.search,
+    sortBy: search.sortBy,
+    sortOrder: search.sortOrder,
+    categorySlug,
+  });
+
+  const categoriesQuery = usePublicGalleryCategoriesQuery({
+    page: 1,
+    limit: 100,
+    sortBy: "name",
+    sortOrder: "asc",
+  });
+
+  const tabs = useMemo(() => {
+    const categoryTabs = (categoriesQuery.data?.data ?? []).map((category) => ({
+      label: category.name,
+      slug: category.slug,
+    }));
+
+    return [{ label: "All Projects", slug: ALL_TAB }, ...categoryTabs];
+  }, [categoriesQuery.data?.data]);
+
+  useEffect(() => {
+    const pagination = galleryQuery.data?.meta?.pagination;
+    const totalPages = pagination?.totalPages ?? 1;
+    if (!pagination || pagination.page >= totalPages) {
+      return;
+    }
+
+    const nextPage = pagination.page + 1;
+    void queryClient.prefetchQuery(
+      publicGalleryQueryOptions({
+        page: nextPage,
+        limit,
+        search: search.search,
+        sortBy: search.sortBy,
+        sortOrder: search.sortOrder,
+        categorySlug,
+      }),
+    );
+  }, [
+    categorySlug,
+    galleryQuery.data?.meta?.pagination,
+    limit,
+    queryClient,
+    search.search,
+    search.sortBy,
+    search.sortOrder,
+  ]);
+
+  const onTabChange = (slug: string) => {
+    navigate({
+      to: "/gallery",
+      search: {
+        ...search,
+        page: 1,
+        categorySlug: slug === ALL_TAB ? undefined : slug,
+      },
+    });
+  };
+
+  if (galleryQuery.isError || categoriesQuery.isError) {
+    return (
+      <section className="max-w-360 mx-auto px-6 md:px-24 py-16 text-center">
+        <p className="text-muted-foreground text-sm">
+          Failed to load gallery data. Please refresh and try again.
+        </p>
+      </section>
+    );
+  }
+
+  const items = galleryQuery.data?.data ?? [];
+  const isLoading = galleryQuery.isPending || categoriesQuery.isPending;
 
   return (
     <section className="max-w-360 mx-auto">
-      {/* Filter tabs */}
       <div className="px-6 md:px-16 border-b border-primary/10">
-        <div
-          className="
-      flex items-center 
-      overflow-x-auto no-scrollbar 
-      snap-x snap-mandatory   // optional: nicer snap on mobile
-      -mx-1                   // optional: better edge padding feel
-    "
-        >
-          {filterTabs.map((tab) => (
-            <Button
-              variant="ghost"
-              type="button"
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`
-          shrink-0               // ← Crucial: prevents button from shrinking
-          px-5 sm:px-6 lg:px-8        // smaller padding on mobile
-          py-3.5 sm:py-4              // slightly more touch-friendly height
-          font-sans 
-          text-[15px] sm:text-[16px]  // slightly smaller text on mobile if needed
-          whitespace-nowrap           // ← Main fix: NO WRAPPING
-          transition-colors 
-          relative
-          ${
-            activeTab === tab
-              ? "font-semibold text-primary border-b-2 border-primary"
-              : "font-normal text-foreground hover:text-primary"
-          }
-        `}
-            >
-              {tab}
-            </Button>
-          ))}
+        <div className="flex items-center overflow-x-auto no-scrollbar -mx-1">
+          {tabs.map((tab) => {
+            const isActive =
+              tab.slug === ALL_TAB ? !categorySlug : categorySlug === tab.slug;
+
+            return (
+              <Button
+                key={tab.slug}
+                variant="ghost"
+                type="button"
+                onClick={() => onTabChange(tab.slug)}
+                className={`
+                  shrink-0
+                  px-5 sm:px-6 lg:px-8
+                  py-3.5 sm:py-4
+                  font-sans
+                  text-[15px] sm:text-[16px]
+                  whitespace-nowrap
+                  transition-colors
+                  relative
+                  ${
+                    isActive
+                      ? "font-semibold text-primary border-b-2 border-primary"
+                      : "font-normal text-foreground hover:text-primary"
+                  }
+                `}
+              >
+                {tab.label}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Image grid */}
       <div className="px-6 md:px-24 py-10 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredImages.map((image, index) => (
-            <div
-              key={`${image.alt}-${index}`}
-              className="relative h-50 md:h-78.5 overflow-hidden bg-muted/60 group"
-            >
-              <img
-                alt={image.alt}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                src={image.src}
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <div
+                key={index}
+                className="relative h-50 md:h-78.5 overflow-hidden bg-muted/60 animate-pulse"
               />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground text-sm">
+            No gallery items found for this filter.
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {items.map((image) => (
+              <div
+                key={image.id}
+                className="relative h-50 md:h-78.5 overflow-hidden bg-muted/60 group"
+              >
+                <img
+                  alt={image.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  src={image.coverImageUrl ?? image.imageUrls[0]}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
