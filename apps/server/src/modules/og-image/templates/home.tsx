@@ -12,37 +12,34 @@ import {
   InfoCard,
   Lead,
   SectionChip,
-  VisualPanel,
   createCanvasStyle,
   getPageHighlights,
-  getThemeLabel,
 } from "./base";
 import type { OgImageData } from "../types";
 
-interface PageTemplateProps {
+interface HomeTemplateProps {
   data: OgImageData;
   brand: BrandSeoConfig;
 }
 
-export const PageTemplate = ({
+export const HomeTemplate = ({
   data,
   brand,
-}: PageTemplateProps): React.ReactElement => {
-  const theme = data.pageTheme || "generic";
-  const highlights = getPageHighlights(data);
+}: HomeTemplateProps): React.ReactElement => {
+  const highlights = getPageHighlights({ ...data, pageTheme: "home" });
 
   return (
     <div style={createCanvasStyle(brand)}>
       <BackgroundDecor brand={brand} />
       <Frame>
-        <BrandLine brand={brand} rightLabel={getThemeLabel(theme)} />
+        <BrandLine brand={brand} rightLabel="Official Website" />
 
         <div
           style={{
             display: "flex",
-            gap: "28px",
+            gap: "30px",
             flex: 1,
-            marginTop: "32px",
+            marginTop: "34px",
           }}
         >
           <div
@@ -50,24 +47,24 @@ export const PageTemplate = ({
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              gap: "24px",
-              flex: 1.15,
-              padding: "34px",
-              borderRadius: "34px",
+              gap: "22px",
+              flex: 1.3,
+              padding: "38px",
+              borderRadius: "38px",
               border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(7, 11, 22, 0.44)",
+              background: "rgba(6, 10, 20, 0.44)",
             }}
           >
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+              style={{ display: "flex", flexDirection: "column", gap: "22px" }}
             >
               <SectionChip
-                label={data.category || getThemeLabel(theme)}
+                label="Integrated Business & Industrial Solutions"
                 brand={brand}
               />
-              <DisplayTitle title={data.title} />
+              <DisplayTitle title={data.title} maxLength={84} />
               {data.description ? (
-                <Lead description={data.description} />
+                <Lead description={data.description} maxLength={190} />
               ) : null}
             </div>
 
@@ -80,18 +77,21 @@ export const PageTemplate = ({
                   display: "flex",
                   alignItems: "center",
                   gap: "14px",
-                  color: "rgba(248,250,252,0.72)",
+                  color: "rgba(248,250,252,0.74)",
                   fontSize: "17px",
+                  letterSpacing: "1.2px",
+                  textTransform: "uppercase",
                 }}
               >
                 <div
                   style={{
-                    width: "58px",
+                    width: "68px",
                     height: "1px",
-                    background: "rgba(248,250,252,0.26)",
+                    background: "rgba(248,250,252,0.3)",
                   }}
                 />
-                Dynamic brand card generated for the public page surface.
+                Ethiopia-focused execution across sourcing, supply, and
+                construction.
               </div>
             </div>
           </div>
@@ -104,16 +104,16 @@ export const PageTemplate = ({
               width: "356px",
             }}
           >
-            <VisualPanel
-              brand={brand}
-              imageUrl={data.imageUrl}
-              label={getThemeLabel(theme)}
-            />
-            <BrandStamp brand={brand} label="Site Identity" />
+            <BrandStamp brand={brand} label="Brand Signal" />
             <InfoCard
               brand={brand}
-              title="Page Intent"
-              body={data.category || getThemeLabel(theme)}
+              title="Operational Edge"
+              body="Direct procurement, construction execution, and reliable delivery under one roof."
+            />
+            <InfoCard
+              brand={brand}
+              title="Coverage"
+              body="Built for partners who need coordinated projects, materials, and momentum."
             />
           </div>
         </div>

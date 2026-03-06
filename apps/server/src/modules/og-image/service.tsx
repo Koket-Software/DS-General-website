@@ -8,13 +8,14 @@ import type React from "react";
 
 import {
   BlogTemplate,
-  ServiceTemplate,
-  ProjectTemplate,
   CareerTemplate,
-  PageTemplate,
   DefaultTemplate,
+  HomeTemplate,
+  PageTemplate,
+  ProjectTemplate,
+  ServiceTemplate,
 } from "./templates";
-import type { OgImageData, OgImageOptions, OgImageType } from "./types";
+import type { OgImageData, OgImageOptions } from "./types";
 import { DEFAULT_OG_OPTIONS } from "./types";
 import { logger } from "../../shared/logger";
 
@@ -72,16 +73,16 @@ async function getFonts() {
     fonts.push({
       name: "Playfair Display",
       data: playfairFontCache,
-      style: "normal" as const,
-      weight: 700 as const,
+      style: "normal",
+      weight: 700,
     });
   }
   if (manropeFontCache) {
     fonts.push({
       name: "Manrope",
       data: manropeFontCache,
-      style: "normal" as const,
-      weight: 500 as const,
+      style: "normal",
+      weight: 500,
     });
   }
 
@@ -102,6 +103,9 @@ function getTemplate(
     case "career":
       return <CareerTemplate data={data} brand={brand} />;
     case "page":
+      if (data.pageTheme === "home") {
+        return <HomeTemplate data={data} brand={brand} />;
+      }
       return <PageTemplate data={data} brand={brand} />;
     case "default":
     default:
@@ -136,4 +140,4 @@ export async function generateDefaultOgImage(
   return generateOgImage({ title: "", type: "default" }, options);
 }
 
-export type { OgImageData, OgImageOptions, OgImageType };
+export type { OgImageData, OgImageOptions };

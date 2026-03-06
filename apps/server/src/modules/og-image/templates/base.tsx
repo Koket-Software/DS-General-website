@@ -2,340 +2,798 @@
 import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
-import type { OgImageData } from "../types";
+import type { OgImageData, OgPageTheme } from "../types";
 
-interface BaseTemplateProps {
-  data: OgImageData;
-  brand: BrandSeoConfig;
-  children?: React.ReactNode;
+const FALLBACK_HIGHLIGHTS: Record<OgPageTheme, string[]> = {
+  home: ["General Contracting", "Material Supply", "Global Sourcing"],
+  about: ["Mission-led", "Integrated delivery", "Ethiopian market focus"],
+  articles: ["Operational insights", "Engineering stories", "Field notes"],
+  gallery: ["Field moments", "Delivery snapshots", "Project highlights"],
+  contact: ["Quotes", "Procurement", "Project planning"],
+  career: ["Open roles", "Operational excellence", "Build with us"],
+  legal: ["Transparency", "Clear terms", "Responsible data handling"],
+  sector: ["Cross-border sourcing", "Reliable logistics", "Sector expertise"],
+  generic: ["Trusted delivery", "Operational clarity", "Brand-led execution"],
+};
+
+const THEME_LABELS: Record<OgPageTheme, string> = {
+  home: "Flagship Overview",
+  about: "Company Profile",
+  articles: "Insights Library",
+  gallery: "Visual Archive",
+  contact: "Contact Desk",
+  career: "Talent Desk",
+  legal: "Policy Record",
+  sector: "Business Sector",
+  generic: "Official Page",
+};
+
+const DETAILS_LIMIT = 4;
+
+function hexToRgba(value: string, alpha: number): string {
+  const normalized = value.replace("#", "").trim();
+
+  if (normalized.length !== 3 && normalized.length !== 6) {
+    return `rgba(255, 255, 255, ${alpha})`;
+  }
+
+  const expanded =
+    normalized.length === 3
+      ? normalized
+          .split("")
+          .map((char) => `${char}${char}`)
+          .join("")
+      : normalized;
+
+  const red = Number.parseInt(expanded.slice(0, 2), 16);
+  const green = Number.parseInt(expanded.slice(2, 4), 16);
+  const blue = Number.parseInt(expanded.slice(4, 6), 16);
+
+  if ([red, green, blue].some(Number.isNaN)) {
+    return `rgba(255, 255, 255, ${alpha})`;
+  }
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
-export const BaseTemplate = ({
-  data,
-  brand,
-  children,
-}: BaseTemplateProps): React.ReactElement => {
-  const hasImage = Boolean(data.imageUrl);
+function truncate(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  return `${value.slice(0, maxLength - 3).trim()}...`;
+}
 
+function titleSize(title: string): string {
+  if (title.length > 88) return "54px";
+  if (title.length > 62) return "62px";
+  return "72px";
+}
+
+function bodySize(description: string): string {
+  if (description.length > 170) return "24px";
+  return "26px";
+}
+
+function buildHighlights(data: OgImageData): string[] {
+  const supplied = (data.highlights || data.tags || [])
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, DETAILS_LIMIT);
+
+  if (supplied.length > 0) {
+    return supplied;
+  }
+
+  const theme = data.pageTheme || "generic";
+  return FALLBACK_HIGHLIGHTS[theme];
+}
+
+export function createCanvasStyle(brand: BrandSeoConfig): React.CSSProperties {
+  return {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    position: "relative",
+    overflow: "hidden",
+    color: "#f8fafc",
+    background: [
+      `radial-gradient(circle at 12% 16%, ${hexToRgba(brand.brandAccent, 0.22)} 0%, rgba(255,255,255,0) 28%)`,
+      `radial-gradient(circle at 86% 16%, ${hexToRgba(brand.brandPrimary, 0.28)} 0%, rgba(255,255,255,0) 32%)`,
+      `radial-gradient(circle at 76% 88%, ${hexToRgba(brand.brandAccent, 0.12)} 0%, rgba(255,255,255,0) 28%)`,
+      `linear-gradient(135deg, #070b16 0%, ${hexToRgba(brand.brandSecondary, 0.98)} 38%, ${hexToRgba(brand.brandPrimary, 0.88)} 100%)`,
+    ].join(", "),
+    fontFamily: '"Manrope", sans-serif',
+  };
+}
+
+export function BackgroundDecor({
+  brand,
+}: {
+  brand: BrandSeoConfig;
+}): React.ReactElement {
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        overflow: "hidden",
-        fontFamily: '"Playfair Display", serif',
-        background: `linear-gradient(125deg, ${brand.brandSecondary} 0%, ${brand.brandPrimary} 70%, ${brand.brandAccent} 100%)`,
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: "-20%",
-          background:
-            "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 40%), radial-gradient(circle at 80% 85%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 35%)",
-        }}
-      />
+    <>
       <div
         style={{
           position: "absolute",
           inset: 0,
-          opacity: 0.2,
           backgroundImage:
-            "linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(180deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "42px 42px",
+            "linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(180deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          opacity: 0.24,
         }}
       />
-
-      {hasImage && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: "48%",
-            height: "100%",
-            display: "flex",
-          }}
-        >
-          <img
-            src={data.imageUrl!}
-            alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              opacity: 0.4,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(92deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.7) 52%, rgba(15,23,42,0.2) 100%)",
-            }}
-          />
-        </div>
-      )}
-
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          height: "100%",
-          padding: "56px",
-          position: "relative",
-          zIndex: 3,
+          position: "absolute",
+          top: "-12%",
+          right: "6%",
+          width: "360px",
+          height: "360px",
+          borderRadius: "999px",
+          border: `1px solid ${hexToRgba(brand.brandAccent, 0.25)}`,
+          opacity: 0.45,
         }}
-      >
-        {children}
-      </div>
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: "8%",
+          right: "12%",
+          width: "220px",
+          height: "220px",
+          borderRadius: "999px",
+          border: `1px solid ${hexToRgba(brand.brandAccent, 0.16)}`,
+          opacity: 0.55,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: "-6%",
+          bottom: "-18%",
+          width: "540px",
+          height: "280px",
+          transform: "rotate(-14deg)",
+          background: `linear-gradient(90deg, ${hexToRgba(brand.brandAccent, 0.12)} 0%, rgba(255,255,255,0) 100%)`,
+        }}
+      />
+    </>
+  );
+}
+
+export function Frame({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement {
+  return (
+    <div
+      style={{
+        position: "relative",
+        zIndex: 2,
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%",
+        padding: "54px",
+      }}
+    >
+      {children}
     </div>
   );
-};
+}
 
-export const OgHeader = ({
-  category,
-  type,
+export function SectionChip({
+  label,
   brand,
 }: {
-  category?: string;
-  type: string;
+  label: string;
   brand: BrandSeoConfig;
-}): React.ReactElement => {
-  const displayCategory =
-    category || type.charAt(0).toUpperCase() + type.slice(1);
-
+}): React.ReactElement {
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        gap: "20px",
+        gap: "10px",
+        alignSelf: "flex-start",
+        padding: "12px 18px",
+        borderRadius: "999px",
+        border: `1px solid ${hexToRgba(brand.brandAccent, 0.34)}`,
+        background: "rgba(5, 10, 21, 0.42)",
       }}
     >
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
+          width: "10px",
+          height: "10px",
           borderRadius: "999px",
-          padding: "9px 18px",
-          border: "1px solid rgba(255,255,255,0.35)",
-          backgroundColor: "rgba(0, 0, 0, 0.18)",
+          background: brand.brandAccent,
+          boxShadow: `0 0 20px ${hexToRgba(brand.brandAccent, 0.55)}`,
         }}
-      >
-        <span
-          style={{
-            color: "#ffffff",
-            fontSize: "16px",
-            fontWeight: 700,
-            letterSpacing: "2.1px",
-            textTransform: "uppercase",
-            fontFamily: '"Manrope", sans-serif',
-          }}
-        >
-          {displayCategory}
-        </span>
-      </div>
-
-      <div
+      />
+      <span
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          color: "rgba(255,255,255,0.9)",
-          fontSize: "18px",
+          fontSize: "16px",
+          fontWeight: 700,
+          letterSpacing: "2.1px",
+          textTransform: "uppercase",
+          color: "#f8fafc",
         }}
       >
-        <div
-          style={{
-            width: "8px",
-            height: "8px",
-            borderRadius: "999px",
-            background: brand.brandAccent,
-            boxShadow: "0 0 18px rgba(255,255,255,0.6)",
-          }}
-        />
-        <span>{brand.siteName}</span>
-      </div>
+        {truncate(label, 34)}
+      </span>
     </div>
   );
-};
+}
 
-export const OgTitle = ({ title }: { title: string }): React.ReactElement => {
-  const displayTitle =
-    title.length > 92 ? `${title.substring(0, 89).trim()}...` : title;
+export function BrandLine({
+  brand,
+  rightLabel,
+}: {
+  brand: BrandSeoConfig;
+  rightLabel?: string;
+}): React.ReactElement {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "18px",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "42px",
+            height: "42px",
+            borderRadius: "14px",
+            color: "#ffffff",
+            fontSize: "20px",
+            fontWeight: 800,
+            background: `linear-gradient(135deg, ${hexToRgba(brand.brandPrimary, 1)} 0%, ${hexToRgba(brand.brandAccent, 0.92)} 100%)`,
+          }}
+        >
+          DS
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          <span
+            style={{
+              fontSize: "24px",
+              fontWeight: 700,
+              color: "#ffffff",
+              fontFamily: '"Playfair Display", serif',
+            }}
+          >
+            {brand.siteName}
+          </span>
+          <span
+            style={{
+              fontSize: "14px",
+              textTransform: "uppercase",
+              letterSpacing: "2px",
+              color: "rgba(248,250,252,0.68)",
+            }}
+          >
+            Addis Ababa, Ethiopia
+          </span>
+        </div>
+      </div>
+
+      <span
+        style={{
+          fontSize: "16px",
+          letterSpacing: "1.6px",
+          textTransform: "uppercase",
+          color: "rgba(248,250,252,0.72)",
+        }}
+      >
+        {rightLabel || brand.siteUrl.replace(/^https?:\/\//, "")}
+      </span>
+    </div>
+  );
+}
+
+export function DisplayTitle({
+  title,
+  maxLength = 96,
+}: {
+  title: string;
+  maxLength?: number;
+}): React.ReactElement {
+  const display = truncate(title, maxLength);
 
   return (
     <h1
       style={{
         margin: 0,
-        color: "#ffffff",
-        fontSize: displayTitle.length > 60 ? "50px" : "60px",
+        fontSize: titleSize(display),
+        lineHeight: 1.02,
         fontWeight: 700,
-        lineHeight: 1.1,
-        maxWidth: "790px",
-        textShadow: "0 12px 40px rgba(0, 0, 0, 0.35)",
+        letterSpacing: "-1.8px",
+        color: "#ffffff",
+        fontFamily: '"Playfair Display", serif',
+        maxWidth: "760px",
       }}
     >
-      {displayTitle}
+      {display}
     </h1>
   );
-};
+}
 
-export const OgDescription = ({
+export function Lead({
   description,
+  maxLength = 210,
 }: {
   description: string;
-}): React.ReactElement => {
-  const displayDescription =
-    description.length > 180
-      ? `${description.substring(0, 177).trim()}...`
-      : description;
+  maxLength?: number;
+}): React.ReactElement {
+  const display = truncate(description, maxLength);
 
   return (
     <p
       style={{
         margin: 0,
-        color: "rgba(255,255,255,0.9)",
-        fontSize: "24px",
-        lineHeight: 1.45,
-        maxWidth: "780px",
-        fontFamily: '"Manrope", sans-serif',
+        maxWidth: "760px",
+        fontSize: bodySize(display),
+        lineHeight: 1.35,
+        color: "rgba(241,245,249,0.9)",
       }}
     >
-      {displayDescription}
+      {display}
     </p>
   );
-};
+}
 
-export const OgFooter = ({
+export function HighlightChips({
+  items,
+  brand,
+}: {
+  items: string[];
+  brand: BrandSeoConfig;
+}): React.ReactElement | null {
+  if (items.length === 0) return null;
+
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+      {items.map((item) => (
+        <div
+          key={item}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "10px 16px",
+            borderRadius: "999px",
+            border: `1px solid ${hexToRgba(brand.brandAccent, 0.28)}`,
+            background: hexToRgba(brand.brandSecondary, 0.44),
+            color: "#f8fafc",
+            fontSize: "17px",
+            fontWeight: 600,
+          }}
+        >
+          {truncate(item, 28)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function MetaBar({
   author,
   date,
   readTime,
-  brand,
 }: {
   author?: string;
   date?: string;
   readTime?: number;
+}): React.ReactElement | null {
+  const items = [
+    author ? `By ${truncate(author, 32)}` : null,
+    date ? truncate(date, 26) : null,
+    readTime ? `${readTime} min read` : null,
+  ].filter(Boolean) as string[];
+
+  if (items.length === 0) return null;
+
+  return (
+    <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+      {items.map((item) => (
+        <div
+          key={item}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "10px 14px",
+            borderRadius: "14px",
+            background: "rgba(255,255,255,0.08)",
+            color: "rgba(241,245,249,0.92)",
+            fontSize: "18px",
+          }}
+        >
+          {item}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function BrandStamp({
+  brand,
+  label,
+}: {
   brand: BrandSeoConfig;
-}): React.ReactElement => {
-  const details: string[] = [];
-  if (author) details.push(`By ${author}`);
-  if (date) details.push(date);
-  if (readTime) details.push(`${readTime} min read`);
+  label: string;
+}): React.ReactElement {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        padding: "22px",
+        borderRadius: "28px",
+        border: `1px solid ${hexToRgba(brand.brandAccent, 0.24)}`,
+        background: "rgba(8, 13, 28, 0.54)",
+      }}
+    >
+      <span
+        style={{
+          fontSize: "14px",
+          textTransform: "uppercase",
+          letterSpacing: "2px",
+          color: "rgba(241,245,249,0.64)",
+        }}
+      >
+        {label}
+      </span>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "18px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "86px",
+            height: "86px",
+            borderRadius: "22px",
+            color: "#ffffff",
+            fontSize: "40px",
+            fontWeight: 800,
+            fontFamily: '"Playfair Display", serif',
+            background: `linear-gradient(135deg, ${hexToRgba(brand.brandPrimary, 1)} 0%, ${hexToRgba(brand.brandAccent, 0.84)} 100%)`,
+          }}
+        >
+          DS
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "6px",
+            flex: 1,
+          }}
+        >
+          <span
+            style={{
+              fontSize: "26px",
+              fontWeight: 700,
+              color: "#ffffff",
+              fontFamily: '"Playfair Display", serif',
+            }}
+          >
+            {brand.siteName}
+          </span>
+          <span
+            style={{
+              fontSize: "18px",
+              lineHeight: 1.35,
+              color: "rgba(241,245,249,0.78)",
+            }}
+          >
+            {brand.defaultDescription}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function InfoCard({
+  brand,
+  title,
+  body,
+}: {
+  brand: BrandSeoConfig;
+  title: string;
+  body: string;
+}): React.ReactElement {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        padding: "20px 22px",
+        borderRadius: "22px",
+        border: `1px solid ${hexToRgba(brand.brandAccent, 0.18)}`,
+        background: "rgba(255,255,255,0.05)",
+      }}
+    >
+      <span
+        style={{
+          fontSize: "14px",
+          textTransform: "uppercase",
+          letterSpacing: "2px",
+          color: "rgba(241,245,249,0.6)",
+        }}
+      >
+        {title}
+      </span>
+      <span
+        style={{
+          fontSize: "22px",
+          lineHeight: 1.32,
+          color: "#ffffff",
+          fontFamily: '"Playfair Display", serif',
+        }}
+      >
+        {truncate(body, 92)}
+      </span>
+    </div>
+  );
+}
+
+export function VisualPanel({
+  brand,
+  imageUrl,
+  label,
+}: {
+  brand: BrandSeoConfig;
+  imageUrl?: string | null;
+  label: string;
+}): React.ReactElement {
+  if (imageUrl) {
+    return (
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          flex: 1,
+          borderRadius: "32px",
+          overflow: "hidden",
+          minHeight: "100%",
+          border: `1px solid ${hexToRgba(brand.brandAccent, 0.18)}`,
+          background: "rgba(255,255,255,0.06)",
+        }}
+      >
+        <img
+          src={imageUrl}
+          alt=""
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: [
+              "linear-gradient(180deg, rgba(7,11,22,0.12) 0%, rgba(7,11,22,0.78) 100%)",
+              `radial-gradient(circle at 20% 18%, ${hexToRgba(brand.brandAccent, 0.18)} 0%, rgba(255,255,255,0) 26%)`,
+            ].join(", "),
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "24px",
+            right: "24px",
+            bottom: "24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "14px",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "14px",
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              color: "rgba(248,250,252,0.72)",
+            }}
+          >
+            {label}
+          </span>
+          <div
+            style={{
+              width: "64px",
+              height: "64px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "18px",
+              background: hexToRgba(brand.brandPrimary, 0.78),
+              color: "#ffffff",
+              fontSize: "28px",
+              fontWeight: 800,
+              fontFamily: '"Playfair Display", serif',
+            }}
+          >
+            DS
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "space-between",
-        alignItems: "center",
-        gap: "24px",
+        borderRadius: "32px",
+        minHeight: "100%",
+        padding: "28px",
+        border: `1px solid ${hexToRgba(brand.brandAccent, 0.18)}`,
+        background: [
+          `linear-gradient(135deg, ${hexToRgba(brand.brandPrimary, 0.35)} 0%, rgba(255,255,255,0.05) 100%)`,
+          `radial-gradient(circle at 72% 18%, ${hexToRgba(brand.brandAccent, 0.18)} 0%, rgba(255,255,255,0) 28%)`,
+        ].join(", "),
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        {details.length > 0 ? (
-          details.map((item, index) => (
-            <span
-              key={`${item}-${index}`}
-              style={{
-                color: "rgba(255,255,255,0.78)",
-                fontSize: "17px",
-                fontWeight: 500,
-                fontFamily: '"Manrope", sans-serif',
-              }}
-            >
-              {index > 0 ? `• ${item}` : item}
-            </span>
-          ))
-        ) : (
-          <span
-            style={{
-              color: "rgba(255,255,255,0.78)",
-              fontSize: "17px",
-              fontWeight: 500,
-              fontFamily: '"Manrope", sans-serif',
-            }}
-          >
-            {brand.defaultDescription}
-          </span>
-        )}
-      </div>
-
-      <div
+      <span
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          backgroundColor: "rgba(0,0,0,0.2)",
-          padding: "10px 14px",
-          borderRadius: "14px",
-          border: "1px solid rgba(255,255,255,0.25)",
+          fontSize: "14px",
+          letterSpacing: "2px",
+          textTransform: "uppercase",
+          color: "rgba(248,250,252,0.64)",
         }}
       >
+        {label}
+      </span>
+      <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
         <div
           style={{
-            width: "34px",
-            height: "34px",
-            borderRadius: "9px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            width: "100%",
+            height: "220px",
+            borderRadius: "28px",
+            border: `1px solid ${hexToRgba(brand.brandAccent, 0.18)}`,
+            color: "#ffffff",
+            fontSize: "112px",
             fontWeight: 800,
-            fontSize: "18px",
-            color: "#fff",
-            background: `linear-gradient(130deg, ${brand.brandAccent} 0%, ${brand.brandPrimary} 100%)`,
+            fontFamily: '"Playfair Display", serif',
+            background: "rgba(5, 10, 21, 0.32)",
           }}
         >
-          {brand.siteName.charAt(0).toUpperCase()}
+          DS
         </div>
-        <span
-          style={{
-            color: "#fff",
-            fontSize: "20px",
-            fontWeight: 600,
-          }}
-        >
-          {brand.siteName}
-        </span>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <span
+            style={{
+              fontSize: "28px",
+              lineHeight: 1.15,
+              color: "#ffffff",
+              fontFamily: '"Playfair Display", serif',
+            }}
+          >
+            Integrated delivery across sourcing, construction, and operations.
+          </span>
+          <span
+            style={{
+              fontSize: "17px",
+              lineHeight: 1.35,
+              color: "rgba(241,245,249,0.74)",
+            }}
+          >
+            Route-aware visual metadata generated dynamically with the brand
+            system.
+          </span>
+        </div>
       </div>
     </div>
   );
-};
+}
 
-export const OgTags = ({
-  tags,
+export function DetailTemplate({
+  data,
   brand,
+  defaultCategory,
+  railTitle,
 }: {
-  tags: string[];
+  data: OgImageData;
   brand: BrandSeoConfig;
-}): React.ReactElement => {
-  const displayTags = tags.slice(0, 4);
+  defaultCategory: string;
+  railTitle: string;
+}): React.ReactElement {
+  const highlights = buildHighlights(data);
+
   return (
-    <div style={{ display: "flex", gap: "11px", flexWrap: "wrap" }}>
-      {displayTags.map((tag, index) => (
-        <span
-          key={`${tag}-${index}`}
+    <div style={createCanvasStyle(brand)}>
+      <BackgroundDecor brand={brand} />
+      <Frame>
+        <BrandLine brand={brand} rightLabel={railTitle} />
+        <div
           style={{
-            fontSize: "15px",
-            fontWeight: 500,
-            color: "#ffffff",
-            borderRadius: "999px",
-            padding: "8px 14px",
-            backgroundColor: "rgba(0,0,0,0.22)",
-            border: `1px solid ${brand.brandAccent}`,
-            fontFamily: '"Manrope", sans-serif',
+            display: "flex",
+            gap: "28px",
+            flex: 1,
+            marginTop: "32px",
           }}
         >
-          {tag}
-        </span>
-      ))}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              gap: "24px",
+              flex: 1.25,
+              padding: "34px",
+              borderRadius: "34px",
+              border: `1px solid ${hexToRgba(brand.brandAccent, 0.16)}`,
+              background: "rgba(7, 11, 22, 0.44)",
+            }}
+          >
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+            >
+              <SectionChip
+                label={data.category || defaultCategory}
+                brand={brand}
+              />
+              <DisplayTitle title={data.title} />
+              {data.description ? (
+                <Lead description={data.description} />
+              ) : null}
+            </div>
+
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "18px" }}
+            >
+              <HighlightChips items={highlights} brand={brand} />
+              <MetaBar
+                author={data.author}
+                date={data.date}
+                readTime={data.readTime}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+              width: "348px",
+            }}
+          >
+            <VisualPanel
+              brand={brand}
+              imageUrl={data.imageUrl}
+              label={railTitle}
+            />
+          </div>
+        </div>
+      </Frame>
     </div>
   );
-};
+}
+
+export function getThemeLabel(theme: OgPageTheme): string {
+  return THEME_LABELS[theme];
+}
+
+export function getPageHighlights(data: OgImageData): string[] {
+  return buildHighlights(data);
+}

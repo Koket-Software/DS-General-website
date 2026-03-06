@@ -14,6 +14,20 @@ export type OgImageType =
   | "page"
   | "default";
 
+export const PAGE_THEMES = [
+  "home",
+  "about",
+  "articles",
+  "gallery",
+  "contact",
+  "career",
+  "legal",
+  "sector",
+  "generic",
+] as const;
+
+export type OgPageTheme = (typeof PAGE_THEMES)[number];
+
 export interface OgImageData {
   title: string;
   description?: string;
@@ -24,6 +38,8 @@ export interface OgImageData {
   date?: string;
   readTime?: number;
   tags?: string[];
+  highlights?: string[];
+  pageTheme?: OgPageTheme;
 }
 
 export interface OgImageOptions {
