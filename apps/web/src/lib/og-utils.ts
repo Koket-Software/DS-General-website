@@ -15,12 +15,24 @@ export const OG_ENDPOINTS = {
 } as const;
 
 export type OgImageType = "blog" | "service" | "project" | "career" | "page";
+export type OgPageTheme =
+  | "home"
+  | "about"
+  | "articles"
+  | "gallery"
+  | "contact"
+  | "career"
+  | "legal"
+  | "sector"
+  | "generic";
 
 export interface PageOgImageParams {
   title: string;
   description?: string;
   category?: string;
   image?: string;
+  theme?: OgPageTheme;
+  highlights?: string[];
 }
 
 type SeoOgType = "website" | "article";
@@ -71,6 +83,13 @@ export function getPageOgImageUrl(params: PageOgImageParams): string {
   if (params.description) searchParams.set("description", params.description);
   if (params.category) searchParams.set("category", params.category);
   if (params.image) searchParams.set("image", params.image);
+  if (params.theme) searchParams.set("theme", params.theme);
+  params.highlights
+    ?.filter(Boolean)
+    .slice(0, 4)
+    .forEach((highlight) => {
+      searchParams.append("highlight", highlight);
+    });
 
   return `${OG_BASE_URL}${OG_ENDPOINTS.PAGE}?${searchParams.toString()}`;
 }

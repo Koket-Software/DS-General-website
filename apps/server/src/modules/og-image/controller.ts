@@ -1,12 +1,12 @@
 import type { Context } from "hono";
 
-import { generateOgImage, generateDefaultOgImage } from "./service";
+import { generateDefaultOgImage, generateOgImage } from "./service";
 import type { OgImageData } from "./types";
+import { PAGE_THEMES, type OgPageTheme } from "./types";
 import { getServerBrandSeoConfig } from "../../shared/branding/brand-seo-config";
 import type { DbClient } from "../../shared/db";
 import { logger } from "../../shared/logger";
 
-// Repository types
 type BlogData = {
   title: string;
   excerpt: string | null;
@@ -54,12 +54,11 @@ export interface OgImageControllerDeps {
   };
 }
 
+const PAGE_THEME_SET = new Set<string>(PAGE_THEMES);
+
 export const createOgImageController = (deps: OgImageControllerDeps) => {
   const brand = getServerBrandSeoConfig();
 
-  /**
-   * Helper to format date for display
-   */
   const formatDate = (dateStr: string | null): string | undefined => {
     if (!dateStr) return undefined;
     const date = new Date(dateStr);
@@ -70,16 +69,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
     });
   };
 
-  /**
-   * Return image response
-   */
   const returnImageResponse = async (
     imageResponse: Response,
   ): Promise<Response> => {
-    // Get the image data from the ImageResponse
     const arrayBuffer = await imageResponse.arrayBuffer();
 
-    // Create headers - preserve cache control from the original response
     const headers = new Headers();
     headers.set("Content-Type", "image/png");
     headers.set(
@@ -101,13 +95,26 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
   const sanitizeText = (value: string | undefined, maxLength: number) => {
     if (!value) return undefined;
-    return value.trim().slice(0, maxLength);
+    return value.trim().replace(/\s+/g, " ").slice(0, maxLength);
+  };
+
+  const sanitizeHighlights = (c: Context): string[] => {
+    const url = new URL(c.req.url);
+    return url.searchParams
+      .getAll("highlight")
+      .map((value) => sanitizeText(value, 32))
+      .filter((value): value is string => Boolean(value))
+      .slice(0, 4);
+  };
+
+  const sanitizePageTheme = (
+    value: string | undefined,
+  ): OgPageTheme | undefined => {
+    if (!value) return undefined;
+    return PAGE_THEME_SET.has(value) ? (value as OgPageTheme) : undefined;
   };
 
   return {
-    /**
-     * Generate OG image for a blog post
-     */
     async getBlogOgImage(c: Context): Promise<Response> {
       const { slug } = c.req.param();
 
@@ -127,11 +134,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           description: blog.excerpt || undefined,
           imageUrl: blog.featuredImageUrl,
           type: "blog",
-          category: "Blog",
+          category: "Article",
           author: blog.author?.name,
           date: formatDate(blog.publishDate),
           readTime: blog.readTimeMinutes || undefined,
-          tags: blog.tags?.map((t) => t.name) || [],
+          tags: blog.tags?.map((tag) => tag.name) || [],
         };
 
         const imageResponse = await generateOgImage(data, { brand });
@@ -142,9 +149,6 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
       }
     },
 
-    /**
-     * Generate OG image for a service page
-     */
     async getServiceOgImage(c: Context): Promise<Response> {
       const { slug } = c.req.param();
 
@@ -164,6 +168,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           description: service.excerpt || undefined,
           imageUrl: service.featuredImageUrl,
           type: "service",
+          category: "Service",
         };
 
         const imageResponse = await generateOgImage(data, { brand });
@@ -174,9 +179,6 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
       }
     },
 
-    /**
-     * Generate OG image for a case study/project
-     */
     async getProjectOgImage(c: Context): Promise<Response> {
       const { slug } = c.req.param();
 
@@ -197,7 +199,8 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           description: project.excerpt || undefined,
           imageUrl: project.featuredImageUrl,
           type: "project",
-          tags: project.tags?.map((t) => t.name) || [],
+          category: "Project",
+          tags: project.tags?.map((tag) => tag.name) || [],
         };
 
         const imageResponse = await generateOgImage(data, { brand });
@@ -208,9 +211,6 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
       }
     },
 
-    /**
-     * Generate OG image for a career/vacancy
-     */
     async getCareerOgImage(c: Context): Promise<Response> {
       const { slug } = c.req.param();
 
@@ -225,7 +225,6 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           return getDefaultResponse();
         }
 
-        // Build tags from job details
         const jobTags: string[] = [];
         if (vacancy.department) jobTags.push(vacancy.department);
         if (vacancy.location) jobTags.push(vacancy.location);
@@ -247,14 +246,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
       }
     },
 
-    /**
-     * Generate OG image for a generic page
-     */
     async getPageOgImage(c: Context): Promise<Response> {
       const title = sanitizeText(c.req.query("title"), 120);
       const description = sanitizeText(c.req.query("description"), 220);
       const category = sanitizeText(c.req.query("category"), 50);
       const imageUrl = c.req.query("image");
+      const pageTheme = sanitizePageTheme(c.req.query("theme"));
+      const highlights = sanitizeHighlights(c);
 
       try {
         if (!title) {
@@ -267,6 +265,8 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
           imageUrl: imageUrl || null,
           type: "page",
           category: category || undefined,
+          pageTheme,
+          highlights,
         };
 
         const imageResponse = await generateOgImage(data, { brand });
@@ -277,15 +277,11 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
       }
     },
 
-    /**
-     * Generate default OG image
-     */
     async getDefaultOgImage(c: Context): Promise<Response> {
       try {
         return getDefaultResponse();
       } catch (error) {
         logger.error("Error generating default OG image", error as Error);
-        // Return a basic error response
         return c.text("Error generating image", 500);
       }
     },

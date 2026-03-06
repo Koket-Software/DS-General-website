@@ -1,15 +1,16 @@
 import type { Context } from "hono";
 
 import {
-  generateHtmlShell,
-  createDefaultMeta,
   createBlogMeta,
-  createServiceMeta,
-  createProjectMeta,
   createCareerMeta,
-  createStaticPageMeta,
+  createDefaultMeta,
   createGenericPathMeta,
+  createHomeMeta,
+  createProjectMeta,
   createSectorMeta,
+  createServiceMeta,
+  createStaticPageMeta,
+  generateHtmlShell,
 } from "./service";
 import type { PageMeta, SsrConfig } from "./types";
 import { getServerBrandSeoConfig } from "../../shared/branding/brand-seo-config";
@@ -89,14 +90,63 @@ const normalizeLookupPath = (path: string): string => {
 
 const staticPageRegistry = new Map<
   string,
-  { title: string; description: string }
+  {
+    title: string;
+    description: string;
+    category: string;
+    pageTheme:
+      | "about"
+      | "articles"
+      | "gallery"
+      | "contact"
+      | "career"
+      | "legal";
+    highlights: string[];
+    section: string;
+  }
 >([
   [
     "/about",
     {
-      title: "About Us",
+      title: "About DS General PLC",
       description:
-        "Learn about our mission, values, and the team behind our digital products.",
+        "Learn how DS General PLC combines sourcing, construction, and operational delivery into one integrated execution model.",
+      category: "About",
+      pageTheme: "about",
+      highlights: [
+        "Mission-led growth",
+        "Integrated execution",
+        "Ethiopian market focus",
+      ],
+      section: "About",
+    },
+  ],
+  [
+    "/articles",
+    {
+      title: "Articles & Insights",
+      description:
+        "Read practical articles on supply chains, engineering operations, and project delivery from the DS General PLC team.",
+      category: "Articles",
+      pageTheme: "articles",
+      highlights: [
+        "Engineering stories",
+        "Operational insights",
+        "Field intelligence",
+      ],
+      section: "Articles",
+    },
+  ],
+  [
+    "/career",
+    {
+      title: "Careers",
+      description:
+        "Explore open roles at DS General PLC and join teams building dependable sourcing, supply, and construction operations.",
+      category: "Careers",
+      pageTheme: "career",
+      highlights: ["Open roles", "Operational excellence", "Build with us"],
+      section: "Careers",
     },
   ],
   [
@@ -104,90 +154,80 @@ const staticPageRegistry = new Map<
     {
       title: "Contact Us",
       description:
-        "Connect with our team to discuss your next product or platform initiative.",
-    },
-  ],
-  [
-    "/schedule",
-    {
-      title: "Schedule a Meeting",
-      description:
-        "Book time with our team to discuss your requirements and goals.",
-    },
-  ],
-  [
-    "/blogs",
-    {
-      title: "Blog",
-      description:
-        "Insights, engineering stories, and practical guidance from our team.",
-    },
-  ],
-  [
-    "/services",
-    {
-      title: "Services",
-      description:
-        "Explore our engineering, product, and consulting capabilities.",
-    },
-  ],
-  [
-    "/projects",
-    {
-      title: "Projects",
-      description:
-        "Browse selected projects and case studies across industries.",
-    },
-  ],
-  [
-    "/careers",
-    {
-      title: "Careers",
-      description:
-        "Discover open roles and opportunities to build meaningful products.",
+        "Talk with DS General PLC about procurement, project planning, sourcing partnerships, and construction delivery.",
+      category: "Contact",
+      pageTheme: "contact",
+      highlights: ["Quotes", "Procurement", "Project planning"],
+      section: "Contact",
     },
   ],
   [
     "/gallery",
     {
       title: "Gallery",
-      description: "Explore visuals, moments, and highlights from our work.",
+      description:
+        "Browse visual highlights from DS General PLC projects, deliveries, and on-the-ground operational work.",
+      category: "Gallery",
+      pageTheme: "gallery",
+      highlights: ["Field moments", "Delivery snapshots", "Project highlights"],
+      section: "Gallery",
     },
   ],
   [
-    "/sectors",
+    "/privacy-policy",
     {
-      title: "Business Sectors",
-      description: "See the industries and domains where we deliver outcomes.",
+      title: "Privacy Policy",
+      description:
+        "Review how DS General PLC collects, uses, and safeguards information shared through the website.",
+      category: "Privacy Policy",
+      pageTheme: "legal",
+      highlights: [
+        "Responsible handling",
+        "Clear disclosure",
+        "Policy transparency",
+      ],
+      section: "Privacy Policy",
+    },
+  ],
+  [
+    "/terms-of-service",
+    {
+      title: "Terms of Service",
+      description:
+        "Read the website terms governing access to DS General PLC content, service information, and inquiries.",
+      category: "Terms of Service",
+      pageTheme: "legal",
+      highlights: ["Usage terms", "Service clarity", "Commercial context"],
+      section: "Terms of Service",
     },
   ],
 ]);
 
 type Resolver = (
-  requestedPath: string,
+  canonicalPath: string,
   lookupPath: string,
   deps: SsrControllerDeps,
   config: SsrConfig,
 ) => Promise<PageMeta | null>;
 
 const dynamicResolvers: Resolver[] = [
-  async (requestedPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/blogs\/([^/]+)$/);
+  async (canonicalPath, lookupPath, deps, config) => {
+    const match = lookupPath.match(/^\/articles\/([^/]+)$/);
     if (!match) return null;
     const slug = match[1]!;
     const blog = await deps.blogRepository.findPublishedBySlug(slug);
     if (!blog) return null;
-    return createBlogMeta(slug, requestedPath, blog, config);
+    return createBlogMeta(slug, canonicalPath, blog, config);
   },
-  async (requestedPath, lookupPath, deps, config) => {
+  async (canonicalPath, lookupPath, deps, config) => {
     const match = lookupPath.match(/^\/services\/([^/]+)$/);
     if (!match) return null;
     const slug = match[1]!;
     const service = await deps.serviceRepository.findPublicBySlug(slug);
     if (!service) return null;
-    return createServiceMeta(slug, requestedPath, service, config);
+    return createServiceMeta(slug, canonicalPath, service, config);
   },
-  async (requestedPath, lookupPath, deps, config) => {
+  async (canonicalPath, lookupPath, deps, config) => {
     const match = lookupPath.match(/^\/projects\/([^/]+)$/);
     if (!match) return null;
     const slug = match[1]!;
@@ -195,44 +235,40 @@ const dynamicResolvers: Resolver[] = [
       (await deps.caseStudyRepository.findBySlug(slug)) ||
       (await deps.productRepository.findBySlug(slug));
     if (!project) return null;
-    return createProjectMeta(slug, requestedPath, project, config);
+    return createProjectMeta(slug, canonicalPath, project, config);
   },
-  async (requestedPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/careers\/([^/]+)$/);
+  async (canonicalPath, lookupPath, deps, config) => {
+    const match = lookupPath.match(/^\/career\/([^/]+)$/);
     if (!match) return null;
     const slug = match[1]!;
     const career = await deps.vacancyRepository.findPublicBySlug(slug);
     if (!career) return null;
-    return createCareerMeta(slug, requestedPath, career, config);
+    return createCareerMeta(slug, canonicalPath, career, config);
   },
-  async (requestedPath, lookupPath, deps, config) => {
+  async (canonicalPath, lookupPath, deps, config) => {
     const match = lookupPath.match(/^\/sectors\/([^/]+)$/);
     if (!match) return null;
     const slug = match[1]!;
     const sector =
       await deps.businessSectorRepository.findPublishedBySlug(slug);
     if (!sector) return null;
-    return createSectorMeta(requestedPath, sector, config);
+    return createSectorMeta(canonicalPath, sector, config);
   },
 ];
 
 const resolveStaticMeta = (
-  requestedPath: string,
+  canonicalPath: string,
   lookupPath: string,
   config: SsrConfig,
 ): PageMeta | null => {
   if (lookupPath === "/") {
-    return createDefaultMeta(requestedPath, config);
+    return createHomeMeta(canonicalPath, config);
   }
 
   const staticMeta = staticPageRegistry.get(lookupPath);
   if (!staticMeta) return null;
-  return createStaticPageMeta(
-    requestedPath,
-    staticMeta.title,
-    staticMeta.description,
-    config,
-  );
+
+  return createStaticPageMeta(canonicalPath, staticMeta, config);
 };
 
 async function getMetaForPath(
@@ -241,16 +277,17 @@ async function getMetaForPath(
   config: SsrConfig,
 ): Promise<PageMeta> {
   const lookupPath = normalizeLookupPath(requestedPath);
+  const canonicalPath = lookupPath;
 
   for (const resolver of dynamicResolvers) {
-    const resolved = await resolver(requestedPath, lookupPath, deps, config);
+    const resolved = await resolver(canonicalPath, lookupPath, deps, config);
     if (resolved) return resolved;
   }
 
-  const staticMeta = resolveStaticMeta(requestedPath, lookupPath, config);
+  const staticMeta = resolveStaticMeta(canonicalPath, lookupPath, config);
   if (staticMeta) return staticMeta;
 
-  return createGenericPathMeta(requestedPath, config);
+  return createGenericPathMeta(canonicalPath, config);
 }
 
 export const createSsrController = (deps: SsrControllerDeps) => {

@@ -15,6 +15,7 @@ The website already has a server-side OG image generator using `@vercel/og`, plu
 - Keep dynamic detail pages for articles, careers, sectors, services, and projects aligned with the same visual system.
 - Preserve the existing crawler SSR pipeline so social bots receive the correct meta tags without introducing a new rendering architecture.
 - Keep the implementation easy to extend when new public pages are added.
+- Ensure the static Vite entry shell (`apps/web/index.html`) points at the generated homepage OG card and uses cleaner branded loading hints.
 
 ## Non-Goals
 
@@ -61,42 +62,44 @@ Use an industrial-editorial share-card system:
 
 ### Phase 1: OG system design and template refactor
 
-- [ ] Extend OG image data/types so templates can express route-specific themes and highlight chips.
-- [ ] Replace the current mostly-generic templates with a stronger branded visual system.
-- [ ] Create a dedicated homepage variant that feels like the flagship share image.
-- [ ] Keep fallback behavior intact when upstream data is missing.
+- [x] Extend OG image data/types so templates can express route-specific themes and highlight chips.
+- [x] Replace the current mostly-generic templates with a stronger branded visual system.
+- [x] Create a dedicated homepage variant that feels like the flagship share image.
+- [x] Keep fallback behavior intact when upstream data is missing.
 
 Tests for this phase:
 
-- [ ] Run server type checks after refactoring template/data contracts.
+- [x] Run server type checks after refactoring template/data contracts.
 
 ### Phase 2: Public route coverage in SSR metadata
 
-- [ ] Replace the outdated static-page registry with actual public route definitions.
-- [ ] Add dedicated meta generation for the homepage.
-- [ ] Ensure every public route resolves to a branded dynamic OG image URL.
-- [ ] Keep article and career detail pages dynamic through repository-backed resolvers.
+- [x] Replace the outdated static-page registry with actual public route definitions.
+- [x] Add dedicated meta generation for the homepage.
+- [x] Ensure every public route resolves to a branded dynamic OG image URL.
+- [x] Keep article and career detail pages dynamic through repository-backed resolvers.
 
 Tests for this phase:
 
-- [ ] Run server type checks after SSR route metadata updates.
+- [x] Run server type checks after SSR route metadata updates.
 
 ### Phase 3: Shared utility alignment and final verification
 
-- [ ] Align frontend OG utilities with any new page OG parameters.
-- [ ] Verify there are no type regressions in touched packages.
-- [ ] Review for sensible fallbacks and future maintainability.
+- [x] Align frontend OG utilities with any new page OG parameters.
+- [x] Verify there are no type regressions in touched packages.
+- [x] Review for sensible fallbacks and future maintainability.
+- [x] Point app-level default OG usage at the generated homepage share card instead of the generic fallback endpoint.
+- [x] Clean up `apps/web/index.html` for brand consistency and useful prefetch/preconnect hints.
 
 Tests for this phase:
 
-- [ ] Run targeted workspace type checks for `apps/server` and `apps/web`.
+- [x] Run targeted workspace type checks for `apps/server` and `apps/web`.
 
 ## Task List
 
-- [ ] Write spec
-- [ ] Refactor OG image types and templates
-- [ ] Add homepage-specific OG handling
-- [ ] Map every public route to dynamic OG metadata
-- [ ] Align web OG utilities
-- [ ] Run validation
-- [ ] Mark completed tasks in this spec
+- [x] Write spec
+- [x] Refactor OG image types and templates
+- [x] Add homepage-specific OG handling
+- [x] Map every public route to dynamic OG metadata
+- [x] Align web OG utilities
+- [x] Run validation
+- [x] Mark completed tasks in this spec

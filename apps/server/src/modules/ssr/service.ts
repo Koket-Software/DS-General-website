@@ -1,9 +1,77 @@
 import type { PageMeta, SsrConfig } from "./types";
 
+interface StaticPageMetaInput {
+  title: string;
+  description: string;
+  category?: string;
+  pageTheme?:
+    | "home"
+    | "about"
+    | "articles"
+    | "gallery"
+    | "contact"
+    | "career"
+    | "legal"
+    | "sector"
+    | "generic";
+  highlights?: string[];
+  imageUrl?: string;
+  section?: string;
+}
+
 const toAbsoluteUrl = (value: string, siteUrl: string): string => {
   if (/^https?:\/\//i.test(value)) return value;
   const normalized = value.startsWith("/") ? value : `/${value}`;
   return `${siteUrl}${normalized}`;
+};
+
+const sanitizeOgText = (value: string, maxLength: number): string =>
+  value.trim().replace(/\s+/g, " ").slice(0, maxLength);
+
+const uniqueValues = (values: Array<string | null | undefined>): string[] => {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  values.forEach((value) => {
+    if (!value) return;
+    const normalized = value.trim();
+    if (!normalized || seen.has(normalized)) return;
+    seen.add(normalized);
+    result.push(normalized);
+  });
+
+  return result;
+};
+
+const buildPageOgImageUrl = (input: StaticPageMetaInput): string => {
+  const searchParams = new URLSearchParams({
+    title: sanitizeOgText(input.title, 110),
+  });
+
+  const description = sanitizeOgText(input.description, 220);
+  if (description) {
+    searchParams.set("description", description);
+  }
+
+  if (input.category) {
+    searchParams.set("category", sanitizeOgText(input.category, 40));
+  }
+
+  if (input.pageTheme) {
+    searchParams.set("theme", input.pageTheme);
+  }
+
+  if (input.imageUrl) {
+    searchParams.set("image", input.imageUrl);
+  }
+
+  uniqueValues(input.highlights || [])
+    .slice(0, 4)
+    .forEach((highlight) => {
+      searchParams.append("highlight", sanitizeOgText(highlight, 32));
+    });
+
+  return `/api/og/page?${searchParams.toString()}`;
 };
 
 export function generateHtmlShell(meta: PageMeta, config: SsrConfig): string {
@@ -133,6 +201,27 @@ export function createDefaultMeta(path: string, config: SsrConfig): PageMeta {
   };
 }
 
+export function createHomeMeta(
+  canonicalPath: string,
+  config: SsrConfig,
+): PageMeta {
+  return {
+    title: config.defaultTitle,
+    description: config.defaultDescription,
+    ogImage: buildPageOgImageUrl({
+      title: "Integrated Construction & Global Supply Chain Solutions",
+      description: config.defaultDescription,
+      category: config.siteName,
+      pageTheme: "home",
+      highlights: ["General Contracting", "Material Supply", "Global Sourcing"],
+      section: "Home",
+    }),
+    ogType: "website",
+    canonicalUrl: canonicalPath,
+    section: "Home",
+  };
+}
+
 export function createBlogMeta(
   slug: string,
   canonicalPath: string,
@@ -153,7 +242,7 @@ export function createBlogMeta(
     canonicalUrl: canonicalPath,
     author: blog.author || undefined,
     publishedTime: blog.publishDate || undefined,
-    section: "Blog",
+    section: "Articles",
     tags: blog.tags?.map((t) => t.name),
   };
 }
@@ -234,19 +323,23 @@ export function createSectorMeta(
 ): PageMeta {
   const pageTitle = `${sector.title} | ${config.siteName}`;
   const description = sector.excerpt || config.defaultDescription;
-  const searchParams = new URLSearchParams({
-    title: sector.title,
-    description,
-    category: "Business Sectors",
-  });
-  if (sector.featuredImageUrl) {
-    searchParams.set("image", sector.featuredImageUrl);
-  }
 
   return {
     title: pageTitle,
     description,
-    ogImage: `/api/og/page?${searchParams.toString()}`,
+    ogImage: buildPageOgImageUrl({
+      title: sector.title,
+      description,
+      category: "Business Sector",
+      pageTheme: "sector",
+      imageUrl: sector.featuredImageUrl || undefined,
+      highlights: [
+        "Cross-border sourcing",
+        "Logistics execution",
+        "Reliable delivery",
+      ],
+      section: "Business Sectors",
+    }),
     ogType: "website",
     canonicalUrl: canonicalPath,
     section: "Business Sectors",
@@ -255,16 +348,16 @@ export function createSectorMeta(
 
 export function createStaticPageMeta(
   path: string,
-  title: string,
-  description: string,
+  input: StaticPageMetaInput,
   config: SsrConfig,
 ): PageMeta {
   return {
-    title: `${title} | ${config.siteName}`,
-    description,
-    ogImage: `/api/og/page?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
+    title: `${input.title} | ${config.siteName}`,
+    description: input.description,
+    ogImage: buildPageOgImageUrl(input),
     ogType: "website",
     canonicalUrl: path,
+    section: input.section,
   };
 }
 
@@ -279,7 +372,7 @@ export function createGenericPathMeta(
   const segments = withoutDemoPrefix.split("/").filter(Boolean);
 
   if (segments.length === 0) {
-    return createDefaultMeta(path, config);
+    return createHomeMeta(path, config);
   }
 
   const lastSegment = humanizePathSegment(segments[segments.length - 1]!);
@@ -289,7 +382,16 @@ export function createGenericPathMeta(
   return {
     title,
     description,
-    ogImage: `/api/og/page?title=${encodeURIComponent(lastSegment)}&description=${encodeURIComponent(description)}`,
+    ogImage: buildPageOgImageUrl({
+      title: lastSegment,
+      description,
+      category:
+        segments.length > 1
+          ? humanizePathSegment(segments[0]!)
+          : "Official Page",
+      pageTheme: "generic",
+      highlights: ["Trusted delivery", "Operational clarity", config.siteName],
+    }),
     ogType: "website",
     canonicalUrl: path,
     section:
