@@ -14,8 +14,8 @@ Production shape:
 
 - [x] Use [`.github/workflows/deploy.yml`](/Users/negusnati/Documents/dev/koket/ds-general/DS-General-website/.github/workflows/deploy.yml) as the production deploy workflow.
 - [x] Use [`docker-compose.prod.yml`](/Users/negusnati/Documents/dev/koket/ds-general/DS-General-website/docker-compose.prod.yml) for the VPS runtime.
-- [x] Use [`.env.prod.example`](/Users/negusnati/Documents/dev/koket/ds-general/DS-General-website/.env.prod.example) as the template for the VPS env file.
-- [x] Do not commit a real `.env.prod` file to Git.
+- [x] Use [`.env.prod.example`](/Users/negusnati/Documents/dev/koket/ds-general/DS-General-website/.env.prod.example) as the template content for the VPS env file.
+- [x] Do not commit a real `.env` or `.env.prod` file to Git.
 - [x] Auto-deploy from `main`; use `workflow_dispatch` for the first rollout and manual retries.
 
 ## 2. GitHub setup
@@ -35,12 +35,12 @@ What GitHub does on each deploy:
 
 - checks out the repo
 - SSHes into the VPS
-- verifies `/opt/ds-general/.env.prod` exists
+- verifies `/opt/ds-general/.env` exists
 - loads `PROXY_NETWORK` from that env file
 - fetches `origin/main`
 - resets the VPS checkout to the pushed commit
-- runs `docker compose --env-file .env.prod -f docker-compose.prod.yml build`
-- runs `docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans`
+- runs `docker compose --env-file .env -f docker-compose.prod.yml build`
+- runs `docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans`
 - prints container status and recent logs
 
 ## 3. VPS setup
@@ -65,11 +65,11 @@ git fetch origin main
 
 ```bash
 cd /opt/ds-general
-cp .env.prod.example .env.prod
-chmod 600 .env.prod
+cp .env.prod.example .env
+chmod 600 .env
 ```
 
-- [ ] Fill in all real values in `/opt/ds-general/.env.prod`.
+- [ ] Fill in all real values in `/opt/ds-general/.env`.
 
 Required values for this deployment:
 
@@ -116,7 +116,7 @@ docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 docker inspect -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{"\n"}}{{end}}' <npm-container-name>
 ```
 
-- [ ] Copy that network name into `PROXY_NETWORK` in `/opt/ds-general/.env.prod`.
+- [ ] Copy that network name into `PROXY_NETWORK` in `/opt/ds-general/.env`.
 - [ ] Verify it exists:
 
 ```bash
@@ -166,7 +166,7 @@ bun build
 
 - [ ] In GitHub Actions, trigger `workflow_dispatch` once for the first production rollout.
 - [ ] Watch for:
-  - [ ] missing `/opt/ds-general/.env.prod`
+  - [ ] missing `/opt/ds-general/.env`
   - [ ] missing `PROXY_NETWORK`
   - [ ] Git auth failures on the VPS
   - [ ] Docker build failures
@@ -176,8 +176,8 @@ bun build
 
 ```bash
 cd /opt/ds-general
-docker compose --env-file .env.prod -f docker-compose.prod.yml ps
-docker compose --env-file .env.prod -f docker-compose.prod.yml logs --tail=100
+docker compose --env-file .env -f docker-compose.prod.yml ps
+docker compose --env-file .env -f docker-compose.prod.yml logs --tail=100
 ```
 
 ## 9. Manual migration and post-deploy tasks
@@ -186,7 +186,7 @@ For the first rollout, keep DB migrations manual:
 
 ```bash
 cd /opt/ds-general
-docker compose --env-file .env.prod -f docker-compose.prod.yml exec -T suba-api sh -lc 'cd /app && bun run db:migrate'
+docker compose --env-file .env -f docker-compose.prod.yml exec -T suba-api sh -lc 'cd /app && bun run db:migrate'
 ```
 
 Then verify:
@@ -214,8 +214,8 @@ If a deploy is bad, roll back directly on the VPS:
 cd /opt/ds-general
 git log --oneline -n 10
 git reset --hard <good-sha>
-docker compose --env-file .env.prod -f docker-compose.prod.yml build
-docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
+docker compose --env-file .env -f docker-compose.prod.yml build
+docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans
 ```
 
 Rollback notes:

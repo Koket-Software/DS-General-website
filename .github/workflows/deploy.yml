@@ -16,7 +16,7 @@ jobs:
       SERVICE_API: suba-api
       DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
       GIT_BRANCH: ${{ github.ref_name }}
-      ENV_FILE: .env.prod
+      ENV_FILE: .env
 
     steps:
       - name: Checkout code
@@ -36,7 +36,7 @@ jobs:
             SERVICE_WEB="${SERVICE_WEB:-suba-web}"
             SERVICE_API="${SERVICE_API:-suba-api}"
             GIT_BRANCH="${GIT_BRANCH:-main}"
-            ENV_FILE="${ENV_FILE:-.env.prod}"
+            ENV_FILE="${ENV_FILE:-.env}"
 
             cd "${DEPLOY_PATH}"
 
