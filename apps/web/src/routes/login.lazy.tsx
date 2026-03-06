@@ -3,6 +3,7 @@ import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import dsLogoLarge from "@/assets/ds/ds_logo_large.svg";
+import googleLogo from "@/assets/external-company-logos/google.svg";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -91,7 +92,10 @@ function LoginPage() {
     try {
       setLastUsedAuthMethod("google");
       setLastUsedMethod("google");
-      await authClient.signIn.social({ provider: "google" });
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to sign in with Google",
@@ -124,15 +128,25 @@ function LoginPage() {
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-between gap-3"
+            className="relative w-full justify-center gap-2"
             onClick={handleGoogleSignIn}
             disabled={isSubmitting || isGoogleSubmitting || isPending}
           >
-            <span>
-              {isGoogleSubmitting ? "Redirecting..." : "Continue with Google"}
+            <span className="flex items-center gap-2">
+              <img
+                src={googleLogo}
+                alt=""
+                aria-hidden="true"
+                className="h-4 w-4 shrink-0"
+              />
+              <span>
+                {isGoogleSubmitting ? "Redirecting..." : "Continue with Google"}
+              </span>
             </span>
             {lastUsedMethod === "google" ? (
-              <Badge variant="secondary">Last Used</Badge>
+              <Badge variant="secondary" className="absolute right-2">
+                Last Used
+              </Badge>
             ) : null}
           </Button>
           <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">

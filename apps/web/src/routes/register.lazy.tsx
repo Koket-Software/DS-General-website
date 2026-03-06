@@ -94,7 +94,10 @@ function RegisterPage() {
     try {
       setLastUsedAuthMethod("google");
       setLastUsedMethod("google");
-      await authClient.signIn.social({ provider: "google" });
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to sign up with Google",
@@ -127,7 +130,7 @@ function RegisterPage() {
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-between gap-3"
+            className="relative w-full justify-center gap-2"
             onClick={handleGoogleSignIn}
             disabled={isSubmitting || isGoogleSubmitting || isPending}
           >
@@ -135,7 +138,9 @@ function RegisterPage() {
               {isGoogleSubmitting ? "Redirecting..." : "Continue with Google"}
             </span>
             {lastUsedMethod === "google" ? (
-              <Badge variant="secondary">Last Used</Badge>
+              <Badge variant="secondary" className="absolute right-2">
+                Last Used
+              </Badge>
             ) : null}
           </Button>
           <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
