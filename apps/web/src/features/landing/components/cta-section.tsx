@@ -1,4 +1,4 @@
-import imgCta from "../../../../assets/914886b474a7d6467073615b01c520d6b9d6bb84.webp";
+import imgCta from "../../../assets/ds/home/DS_CTA.webp";
 
 export function CTASection() {
   return (
@@ -28,7 +28,7 @@ export function CTASection() {
         <div className="w-full lg:w-133.25 h-75 lg:h-auto relative shrink-0 mb-10">
           <img
             src={imgCta}
-            alt="Shipping containers"
+            alt="DS General PLC supply chain materials"
             className="absolute inset-0 w-full h-full object-cover"
           />
         </div>

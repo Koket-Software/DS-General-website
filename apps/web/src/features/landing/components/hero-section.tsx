@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { ArrowUpRight } from "./icons";
-import imgHero from "../../../../assets/84e84a5b62a91fede6dbe871c6fc754cbb26a4fc.webp";
+import imgHero from "../../../assets/ds/home/DS_Hero.webp";
 
 export function HeroSection() {
   return (

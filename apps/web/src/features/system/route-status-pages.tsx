@@ -76,7 +76,7 @@ export function RouteNotFoundPage(_props: NotFoundRouteProps) {
       eyebrow="Page lost in transit"
       title="This route slipped off the map."
       description="The destination you requested is not available here anymore, was renamed, or never existed in this deployment."
-      detail={pathname}
+      detail={`Requested path: ${pathname}`}
       primaryAction={
         <Button
           asChild
@@ -180,9 +180,6 @@ function StatusShell({
 }: StatusShellProps) {
   const styles = toneStyles[tone];
   const Icon = tone === "notFound" ? Search : ShieldAlert;
-  const currentPath = useRouterState({
-    select: (state) => state.location.pathname,
-  });
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(73,98,225,0.16),transparent_28%),linear-gradient(160deg,color-mix(in_oklch,var(--background)_88%,white_12%),var(--background))] text-foreground dark:bg-[radial-gradient(circle_at_top_left,rgba(73,98,225,0.2),transparent_30%),linear-gradient(160deg,color-mix(in_oklch,var(--background)_92%,black_8%),var(--background))]">
@@ -197,136 +194,49 @@ function StatusShell({
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl items-center px-6 py-12 sm:px-8 lg:px-12">
-        <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,1.15fr)_24rem]">
-          <section
-            className={cn(
-              "relative overflow-hidden rounded-[2rem] border p-8 backdrop-blur-xl sm:p-10 lg:p-12",
-              styles.panel,
-            )}
-          >
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0%,rgba(255,255,255,0.32)_100%)] dark:bg-[linear-gradient(135deg,transparent_0%,rgba(255,255,255,0.05)_100%)]" />
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl items-center px-5 py-10 sm:px-8 sm:py-14">
+        <section
+          className={cn(
+            "relative w-full overflow-hidden rounded-[2rem] border p-6 backdrop-blur-xl sm:p-8 lg:p-10",
+            styles.panel,
+          )}
+        >
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0%,rgba(255,255,255,0.28)_100%)] dark:bg-[linear-gradient(135deg,transparent_0%,rgba(255,255,255,0.05)_100%)]" />
 
-            <div className="relative flex flex-col gap-10">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div
-                  className={cn(
-                    "inline-flex items-center gap-3 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em]",
-                    styles.badge,
-                  )}
-                >
-                  <Radar className="h-4 w-4" />
-                  {eyebrow}
-                </div>
-                <div className="text-right">
-                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                    Active route
-                  </p>
-                  <p className="mt-1 font-mono text-sm text-foreground/80">
-                    {currentPath}
-                  </p>
-                </div>
+          <div className="relative grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_220px]">
+            <div className="max-w-2xl space-y-6">
+              <div
+                className={cn(
+                  "inline-flex items-center gap-3 rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.32em]",
+                  styles.badge,
+                )}
+              >
+                <Radar className="h-4 w-4" />
+                {eyebrow}
               </div>
 
-              <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
-                <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={cn(
-                        "flex h-16 w-16 items-center justify-center rounded-3xl",
-                        styles.iconWrap,
-                      )}
-                    >
-                      <Icon className="h-8 w-8" />
-                    </div>
-                    <div>
-                      <p className="font-mono text-sm uppercase tracking-[0.45em] text-muted-foreground">
-                        Error {code}
-                      </p>
-                      <h1 className="mt-2 max-w-3xl text-balance text-4xl leading-none font-semibold tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                        {title}
-                      </h1>
-                    </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div
+                    className={cn(
+                      "flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.35rem]",
+                      styles.iconWrap,
+                    )}
+                  >
+                    <Icon className="h-7 w-7" />
                   </div>
-
-                  <p className="max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
-                    {description}
+                  <p className="font-mono text-sm uppercase tracking-[0.42em] text-muted-foreground">
+                    Error {code}
                   </p>
-
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <SignalCard
-                      label="Status"
-                      value={code}
-                      caption="Global route state"
-                    />
-                    <SignalCard
-                      label="Route"
-                      value={compactPath(currentPath)}
-                      caption="Current location"
-                    />
-                    <SignalCard
-                      label="Action"
-                      value={tone === "notFound" ? "Reroute" : "Recover"}
-                      caption="Recommended next step"
-                    />
-                  </div>
                 </div>
 
-                <div className="relative mx-auto flex h-48 w-48 items-center justify-center lg:mx-0 lg:ml-auto">
-                  <div
-                    className={cn(
-                      "absolute inset-0 rounded-full border border-dashed",
-                      styles.orbit,
-                    )}
-                  />
-                  <div
-                    className={cn(
-                      "absolute inset-5 rounded-full border border-dashed opacity-70",
-                      styles.orbit,
-                    )}
-                  />
-                  <div className="absolute inset-10 rounded-full border border-border/40" />
-                  <div className="absolute inset-0 animate-[spin_20s_linear_infinite]">
-                    <span
-                      className={cn(
-                        "absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 rounded-full shadow-[0_0_24px_currentColor]",
-                        styles.signal,
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        "absolute bottom-4 right-4 h-2.5 w-2.5 rounded-full shadow-[0_0_18px_currentColor]",
-                        styles.signal,
-                      )}
-                    />
-                  </div>
-                  <div className="flex h-28 w-28 items-center justify-center rounded-full border border-border/60 bg-background/70 text-center backdrop-blur-md">
-                    <div>
-                      <p className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                        DSG
-                      </p>
-                      <p className="mt-1 text-4xl font-semibold tracking-[-0.08em]">
-                        {code}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <h1 className="max-w-xl text-balance text-4xl leading-none font-semibold tracking-[-0.05em] sm:text-5xl lg:text-6xl">
+                  {title}
+                </h1>
 
-              <div className="rounded-[1.5rem] border border-border/50 bg-background/60 p-5 backdrop-blur-sm">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                      Diagnostic note
-                    </p>
-                    <p className="mt-2 max-w-3xl font-mono text-sm leading-6 text-foreground/85">
-                      {detail}
-                    </p>
-                  </div>
-                  <div className="rounded-full border border-border/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-                    Functional recovery enabled
-                  </div>
-                </div>
+                <p className="max-w-xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
+                  {description}
+                </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -334,77 +244,56 @@ function StatusShell({
                 {secondaryAction}
                 {tertiaryAction}
               </div>
-            </div>
-          </section>
 
-          <aside className="grid gap-4 self-stretch">
-            <AsidePanel
-              title="Why this exists"
-              body={
-                tone === "notFound"
-                  ? "The route table could not resolve this URL. That usually means a moved page, a typo, or an outdated external link."
-                  : "A route component, loader, or boundary raised an exception while the current view was loading or rendering."
-              }
-            />
-            <AsidePanel
-              title="Best next move"
-              body={
-                tone === "notFound"
-                  ? "Return to the homepage or contact the team if you expected this page to exist."
-                  : "Retry first. If the failure repeats, reload the app or report the route and timestamp to the team."
-              }
-            />
-            <AsidePanel title="Current target" body={currentPath} mono />
-          </aside>
-        </div>
+              <p className="border-t border-border/50 pt-4 font-mono text-xs leading-6 text-muted-foreground sm:text-sm">
+                {detail}
+              </p>
+            </div>
+
+            <div className="relative mx-auto hidden h-52 w-52 items-center justify-center lg:flex">
+              <div
+                className={cn(
+                  "absolute inset-0 rounded-full border border-dashed opacity-80",
+                  styles.orbit,
+                )}
+              />
+              <div
+                className={cn(
+                  "absolute inset-4 rounded-full border border-dashed opacity-55",
+                  styles.orbit,
+                )}
+              />
+              <div className="absolute inset-0 animate-[spin_18s_linear_infinite]">
+                <span
+                  className={cn(
+                    "absolute left-1/2 top-1 h-3 w-3 -translate-x-1/2 rounded-full shadow-[0_0_24px_currentColor]",
+                    styles.signal,
+                  )}
+                />
+              </div>
+              <div className="absolute inset-6 animate-[spin_24s_linear_infinite_reverse]">
+                <span
+                  className={cn(
+                    "absolute bottom-3 right-3 h-2.5 w-2.5 rounded-full shadow-[0_0_18px_currentColor]",
+                    styles.signal,
+                  )}
+                />
+              </div>
+              <div className="flex h-28 w-28 items-center justify-center rounded-full border border-border/60 bg-background/75 text-center shadow-[0_18px_60px_-30px_rgba(73,98,225,0.45)] backdrop-blur-md">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.36em] text-muted-foreground">
+                    DSG
+                  </p>
+                  <p className="mt-1 text-4xl font-semibold tracking-[-0.08em]">
+                    {code}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
-  );
-}
-
-function SignalCard({
-  label,
-  value,
-  caption,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-}) {
-  return (
-    <div className="rounded-[1.4rem] border border-border/50 bg-background/45 p-4 backdrop-blur-sm">
-      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-3 text-xl font-semibold tracking-[-0.04em]">{value}</p>
-      <p className="mt-1 text-sm text-muted-foreground">{caption}</p>
-    </div>
-  );
-}
-
-function AsidePanel({
-  title,
-  body,
-  mono = false,
-}: {
-  title: string;
-  body: string;
-  mono?: boolean;
-}) {
-  return (
-    <section className="rounded-[1.6rem] border border-border/50 bg-background/55 p-5 backdrop-blur-md">
-      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-        {title}
-      </p>
-      <p
-        className={cn(
-          "mt-3 text-sm leading-6 text-foreground/85",
-          mono && "font-mono break-all",
-        )}
-      >
-        {body}
-      </p>
-    </section>
   );
 }
 
@@ -418,14 +307,4 @@ function formatErrorDetail(error: unknown, pathname: string) {
   }
 
   return `${prefix} • ${message}`;
-}
-
-function compactPath(pathname: string) {
-  if (pathname === "/") {
-    return "home";
-  }
-
-  const compact = pathname.replaceAll("/", " / ").trim();
-
-  return compact.length > 24 ? `${compact.slice(0, 21)}...` : compact;
 }

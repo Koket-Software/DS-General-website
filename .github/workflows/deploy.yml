@@ -14,7 +14,7 @@ jobs:
     env:
       SERVICE_WEB: ds-general-web
       SERVICE_API: ds-general-api
-      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_PATH: /opt/ds-general
       GIT_BRANCH: ${{ github.ref_name }}
       ENV_FILE: .env
 
@@ -38,6 +38,12 @@ jobs:
             SERVICE_API="${SERVICE_API:-ds-general-api}"
             GIT_BRANCH="${GIT_BRANCH:-main}"
             ENV_FILE="${ENV_FILE:-.env}"
+
+            [ -d "${DEPLOY_PATH}" ] || {
+              echo "Missing deploy directory: ${DEPLOY_PATH}"
+              echo "Create it on the VPS and clone the repo there before rerunning deploy."
+              exit 1
+            }
 
             cd "${DEPLOY_PATH}"
 

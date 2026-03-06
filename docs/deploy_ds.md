@@ -28,9 +28,10 @@ Production shape:
   - [ ] `DEPLOY_USER`
   - [ ] `DEPLOY_SSH_KEY`
   - [ ] `DEPLOY_PORT`
-  - [ ] `DEPLOY_PATH=/opt/ds-general`
 - [ ] If the repo is private, add a read-only deploy key so the VPS can `git fetch origin main`.
 - [ ] Do not add runtime app secrets to GitHub Actions.
+
+The deploy workflow uses the fixed VPS checkout path `/opt/ds-general`. Do not add a separate `DEPLOY_PATH` secret.
 
 What GitHub does on each deploy:
 
