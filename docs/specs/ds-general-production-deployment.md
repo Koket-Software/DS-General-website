@@ -11,6 +11,7 @@ We need a DS General-specific deployment setup for `dsgeneralplc.com` that is sa
 - Align the repo with the intended production contract for `dsgeneralplc.com`.
 - Stop tracking production runtime secrets.
 - Make the VPS deploy workflow use `/opt/ds-general/.env`.
+- Rename production Docker identifiers from the template `suba-*` naming to DS General-specific names.
 - Replace the generic deployment checklist with a DS General step-by-step runbook.
 - Document rollback and manual migration steps.
 
@@ -42,6 +43,7 @@ We need a DS General-specific deployment setup for `dsgeneralplc.com` that is sa
 - Remove the repo-root production env file from the workspace.
 - Keep `.env.prod.example` as the tracked production template.
 - Update the production template to the single-domain DS General deployment shape.
+- Rename the production Compose project, services, and volumes to DS General-specific identifiers.
 
 Tests for this phase:
 
@@ -81,6 +83,7 @@ Tests for this phase:
 - [x] Update the deploy workflow to use `/opt/ds-general/.env`.
 - [x] Remove GitHub-secret dependency on `PROXY_NETWORK`.
 - [x] Document manual DB migration for first rollout.
+- [x] Rename production Docker services, upstream targets, and volumes from `suba-*` to `ds-general-*`.
 - [x] Rewrite `docs/deploy_ds.md` into a DS General deployment runbook.
 - [x] Update `README.md` to point at the DS General deployment runbook and clarify secret handling.
 - [x] Run `bun lint`, `bun check-types`, and `bun run build`.

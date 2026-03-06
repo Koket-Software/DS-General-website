@@ -1,7 +1,7 @@
-name: suba-platform
+name: ds-general-platform
 
 services:
-  suba-db:
+  ds-general-db:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -11,7 +11,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - suba_db_data:/var/lib/postgresql/data
+      - ds_general_db_data:/var/lib/postgresql/data
     networks:
       - internal
     healthcheck:
@@ -20,7 +20,7 @@ services:
       timeout: 5s
       retries: 5
 
-  suba-api:
+  ds-general-api:
     build:
       context: .
       dockerfile: Dockerfile.server
@@ -30,10 +30,10 @@ services:
       NODE_ENV: production
       PORT: ${SERVER_PORT:-3000}
     depends_on:
-      suba-db:
+      ds-general-db:
         condition: service_healthy
     volumes:
-      - suba_uploads:/app/apps/server/uploads
+      - ds_general_uploads:/app/apps/server/uploads
     expose:
       - "${SERVER_PORT:-3000}"
     restart: unless-stopped
@@ -53,7 +53,7 @@ services:
       retries: 3
       start_period: 10s
 
-  suba-web:
+  ds-general-web:
     build:
       context: .
       dockerfile: Dockerfile.web
@@ -62,7 +62,7 @@ services:
         VITE_SITE_URL: ${VITE_SITE_URL}
         VITE_FRONTEND_URL: ${VITE_FRONTEND_URL:-}
     depends_on:
-      - suba-api
+      - ds-general-api
     expose:
       - "80"
     restart: unless-stopped
@@ -80,8 +80,8 @@ networks:
     driver: bridge
   proxy:
     external: true
-    name: ${PROXY_NETWORK:-passport-frontend_web}
+    name: ${PROXY_NETWORK:-ds-general-proxy}
 
 volumes:
-  suba_db_data:
-  suba_uploads:
+  ds_general_db_data:
+  ds_general_uploads:

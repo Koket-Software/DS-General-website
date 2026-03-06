@@ -5,9 +5,9 @@ This runbook is for deploying DS General PLC to `https://dsgeneralplc.com` on th
 Production shape:
 
 - Cloudflare points `dsgeneralplc.com` to the VPS
-- Nginx Proxy Manager terminates TLS and forwards to `suba-web:80`
-- `suba-web` serves the Vite build and proxies `/api/v1/*` and `/uploads/*` to `suba-api`
-- `suba-api` talks to `suba-db` over the internal Docker network
+- Nginx Proxy Manager terminates TLS and forwards to `ds-general-web:80`
+- `ds-general-web` serves the Vite build and proxies `/api/v1/*` and `/uploads/*` to `ds-general-api`
+- `ds-general-api` talks to `ds-general-db` over the internal Docker network
 - GitHub Actions deploys by SSH into `/opt/ds-general`
 
 ## 1. Repo state to use
@@ -77,7 +77,7 @@ Required values for this deployment:
 POSTGRES_DB=ds_general
 POSTGRES_USER=ds_general
 POSTGRES_PASSWORD=<strong-password>
-DATABASE_URL=postgresql://ds_general:<strong-password>@suba-db:5432/ds_general
+DATABASE_URL=postgresql://ds_general:<strong-password>@ds-general-db:5432/ds_general
 
 NODE_ENV=production
 SERVER_PORT=3000
@@ -139,7 +139,7 @@ docker network inspect <proxy-network>
   - [ ] `www.dsgeneralplc.com`
 - [ ] Use these proxy settings:
   - [ ] Scheme: `http`
-  - [ ] Forward Hostname / IP: `suba-web`
+  - [ ] Forward Hostname / IP: `ds-general-web`
   - [ ] Forward Port: `80`
   - [ ] Websockets: enabled
 - [ ] Request a Let’s Encrypt certificate.
@@ -186,7 +186,7 @@ For the first rollout, keep DB migrations manual:
 
 ```bash
 cd /opt/ds-general
-docker compose --env-file .env -f docker-compose.prod.yml exec -T suba-api sh -lc 'cd /app && bun run db:migrate'
+docker compose --env-file .env -f docker-compose.prod.yml exec -T ds-general-api sh -lc 'cd /app && bun run db:migrate'
 ```
 
 Then verify:

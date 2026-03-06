@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SERVICE_WEB: suba-web
-      SERVICE_API: suba-api
+      SERVICE_WEB: ds-general-web
+      SERVICE_API: ds-general-api
       DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
       GIT_BRANCH: ${{ github.ref_name }}
       ENV_FILE: .env
@@ -33,8 +33,8 @@ jobs:
             set -euo pipefail
 
             DEPLOY_PATH="${DEPLOY_PATH:-/opt/ds-general}"
-            SERVICE_WEB="${SERVICE_WEB:-suba-web}"
-            SERVICE_API="${SERVICE_API:-suba-api}"
+            SERVICE_WEB="${SERVICE_WEB:-ds-general-web}"
+            SERVICE_API="${SERVICE_API:-ds-general-api}"
             GIT_BRANCH="${GIT_BRANCH:-main}"
             ENV_FILE="${ENV_FILE:-.env}"
 
