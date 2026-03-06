@@ -28,17 +28,19 @@ Production shape:
   - [ ] `DEPLOY_USER`
   - [ ] `DEPLOY_SSH_KEY`
   - [ ] `DEPLOY_PORT`
+  - [ ] `DEPLOY_PATH` (optional, defaults to `/opt/ds-general`)
 - [ ] If the repo is private, add a read-only deploy key so the VPS can `git fetch origin main`.
 - [ ] Do not add runtime app secrets to GitHub Actions.
 
-The deploy workflow uses the fixed VPS checkout path `/opt/ds-general`. Do not add a separate `DEPLOY_PATH` secret.
+The deploy workflow uses `DEPLOY_PATH` when provided. If it is unset, it falls back to `/opt/ds-general`.
 
 What GitHub does on each deploy:
 
 - checks out the repo
 - SSHes into the VPS
-- verifies `/opt/ds-general/.env` exists
-- loads `PROXY_NETWORK` from that env file
+- resolves the deploy directory from `DEPLOY_PATH` or `/opt/ds-general`
+- verifies the target `.env` file exists there
+- reads `PROXY_NETWORK` from that env file using Compose-style env-file parsing
 - fetches `origin/main`
 - resets the VPS checkout to the pushed commit
 - runs `docker compose --env-file .env -f docker-compose.prod.yml build`
