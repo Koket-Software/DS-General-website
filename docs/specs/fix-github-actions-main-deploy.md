@@ -13,7 +13,7 @@ That creates a mismatch between the workflow contract and runtime behavior on th
 - Preserve the existing VPS deployment contract around `/opt/ds-general/.env`.
 - Validate the workflow with the repo’s existing checks.
 
-## Non-Goals
+## Non-Goals h
 
 - Rework the production deployment architecture.
 - Introduce automated database migrations.
