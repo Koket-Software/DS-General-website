@@ -9,6 +9,8 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
 import dotenv from "dotenv";
 
+import { AUTH_BASE_PATH } from "./constants";
+
 // Load environment variables BEFORE any Better Auth initialization
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "../../..");
@@ -29,7 +31,7 @@ if (overrideEnvPath !== rootEnvPath) {
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL as string,
-  basePath: "/api/v1/auth",
+  basePath: AUTH_BASE_PATH,
   secret: process.env.BETTER_AUTH_SECRET as string,
   database: drizzleAdapter(db, {
     provider: "pg",

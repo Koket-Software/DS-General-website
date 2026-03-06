@@ -1,4 +1,8 @@
 import { auth } from "@suba-company-template/auth";
+import {
+  AUTH_BASE_PATH,
+  LEGACY_AUTH_BASE_PATH,
+} from "@suba-company-template/auth/constants";
 import { Hono, type Context, type Next } from "hono";
 import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
@@ -19,6 +23,18 @@ import { logger } from "../shared/logger";
 export const createApp = () => {
   const app = new Hono();
   const env = getEnv();
+
+  const handleAuthRequest = async (c: Context) => {
+    const originalRequest = c.req.raw;
+
+    try {
+      const response = await auth.handler(originalRequest);
+      return response;
+    } catch (error) {
+      logger.error("[AUTH ERROR]", error as Error);
+      throw error;
+    }
+  };
 
   // Global error boundary should wrap everything
   app.use(errorHandler);
@@ -48,6 +64,12 @@ export const createApp = () => {
 
   const redirectLegacyApi = async (c: Context, next: Next) => {
     const path = c.req.path;
+    if (
+      path === LEGACY_AUTH_BASE_PATH ||
+      path.startsWith(`${LEGACY_AUTH_BASE_PATH}/`)
+    ) {
+      return next();
+    }
     if (path.startsWith("/api/v1")) {
       return next();
     }
@@ -58,17 +80,8 @@ export const createApp = () => {
   app.use("/api", redirectLegacyApi);
   app.use("/api/*", redirectLegacyApi);
 
-  app.on(["POST", "GET"], "/api/v1/auth/*", async (c) => {
-    const originalRequest = c.req.raw;
-
-    try {
-      const response = await auth.handler(originalRequest);
-      return response;
-    } catch (error) {
-      logger.error("[AUTH ERROR]", error as Error);
-      throw error;
-    }
-  });
+  app.on(["POST", "GET"], `${AUTH_BASE_PATH}/*`, handleAuthRequest);
+  app.on(["POST", "GET"], `${LEGACY_AUTH_BASE_PATH}/*`, handleAuthRequest);
 
   // Serve static files (uploads)
   app.use("/uploads/*", serveStatic({ root: "./" }));

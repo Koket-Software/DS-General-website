@@ -1,12 +1,18 @@
+import { AUTH_BASE_PATH } from "@suba-company-template/auth/constants";
 import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import dsLogoLarge from "@/assets/ds/ds_logo_large.svg";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/api-base";
 import { authClient } from "@/lib/auth-client";
+import {
+  getLastUsedAuthMethod,
+  setLastUsedAuthMethod,
+} from "@/lib/auth-last-used";
 import { useAppForm } from "@/lib/forms";
 
 export const Route = createLazyFileRoute("/login")({
@@ -24,6 +30,7 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [lastUsedMethod, setLastUsedMethod] = useState(getLastUsedAuthMethod);
 
   const form = useAppForm<LoginFormValues>({
     defaultValues: {
@@ -37,7 +44,7 @@ function LoginPage() {
 
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/v1/auth/sign-in/email`,
+          `${API_BASE_URL}${AUTH_BASE_PATH}/sign-in/email`,
           {
             method: "POST",
             credentials: "include",
@@ -58,6 +65,8 @@ function LoginPage() {
           throw new Error(message);
         }
 
+        setLastUsedAuthMethod("email");
+        setLastUsedMethod("email");
         await authClient.getSession();
         navigate({ to: "/dashboard" });
       } catch (err) {
@@ -80,6 +89,8 @@ function LoginPage() {
     setError(null);
 
     try {
+      setLastUsedAuthMethod("google");
+      setLastUsedMethod("google");
       await authClient.signIn.social({ provider: "google" });
     } catch (err) {
       setError(
@@ -113,11 +124,16 @@ function LoginPage() {
           <Button
             type="button"
             variant="outline"
-            className="w-full"
+            className="w-full justify-between gap-3"
             onClick={handleGoogleSignIn}
             disabled={isSubmitting || isGoogleSubmitting || isPending}
           >
-            {isGoogleSubmitting ? "Redirecting..." : "Continue with Google"}
+            <span>
+              {isGoogleSubmitting ? "Redirecting..." : "Continue with Google"}
+            </span>
+            {lastUsedMethod === "google" ? (
+              <Badge variant="secondary">Last Used</Badge>
+            ) : null}
           </Button>
           <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
@@ -171,7 +187,12 @@ function LoginPage() {
           </form.Field>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign In"}
+            <span>{isSubmitting ? "Signing in..." : "Sign In"}</span>
+            {lastUsedMethod === "email" ? (
+              <Badge variant="secondary" className="ml-2">
+                Last Used
+              </Badge>
+            ) : null}
           </Button>
         </form>
 

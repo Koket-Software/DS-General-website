@@ -10,11 +10,12 @@ That mismatch currently works only because the server performs a legacy redirect
 
 - Make Better Auth generate production OAuth callbacks under `/api/v1/auth`.
 - Align the server-side Better Auth config with the client auth base path.
+- Keep legacy `/api/auth/*` auth requests working as a compatibility path while production credentials are updated.
 - Document the production validation needed after the change.
 
 ## Non-Goals
 
-- Remove or redesign the legacy `/api` redirect middleware.
+- Remove or redesign the legacy `/api` redirect middleware outside the auth namespace.
 - Resolve external Safe Browsing reputation issues directly from the repo.
 - Change the public site domain or split auth onto a separate subdomain.
 
@@ -36,15 +37,18 @@ That mismatch currently works only because the server performs a legacy redirect
 
 - Configure Better Auth to use `/api/v1/auth` as its base path.
 - Keep the existing public route mounting consistent with the generated callback URL.
+- Bypass the generic legacy API redirect for `/api/auth/*` so legacy auth callbacks can still be handled directly during rollout.
 
 Tests for this phase:
 
 - Confirm the generated Google auth URL now uses `/api/v1/auth/callback/google`.
+- Confirm legacy `/api/auth/*` auth requests are handled by Better Auth instead of the generic `/api` to `/api/v1` redirect.
 - Run type checks for the workspace.
 
 ## Task List
 
 - [x] Create this spec before editing repo-tracked files.
-- [x] Set Better Auth `basePath` to `/api/v1/auth`.
+- [x] Centralize Better Auth base path usage to avoid future client/server drift.
+- [x] Keep `/api/auth/*` mapped directly to Better Auth as a compatibility route.
 - [x] Run type checks.
-- [x] Summarize the operational follow-up required in Google Cloud and Safe Browsing tooling.
+- [x] Summarize the operational follow-up required in Google Cloud.
