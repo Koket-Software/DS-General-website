@@ -4,6 +4,11 @@ import { lazy, Suspense } from "react";
 
 import "../index.css";
 
+import {
+  RouteErrorPage,
+  RouteNotFoundPage,
+} from "@/features/system/route-status-pages";
+
 const TanStackRouterDevtoolsPanel = lazy(async () => {
   const module = await import("@tanstack/react-router-devtools");
   return { default: module.TanStackRouterDevtoolsPanel };
@@ -15,6 +20,8 @@ const ReactQueryDevtools = lazy(async () => {
 
 export const Route = createRootRoute({
   component: RootComponent,
+  errorComponent: RouteErrorPage,
+  notFoundComponent: RouteNotFoundPage,
 });
 
 function RootComponent() {

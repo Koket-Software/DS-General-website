@@ -60,13 +60,9 @@ export const createApp = () => {
 
   app.on(["POST", "GET"], "/api/v1/auth/*", async (c) => {
     const originalRequest = c.req.raw;
-    const url = new URL(originalRequest.url);
-    url.pathname = url.pathname.replace(/^\/api\/v1\/auth/, "/api/auth");
 
     try {
-      const response = await auth.handler(
-        new Request(url.toString(), originalRequest),
-      );
+      const response = await auth.handler(originalRequest);
       return response;
     } catch (error) {
       logger.error("[AUTH ERROR]", error as Error);

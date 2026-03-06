@@ -29,6 +29,7 @@ if (overrideEnvPath !== rootEnvPath) {
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL as string,
+  basePath: "/api/v1/auth",
   secret: process.env.BETTER_AUTH_SECRET as string,
   database: drizzleAdapter(db, {
     provider: "pg",
