@@ -25,7 +25,7 @@ END $$;
 
 -- Migrate existing roles from user_profiles to user table (lowercase)
 UPDATE "user" u
-SET role = LOWER(up.role)
+SET role = LOWER(up.role::text)
 FROM "user_profiles" up
 WHERE u.id = up.user_id
   AND up.role IS NOT NULL;
