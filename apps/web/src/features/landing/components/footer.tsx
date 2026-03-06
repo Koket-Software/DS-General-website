@@ -24,12 +24,8 @@ export function Footer() {
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
         <div className="flex flex-col gap-6 shrink-0">
           <div className="flex flex-col gap-3">
-            <div className="flex gap-3 items-center">
+            <div className="flex items-center">
               <Logo size="lg" />
-              <div className="font-sans font-semibold text-primary text-[22px] leading-[0.9]">
-                <p>DS</p>
-                <p>General PLC</p>
-              </div>
             </div>
             <p className="font-sans font-light text-foreground text-[16px]">
               Reliable Trade Solutions Across Borders

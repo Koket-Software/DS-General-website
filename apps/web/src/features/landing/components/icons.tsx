@@ -1,43 +1,13 @@
 import svgPaths from "../../../../imports/svg-ocmhtzor95";
 
-export function Logo({ size = "sm" }: { size?: "sm" | "lg" }) {
-  const dims =
-    size === "sm"
-      ? { w: 32, h: 32, vw: "0 0 31.9851 32.0001" }
-      : { w: 42, h: 42, vw: "0 0 41.9803 42" };
-  const paths =
-    size === "sm"
-      ? [svgPaths.p1c05c372, svgPaths.p379d6140]
-      : [svgPaths.pca3d900, svgPaths.p22faab00];
+import dsLogo from "@/assets/ds/ds_logo.svg";
+import dsLogoLarge from "@/assets/ds/ds_logo_large.svg";
 
-  return (
-    <div
-      style={{ width: dims.w, height: dims.h }}
-      className="relative shrink-0"
-    >
-      <svg
-        className="absolute block size-full"
-        fill="none"
-        preserveAspectRatio="none"
-        viewBox={dims.vw}
-      >
-        <g>
-          <path
-            clipRule="evenodd"
-            d={paths[0]}
-            fill="var(--primary)"
-            fillRule="evenodd"
-          />
-          <path
-            clipRule="evenodd"
-            d={paths[1]}
-            fill="var(--primary)"
-            fillRule="evenodd"
-          />
-        </g>
-      </svg>
-    </div>
-  );
+export function Logo({ size = "sm" }: { size?: "sm" | "lg" }) {
+  const src = size === "sm" ? dsLogo : dsLogoLarge;
+  const className = size === "sm" ? "h-8 w-8" : "h-10 w-auto";
+
+  return <img src={src} alt="DS General PLC logo" className={className} />;
 }
 
 export function CaretDown() {

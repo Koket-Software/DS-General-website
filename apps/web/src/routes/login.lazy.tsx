@@ -1,6 +1,7 @@
 import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
+import dsLogoLarge from "@/assets/ds/ds_logo_large.svg";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -92,6 +93,13 @@ function LoginPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted/40 px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border bg-background p-8 shadow-sm">
+        <div className="mb-6 flex justify-center">
+          <img
+            src={dsLogoLarge}
+            alt="DS General PLC logo"
+            className="h-10 w-auto"
+          />
+        </div>
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold">Admin Sign In</h1>
           <p className="text-muted-foreground">

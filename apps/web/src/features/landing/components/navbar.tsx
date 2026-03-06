@@ -62,10 +62,7 @@ export function Navbar() {
     <header className="bg-background sticky top-0 z-50 border-b border-border/60">
       <div className="max-w-360 mx-auto flex items-center justify-between px-6 md:px-24 py-3">
         <Link to="/" className="flex gap-3 items-center no-underline">
-          <Logo size="sm" />
-          <span className="font-sans font-semibold text-primary text-[20px] md:text-[24px] leading-[0.9]">
-            DS General PLC
-          </span>
+          <Logo size="lg" />
         </Link>
 
         {/* Desktop nav */}

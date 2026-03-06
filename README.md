@@ -92,7 +92,7 @@ bun install
 cp .env.example .env
 # Edit .env with your configuration
 cp .env.prod.example .env.prod
-# Edit .env.prod for production values
+# Edit .env.prod for local production-style runs only
 
 # Start the database (if using Docker)
 bun db:start
@@ -154,7 +154,7 @@ Override precedence is:
 Environment variables are centralized at the repository root:
 
 - `.env` for local development
-- `.env.prod` for production execution
+- `.env.prod` for local production execution and VPS runtime
 - `.env.example` / `.env.prod.example` as tracked templates
 
 See `.env.example` for all available options:
@@ -181,6 +181,8 @@ For production Docker runs, use the production env file explicitly:
 ```bash
 docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
 ```
+
+For the DS General VPS deployment, keep the real production env file only on the server at `/opt/ds-general/.env.prod`. Do not commit it to Git. See [docs/deploy_ds.md](/Users/negusnati/Documents/dev/koket/ds-general/DS-General-website/docs/deploy_ds.md) for the full rollout steps.
 
 ## Available Scripts
 

@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router";
 
 import { NavGroup } from "./nav-group";
 
-import company_logo_small from "@/assets/company-logo/logo-small.svg";
-import company_logo from "@/assets/company-logo/logo.svg";
+import dsLogo from "@/assets/ds/ds_logo.svg";
+import dsLogoLarge from "@/assets/ds/ds_logo_large.svg";
 import { AppImage } from "@/components/common/AppImage";
 import {
   Sidebar,
@@ -30,8 +30,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Link to="/" className="flex items-center justify-center">
           <div className="relative flex h-10 w-full items-center justify-center">
             <AppImage
-              src={company_logo}
-              alt="Company Logo"
+              src={dsLogoLarge}
+              alt="DS General PLC logo"
               className={cn(
                 "absolute h-10 w-auto transition-all duration-300 ease-in-out will-change-transform opacity-0 scale-95",
                 state === "expanded" && "opacity-100 scale-100",
@@ -39,10 +39,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               aria-hidden={state !== "expanded"}
             />
             <AppImage
-              src={company_logo_small}
-              alt="Company Logo"
+              src={dsLogo}
+              alt="DS General PLC logo"
               className={cn(
-                "absolute h-10 w-auto transition-all duration-300 ease-in-out will-change-transform opacity-0 scale-95",
+                "absolute h-8 w-auto transition-all duration-300 ease-in-out will-change-transform opacity-0 scale-95",
                 state === "collapsed" && "opacity-100 scale-100",
               )}
               aria-hidden={state !== "collapsed"}
