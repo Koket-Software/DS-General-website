@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 
 import { YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
-import imgMap from "../../../../assets/1996b890973697a0ece35083743bf5f2cd592a73.png";
+import imgMap from "../../../../assets/1996b890973697a0ece35083743bf5f2cd592a73.webp";
 import svgPaths from "../../../../imports/svg-b3plelej3t";
 
 import { Button } from "@/components/ui/button";

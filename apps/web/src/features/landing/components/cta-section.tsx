@@ -1,4 +1,4 @@
-import imgCta from "../../../../assets/914886b474a7d6467073615b01c520d6b9d6bb84.png";
+import imgCta from "../../../../assets/914886b474a7d6467073615b01c520d6b9d6bb84.webp";
 
 export function CTASection() {
   return (

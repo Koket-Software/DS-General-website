@@ -1,6 +1,6 @@
 import svgPaths from "./svg-b3plelej3t";
 import { imgGroup4 } from "./svg-cibtj";
-import imgRectangle102 from "../../assets/1996b890973697a0ece35083743bf5f2cd592a73.png";
+import imgRectangle102 from "../../assets/1996b890973697a0ece35083743bf5f2cd592a73.webp";
 
 function Group() {
   return (
