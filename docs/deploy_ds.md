@@ -8,6 +8,7 @@ Production shape:
 - Nginx Proxy Manager terminates TLS and forwards to `ds-general-web:80`
 - `ds-general-web` serves the Vite build and proxies `/api/v1/*` and `/uploads/*` to `ds-general-api`
 - `ds-general-api` talks to `ds-general-db` over the internal Docker network
+- `ds-general-db` is internal-only and does not bind a host port on the VPS
 - GitHub Actions deploys by SSH into `/opt/ds-general`
 
 ## 1. Repo state to use
@@ -202,7 +203,20 @@ Then verify:
 
 If needed after the first successful deploy:
 
-- [ ] seed baseline data
+- [ ] seed baseline data with append mode:
+
+```bash
+cd /opt/ds-general
+docker compose --env-file .env -f docker-compose.prod.yml exec -T -e ALLOW_SEED=true ds-general-api sh -lc 'cd /app && bun run db:seed:append'
+```
+
+- [ ] only use the destructive fresh seed for a brand-new database:
+
+```bash
+cd /opt/ds-general
+docker compose --env-file .env -f docker-compose.prod.yml exec -T -e ALLOW_SEED=true ds-general-api sh -lc 'cd /app && bun run db:seed'
+```
+
 - [ ] create the first admin user
 - [ ] confirm uploads persist across restart
 

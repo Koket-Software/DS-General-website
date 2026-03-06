@@ -87,6 +87,7 @@ Tests for this phase:
 - [x] Rewrite `docs/deploy_ds.md` into a DS General deployment runbook.
 - [x] Update `README.md` to point at the DS General deployment runbook and clarify secret handling.
 - [x] Run `bun lint`, `bun check-types`, and `bun run build`.
+- [x] Document safe production seeding with `db:seed:append` and guarded destructive seeding with `db:seed`.
 - [ ] User rotates the previously committed Google OAuth secret in Google Cloud.
 - [ ] User adds GitHub Actions secrets and any deploy key required by the VPS.
 - [ ] User creates `/opt/ds-general/.env` on the VPS and completes the external rollout steps.
