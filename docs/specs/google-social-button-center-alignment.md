@@ -46,8 +46,8 @@ Tests for this phase:
 
 ## Task List
 
-- [ ] Create this spec before editing code.
-- [ ] Center social button content on login page.
-- [ ] Center social button content on register page.
-- [ ] Run `bun run --filter web check-types`.
-- [ ] Mark checklist completed after verification.
+- [x] Create this spec before editing code.
+- [x] Center social button content on login page.
+- [x] Center social button content on register page.
+- [x] Run `bun run --filter web check-types`.
+- [x] Mark checklist completed after verification.

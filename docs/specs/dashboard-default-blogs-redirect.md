@@ -2,8 +2,9 @@
 
 ## Context / Problem
 
-- Visiting `/dashboard` currently redirects to `/dashboard/blogs` without the default list query params.
+- Visiting `/dashboard` should redirect to `/dashboard/blogs` with default list query params.
 - The blogs dashboard is the first dashboard landing view and should open with the expected pagination and sorting state.
+- The redirect logic must live in the non-lazy route file (`index.tsx`), because `beforeLoad` in `index.lazy.tsx` is not guaranteed to run.
 
 ## Goals
 
@@ -33,7 +34,8 @@
 
 ### Phase 1: Redirect Update
 
-- Update `apps/web/src/routes/dashboard/index.lazy.tsx` to redirect with explicit blogs query params.
+- Move redirect logic to `apps/web/src/routes/dashboard/index.tsx` with explicit blogs query params.
+- Keep `apps/web/src/routes/dashboard/index.lazy.tsx` component-only.
 
 ### Phase 2: Validation
 

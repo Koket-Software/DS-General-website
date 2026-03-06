@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LandingRouteImport } from './routes/_landing'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
 import { Route as LandingTermsOfServiceRouteImport } from './routes/_landing/terms-of-service'
 import { Route as LandingPrivacyPolicyRouteImport } from './routes/_landing/privacy-policy'
@@ -61,7 +62,6 @@ const RegisterLazyRouteImport = createFileRoute('/register')()
 const RateLimitLazyRouteImport = createFileRoute('/rate-limit')()
 const LoginLazyRouteImport = createFileRoute('/login')()
 const ForbiddenLazyRouteImport = createFileRoute('/forbidden')()
-const DashboardIndexLazyRouteImport = createFileRoute('/dashboard/')()
 const DashboardUserManagementIndexLazyRouteImport = createFileRoute(
   '/dashboard/user-management/',
 )()
@@ -142,7 +142,7 @@ const LandingRoute = LandingRouteImport.update({
   id: '/_landing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexLazyRoute = DashboardIndexLazyRouteImport.update({
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
@@ -641,7 +641,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
   '/terms-of-service': typeof LandingTermsOfServiceRoute
   '/': typeof LandingIndexRoute
-  '/dashboard/': typeof DashboardIndexLazyRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/articles/$slug': typeof LandingArticlesSlugRoute
   '/career/$slug': typeof LandingCareerSlugRoute
   '/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
@@ -709,7 +709,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
   '/terms-of-service': typeof LandingTermsOfServiceRoute
   '/': typeof LandingIndexRoute
-  '/dashboard': typeof DashboardIndexLazyRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/articles/$slug': typeof LandingArticlesSlugRoute
   '/career/$slug': typeof LandingCareerSlugRoute
   '/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
@@ -780,7 +780,7 @@ export interface FileRoutesById {
   '/_landing/privacy-policy': typeof LandingPrivacyPolicyRoute
   '/_landing/terms-of-service': typeof LandingTermsOfServiceRoute
   '/_landing/': typeof LandingIndexRoute
-  '/dashboard/': typeof DashboardIndexLazyRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/_landing/articles/$slug': typeof LandingArticlesSlugRoute
   '/_landing/career/$slug': typeof LandingCareerSlugRoute
   '/_landing/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
@@ -1102,7 +1102,7 @@ declare module '@tanstack/react-router' {
       id: '/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexLazyRouteImport
+      preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_landing/': {
@@ -1587,7 +1587,7 @@ const LandingRouteWithChildren =
   LandingRoute._addFileChildren(LandingRouteChildren)
 
 interface DashboardRouteChildren {
-  DashboardIndexLazyRoute: typeof DashboardIndexLazyRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardBusinessSectorsCreateRoute: typeof DashboardBusinessSectorsCreateRoute
   DashboardGalleryCategoriesRoute: typeof DashboardGalleryCategoriesRoute
   DashboardServicesCreateRoute: typeof DashboardServicesCreateRoute
@@ -1641,7 +1641,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardIndexLazyRoute: DashboardIndexLazyRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
   DashboardBusinessSectorsCreateRoute: DashboardBusinessSectorsCreateRoute,
   DashboardGalleryCategoriesRoute: DashboardGalleryCategoriesRoute,
   DashboardServicesCreateRoute: DashboardServicesCreateRoute,
