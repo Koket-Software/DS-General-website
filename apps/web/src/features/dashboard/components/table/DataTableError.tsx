@@ -12,7 +12,7 @@ export function DataTableError({ error, columns }: DataTableErrorProps) {
   return (
     <TableBody>
       <TableRow>
-        <TableCell colSpan={columns} className="h-24 py-14 rounded-2xl">
+        <TableCell colSpan={columns} className="h-24 py-14">
           <div className="flex flex-col items-center justify-center space-y-4">
             <AlertCircle className="h-12 w-12 text-destructive" />
             <div className="text-center">

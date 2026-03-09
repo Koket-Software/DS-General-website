@@ -11,7 +11,7 @@ export default function EditGalleryItem() {
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex min-h-[40svh] items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground">Loading gallery item...</p>
         </div>
@@ -21,7 +21,7 @@ export default function EditGalleryItem() {
 
   if (isError || !data?.data) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex min-h-[40svh] items-center justify-center">
         <div className="text-center">
           <p className="text-destructive">Failed to load gallery item.</p>
         </div>

@@ -20,6 +20,7 @@ import {
   useGalleryCategoriesQuery,
   type GalleryCategory,
 } from "../gallery-categories/lib";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -173,22 +174,25 @@ export default function GalleryDashboard({
   };
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Gallery</h1>
+    <DashboardPageShell
+      title={<h1 className="text-2xl font-bold">Gallery</h1>}
+      actions={
         <div className="flex flex-wrap items-center gap-2">
           {activeTab === "entries" ? (
             <>
               <Button
+                type="button"
                 variant="outline"
                 onClick={() => setActiveTab("categories")}
-                className="gap-2"
+                className="gap-2 rounded-none"
               >
                 <FolderOpen className="h-4 w-4" />
                 Manage Categories
               </Button>
               <Button
+                type="button"
                 onClick={() => navigate({ to: "/dashboard/gallery/create" })}
+                className="rounded-none"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Entry
@@ -197,30 +201,39 @@ export default function GalleryDashboard({
           ) : (
             <>
               <Button
+                type="button"
                 variant="outline"
                 onClick={() => setActiveTab("entries")}
-                className="gap-2"
+                className="gap-2 rounded-none"
               >
                 <Images className="h-4 w-4" />
                 Back to Gallery
               </Button>
-              <Button onClick={() => setIsCategoryCreateOpen(true)}>
+              <Button
+                type="button"
+                onClick={() => setIsCategoryCreateOpen(true)}
+                className="rounded-none"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Create Category
               </Button>
             </>
           )}
         </div>
-      </div>
-
+      }
+    >
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as GalleryDashboardTab)}
-        className="mb-6"
+        className="mb-4"
       >
         <TabsList className="bg-muted/60">
-          <TabsTrigger value="entries">Entries</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="entries" className="rounded-none">
+            Entries
+          </TabsTrigger>
+          <TabsTrigger value="categories" className="rounded-none">
+            Categories
+          </TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -314,6 +327,6 @@ export default function GalleryDashboard({
         }}
         isDeleting={deleteCategoryMutation.isPending}
       />
-    </div>
+    </DashboardPageShell>
   );
 }

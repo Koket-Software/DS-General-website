@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { useDashboardForm } from "@/lib/forms";
 import { toastApiError } from "@/lib/toast";
 
@@ -195,352 +196,336 @@ export function UserForm({ mode = "create", initialData }: UserFormProps) {
     }
   };
 
+  const formId = "user-form";
+  const pageTitle = mode === "create" ? "Create User" : "Update User";
+
   return (
-    <div className="flex flex-col h-screen">
-      <div className="p-8 flex items-center justify-between border-b border-border sticky top-0 left-0 right-0 bg-background">
-        <h1 className="text-2xl font-bold">
-          {mode === "create" ? "Create" : "Update"} User
-        </h1>
-        <div className="flex gap-4">
-          <Button variant="ghost" onClick={() => form.reset()}>
-            Discard Changes
-          </Button>
-          <Button type="submit" form="user-form" disabled={isLoading}>
-            {isLoading
-              ? mode === "create"
-                ? "Creating..."
-                : "Updating..."
-              : mode === "create"
-                ? "Create User"
-                : "Update User"}
-          </Button>
-        </div>
-      </div>
-      <div className="flex flex-1">
-        {/* Scrollable form section */}
-        <div className="w-1/2 p-8 border-r border-border overflow-y-auto">
-          <form
-            id="user-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => navigate({ to: "/dashboard/user-management" })}
+      isSubmitting={isLoading || form.state.isSubmitting}
+      isSubmitDisabled={
+        !form.state.canSubmit || isLoading || form.state.isSubmitting
+      }
+      submitLabel={mode === "create" ? "Create User" : "Update User"}
+      submittingLabel={mode === "create" ? "Creating..." : "Updating..."}
+      headerActions={
+        <Button
+          type="button"
+          variant="ghost"
+          className="rounded-none"
+          onClick={() => form.reset()}
+        >
+          Discard Changes
+        </Button>
+      }
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            name: state.values.name,
+            email: state.values.email,
+            role: state.values.role,
+            emailVerified: state.values.emailVerified,
+            firstName: state.values.firstName,
+            lastName: state.values.lastName,
+            phoneNumber: state.values.phoneNumber,
+          })}
+        >
+          {(formValues) => (
+            <UserPreview
+              name={formValues.name}
+              email={formValues.email}
+              role={formValues.role}
+              emailVerified={formValues.emailVerified}
+              firstName={formValues.firstName}
+              lastName={formValues.lastName}
+              phoneNumber={formValues.phoneNumber}
+              avatarPreview={avatarPreview}
+              headshotPreview={headshotPreview}
+            />
+          )}
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <form.Field name="name">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  placeholder="Enter user name"
+                  disabled={isLoading}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="email">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="email"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  placeholder="Enter email address"
+                  disabled={isLoading}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        {mode === "create" && (
+          <form.Field name="password">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="password"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Enter password (min 8 characters)"
+                    disabled={isLoading}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
             }}
-            className="space-y-6"
-          >
-            <form.Field name="name">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      placeholder="Enter user name"
-                      disabled={isLoading}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+          </form.Field>
+        )}
 
-            <form.Field name="email">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="email"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      placeholder="Enter email address"
-                      disabled={isLoading}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+        <form.Field name="role">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Role</FieldLabel>
+                <Select
+                  value={field.state.value}
+                  onValueChange={(value) =>
+                    field.handleChange(value as "admin" | "blogger" | "user")
+                  }
+                >
+                  <SelectTrigger id={field.name}>
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {rolesData?.data?.map((role) => (
+                      <SelectItem key={role.value} value={role.value}>
+                        {role.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-            {mode === "create" && (
-              <form.Field name="password">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="password"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        placeholder="Enter password (min 8 characters)"
-                        disabled={isLoading}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={isInvalid}
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </form.Field>
-            )}
+        <form.Field name="emailVerified">
+          {(field) => (
+            <Field>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={field.name}
+                  checked={field.state.value}
+                  onCheckedChange={(checked) =>
+                    field.handleChange(checked === true)
+                  }
+                  disabled={isLoading}
+                />
+                <FieldLabel htmlFor={field.name} className="!mb-0">
+                  Email Verified
+                </FieldLabel>
+              </div>
+            </Field>
+          )}
+        </form.Field>
 
-            <form.Field name="role">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Role</FieldLabel>
-                    <Select
-                      value={field.state.value}
-                      onValueChange={(value) =>
-                        field.handleChange(
-                          value as "admin" | "blogger" | "user",
-                        )
-                      }
-                    >
-                      <SelectTrigger id={field.name}>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {rolesData?.data?.map((role) => (
-                          <SelectItem key={role.value} value={role.value}>
-                            {role.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+        <Field>
+          <FieldLabel>Avatar Image</FieldLabel>
+          <Input
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            onChange={handleAvatarChange}
+            disabled={isLoading}
+          />
+          {avatarPreview && (
+            <div className="mt-2">
+              <AppImage
+                src={avatarPreview}
+                alt="Avatar preview"
+                className="h-20 w-20 rounded-full object-cover"
+              />
+            </div>
+          )}
+        </Field>
 
-            <form.Field name="emailVerified">
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold mb-4">Profile Information</h3>
+
+          <div className="space-y-6">
+            <form.Field name="firstName">
               {(field) => (
                 <Field>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id={field.name}
-                      checked={field.state.value}
-                      onCheckedChange={(checked) =>
-                        field.handleChange(checked === true)
-                      }
-                      disabled={isLoading}
-                    />
-                    <FieldLabel htmlFor={field.name} className="!mb-0">
-                      Email Verified
-                    </FieldLabel>
-                  </div>
+                  <FieldLabel htmlFor={field.name}>First Name</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Enter first name"
+                    disabled={isLoading}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
                 </Field>
               )}
             </form.Field>
 
+            <form.Field name="lastName">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Last Name</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Enter last name"
+                    disabled={isLoading}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="phoneNumber">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Phone Number</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      placeholder="Enter phone number"
+                      disabled={isLoading}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
             <Field>
-              <FieldLabel>Avatar Image</FieldLabel>
+              <FieldLabel>Profile Headshot</FieldLabel>
               <Input
                 type="file"
                 accept="image/jpeg,image/png,image/gif,image/webp"
-                onChange={handleAvatarChange}
+                onChange={handleHeadshotChange}
                 disabled={isLoading}
               />
-              {avatarPreview && (
+              {headshotPreview && (
                 <div className="mt-2">
                   <AppImage
-                    src={avatarPreview}
-                    alt="Avatar preview"
-                    className="h-20 w-20 rounded-full object-cover"
+                    src={headshotPreview}
+                    alt="Headshot preview"
+                    className="h-32 w-32 rounded object-cover"
                   />
                 </div>
               )}
             </Field>
+          </div>
+        </div>
 
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold mb-4">
-                Profile Information
-              </h3>
-
-              <div className="space-y-6">
-                <form.Field name="firstName">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>First Name</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        placeholder="Enter first name"
-                        disabled={isLoading}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="lastName">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Last Name</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        placeholder="Enter last name"
-                        disabled={isLoading}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="phoneNumber">
-                  {(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          Phone Number
-                        </FieldLabel>
-                        <Input
-                          id={field.name}
-                          name={field.name}
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          placeholder="Enter phone number"
-                          disabled={isLoading}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          aria-invalid={isInvalid}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                </form.Field>
-
-                <Field>
-                  <FieldLabel>Profile Headshot</FieldLabel>
-                  <Input
-                    type="file"
-                    accept="image/jpeg,image/png,image/gif,image/webp"
-                    onChange={handleHeadshotChange}
-                    disabled={isLoading}
-                  />
-                  {headshotPreview && (
-                    <div className="mt-2">
-                      <AppImage
-                        src={headshotPreview}
-                        alt="Headshot preview"
-                        className="h-32 w-32 rounded object-cover"
-                      />
-                    </div>
-                  )}
-                </Field>
-              </div>
-            </div>
-
-            {/* Social Links Section - Only in edit mode */}
-            {mode === "edit" && (
-              <UserSocialsSection
-                socials={socials}
-                existingSocials={
-                  (
-                    initialData?.profile as {
-                      socials?: Array<{
-                        socialId: number;
-                        handle: string | null;
-                        fullUrl: string | null;
-                        socialTitle: string;
-                        socialIconUrl: string | null;
-                        socialBaseUrl: string;
-                      }>;
-                    }
-                  )?.socials || []
+        {/* Social Links Section - Only in edit mode */}
+        {mode === "edit" && (
+          <UserSocialsSection
+            socials={socials}
+            existingSocials={
+              (
+                initialData?.profile as {
+                  socials?: Array<{
+                    socialId: number;
+                    handle: string | null;
+                    fullUrl: string | null;
+                    socialTitle: string;
+                    socialIconUrl: string | null;
+                    socialBaseUrl: string;
+                  }>;
                 }
-                availableSocials={socialsData}
-                isLoading={socialsLoading}
-                isError={socialsError}
-                disabled={isLoading}
-                onAdd={(socialId) => {
-                  setSocials([
-                    ...socials,
-                    { socialId, handle: null, fullUrl: null },
-                  ]);
-                }}
-                onRemove={(index) => {
-                  setSocials(socials.filter((_, i) => i !== index));
-                }}
-                onChange={(index, field, value) => {
-                  const updated = [...socials];
-                  updated[index] = {
-                    ...updated[index],
-                    [field]: value || null,
-                  };
-                  setSocials(updated);
-                }}
-              />
-            )}
-          </form>
-        </div>
-
-        {/* Scrollable preview section */}
-        <div className="w-1/2 p-8 overflow-y-auto">
-          <form.Subscribe
-            selector={(state) => ({
-              name: state.values.name,
-              email: state.values.email,
-              role: state.values.role,
-              emailVerified: state.values.emailVerified,
-              firstName: state.values.firstName,
-              lastName: state.values.lastName,
-              phoneNumber: state.values.phoneNumber,
-            })}
-          >
-            {(formValues) => (
-              <UserPreview
-                name={formValues.name}
-                email={formValues.email}
-                role={formValues.role}
-                emailVerified={formValues.emailVerified}
-                firstName={formValues.firstName}
-                lastName={formValues.lastName}
-                phoneNumber={formValues.phoneNumber}
-                avatarPreview={avatarPreview}
-                headshotPreview={headshotPreview}
-              />
-            )}
-          </form.Subscribe>
-        </div>
-      </div>
-    </div>
+              )?.socials || []
+            }
+            availableSocials={socialsData}
+            isLoading={socialsLoading}
+            isError={socialsError}
+            disabled={isLoading}
+            onAdd={(socialId) => {
+              setSocials([
+                ...socials,
+                { socialId, handle: null, fullUrl: null },
+              ]);
+            }}
+            onRemove={(index) => {
+              setSocials(socials.filter((_, i) => i !== index));
+            }}
+            onChange={(index, field, value) => {
+              const updated = [...socials];
+              updated[index] = {
+                ...updated[index],
+                [field]: value || null,
+              };
+              setSocials(updated);
+            }}
+          />
+        )}
+      </form>
+    </DashboardDetailShell>
   );
 }

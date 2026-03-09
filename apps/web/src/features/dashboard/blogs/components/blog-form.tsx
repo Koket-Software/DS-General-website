@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { fetchTags } from "@/features/dashboard/tags/lib/tags-api";
 import { tagKeys } from "@/features/dashboard/tags/lib/tags-query";
 import {
@@ -375,315 +376,287 @@ function BlogFormContent({
   const currentFeaturedPreview = previews[0] ?? existingImageUrl ?? null;
 
   const isReadOnly = mode === "view";
+  const formId = "blog-form";
+  const pageTitle =
+    mode === "create"
+      ? "Create Blog"
+      : mode === "edit"
+        ? "Edit Blog"
+        : "View Blog";
 
   return (
-    <div className="flex h-screen flex-col">
-      <div className="flex items-center justify-between border-b border-border bg-background p-8">
-        <h1 className="text-2xl font-bold">
-          {mode === "create"
-            ? "Create Blog"
-            : mode === "edit"
-              ? "Edit Blog"
-              : "View Blog"}
-        </h1>
-        <div className="flex gap-4">
-          <Button onClick={() => navigate({ to: "/dashboard/blogs" })}>
-            Back
-          </Button>
-          {mode !== "view" && (
-            <Button type="submit" form="blog-form" disabled={isLoading}>
-              {isLoading
-                ? mode === "create"
-                  ? "Creating..."
-                  : "Updating..."
-                : mode === "create"
-                  ? "Create Blog"
-                  : "Update Blog"}
-            </Button>
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => navigate({ to: "/dashboard/blogs" })}
+      isSubmitting={isLoading || form.state.isSubmitting}
+      isSubmitDisabled={
+        !form.state.canSubmit || isLoading || form.state.isSubmitting
+      }
+      submitLabel={mode === "create" ? "Create Blog" : "Update Blog"}
+      submittingLabel={mode === "create" ? "Creating..." : "Updating..."}
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            title: state.values.title,
+            excerpt: state.values.excerpt,
+            content: state.values.content,
+            publishDate: state.values.publishDate,
+            readTimeMinutes: state.values.readTimeMinutes,
+            tagIds: state.values.tagIds,
+          })}
+        >
+          {(values) => (
+            <BlogPreview
+              title={values.title}
+              excerpt={values.excerpt}
+              content={values.content}
+              publishDate={values.publishDate}
+              readTimeMinutes={values.readTimeMinutes}
+              selectedTags={selectedTags}
+              imagePreviews={
+                currentFeaturedPreview ? [currentFeaturedPreview] : []
+              }
+            />
           )}
-        </div>
-      </div>
-      <div className="flex flex-1">
-        <div className="w-full lg:w-1/2 overflow-y-auto border-r border-border p-8">
-          <form
-            id="blog-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <Field>
+          <FieldLabel>Featured Image</FieldLabel>
+          <Input
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            onChange={(e) => {
+              if (!e.target.files) return;
+              const { errors } = handleFiles(e.target.files);
+              if (errors.length) toast.error(errors.join("\n"));
+              // handled via useUploadField; tanstack form doesn't track file state
             }}
-            className="space-y-6"
-          >
-            <Field>
-              <FieldLabel>Featured Image</FieldLabel>
-              <Input
-                type="file"
-                accept="image/jpeg,image/png,image/gif,image/webp"
-                onChange={(e) => {
-                  if (!e.target.files) return;
-                  const { errors } = handleFiles(e.target.files);
-                  if (errors.length) toast.error(errors.join("\n"));
-                  // handled via useUploadField; tanstack form doesn't track file state
-                }}
-                disabled={isLoading || isReadOnly}
-              />
-            </Field>
+            disabled={isLoading || isReadOnly}
+          />
+        </Field>
 
-            <form.Field name="title">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      placeholder="Enter blog title"
-                      disabled={isLoading || isReadOnly}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+        <form.Field name="title">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  placeholder="Enter blog title"
+                  disabled={isLoading || isReadOnly}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-            <form.Field name="authorId">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Author</FieldLabel>
-                    <AsyncSearchableSelect
-                      id={field.name}
-                      value={field.state.value ?? ""}
-                      onChange={(value) => field.handleChange(String(value))}
-                      query={authorSelect.search}
-                      onQueryChange={authorSelect.setSearch}
-                      options={authorOptions}
-                      placeholder={
-                        authorSelect.isLoading
-                          ? "Searching authors…"
-                          : "Select author"
-                      }
-                      searchPlaceholder="Type to search authors..."
-                      className="w-full"
-                      isSearching={authorSelect.isLoading}
-                      error={
-                        authorSelect.isError ? "Failed to load authors" : null
-                      }
-                      disabled={isLoading || isReadOnly}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <form.Field name="excerpt">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
-                    <Textarea
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      rows={3}
-                      maxLength={255}
-                      onBlur={field.handleBlur}
-                      placeholder="Short summary for listing"
-                      disabled={isLoading || isReadOnly}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <div className="grid grid-cols-2 gap-4">
-              <form.Field name="publishDate">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Publish Date</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="datetime-local"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        disabled={isLoading || isReadOnly}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={isInvalid}
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </form.Field>
-
-              <form.Field name="readTimeMinutes">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>
-                        Read Time (minutes)
-                      </FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="number"
-                        min={1}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        disabled={isLoading || isReadOnly}
-                        onChange={(e) =>
-                          field.handleChange(
-                            e.target.value
-                              ? Number.parseInt(e.target.value, 10)
-                              : (undefined as unknown as number),
-                          )
-                        }
-                        aria-invalid={isInvalid}
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </form.Field>
-            </div>
-
-            <FieldSet>
-              <FieldLabel htmlFor="tag-select">Tags</FieldLabel>
-              <FieldGroup className="flex-col gap-2">
+        <form.Field name="authorId">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Author</FieldLabel>
                 <AsyncSearchableSelect
-                  id="tag-select"
-                  value={undefined}
-                  onChange={handleTagSelect}
-                  query={tagSelect.search}
-                  onQueryChange={tagSelect.setSearch}
-                  options={tagSelect.options}
+                  id={field.name}
+                  value={field.state.value ?? ""}
+                  onChange={(value) => field.handleChange(String(value))}
+                  query={authorSelect.search}
+                  onQueryChange={authorSelect.setSearch}
+                  options={authorOptions}
                   placeholder={
-                    tagSelect.isLoading ? "Searching tags…" : "Select tags"
+                    authorSelect.isLoading
+                      ? "Searching authors…"
+                      : "Select author"
                   }
-                  searchPlaceholder="Type to search tags..."
+                  searchPlaceholder="Type to search authors..."
                   className="w-full"
-                  isSearching={tagSelect.isLoading}
-                  error={tagSelect.isError ? "Failed to load tags" : null}
+                  isSearching={authorSelect.isLoading}
+                  error={authorSelect.isError ? "Failed to load authors" : null}
                   disabled={isLoading || isReadOnly}
                 />
-              </FieldGroup>
-              {selectedTags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {selectedTags.map((tag) => (
-                    <Button
-                      key={tag.id}
-                      type="button"
-                      onClick={() =>
-                        !isReadOnly &&
-                        form.setFieldValue(
-                          "tagIds",
-                          form.state.values.tagIds.filter(
-                            (id) => id !== tag.id,
-                          ),
-                        )
-                      }
-                      className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
-                      disabled={isReadOnly}
-                    >
-                      <span>{tag.name}</span>
-                      {!isReadOnly && <span aria-hidden>×</span>}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </FieldSet>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-            <form.Field name="content">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Content</FieldLabel>
-                    {isReadOnly ? (
-                      <div className="rounded-md border bg-muted/50 p-3">
-                        {field.state.value ? (
-                          <LexicalViewer content={field.state.value} />
-                        ) : (
-                          <p className="text-sm text-muted-foreground italic">
-                            No content provided.
-                          </p>
-                        )}
-                      </div>
+        <form.Field name="excerpt">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  rows={3}
+                  maxLength={255}
+                  onBlur={field.handleBlur}
+                  placeholder="Short summary for listing"
+                  disabled={isLoading || isReadOnly}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <div className="grid grid-cols-2 gap-4">
+          <form.Field name="publishDate">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Publish Date</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="datetime-local"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    disabled={isLoading || isReadOnly}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="readTimeMinutes">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Read Time (minutes)
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="number"
+                    min={1}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    disabled={isLoading || isReadOnly}
+                    onChange={(e) =>
+                      field.handleChange(
+                        e.target.value
+                          ? Number.parseInt(e.target.value, 10)
+                          : (undefined as unknown as number),
+                      )
+                    }
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+        </div>
+
+        <FieldSet>
+          <FieldLabel htmlFor="tag-select">Tags</FieldLabel>
+          <FieldGroup className="flex-col gap-2">
+            <AsyncSearchableSelect
+              id="tag-select"
+              value={undefined}
+              onChange={handleTagSelect}
+              query={tagSelect.search}
+              onQueryChange={tagSelect.setSearch}
+              options={tagSelect.options}
+              placeholder={
+                tagSelect.isLoading ? "Searching tags…" : "Select tags"
+              }
+              searchPlaceholder="Type to search tags..."
+              className="w-full"
+              isSearching={tagSelect.isLoading}
+              error={tagSelect.isError ? "Failed to load tags" : null}
+              disabled={isLoading || isReadOnly}
+            />
+          </FieldGroup>
+          {selectedTags.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {selectedTags.map((tag) => (
+                <Button
+                  key={tag.id}
+                  type="button"
+                  onClick={() =>
+                    !isReadOnly &&
+                    form.setFieldValue(
+                      "tagIds",
+                      form.state.values.tagIds.filter((id) => id !== tag.id),
+                    )
+                  }
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
+                  disabled={isReadOnly}
+                >
+                  <span>{tag.name}</span>
+                  {!isReadOnly && <span aria-hidden>×</span>}
+                </Button>
+              ))}
+            </div>
+          )}
+        </FieldSet>
+
+        <form.Field name="content">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Content</FieldLabel>
+                {isReadOnly ? (
+                  <div className="rounded-md border bg-muted/50 p-3">
+                    {field.state.value ? (
+                      <LexicalViewer content={field.state.value} />
                     ) : (
-                      <LexicalEditor
-                        value={field.state.value}
-                        onChange={field.handleChange}
-                        placeholder="Write the full blog content..."
-                      />
+                      <p className="text-sm text-muted-foreground italic">
+                        No content provided.
+                      </p>
                     )}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-          </form>
-        </div>
-
-        <div className="hidden lg:block w-1/2 overflow-y-auto p-8 bg-muted/30">
-          <form.Subscribe
-            selector={(state) => ({
-              title: state.values.title,
-              excerpt: state.values.excerpt,
-              content: state.values.content,
-              publishDate: state.values.publishDate,
-              readTimeMinutes: state.values.readTimeMinutes,
-              tagIds: state.values.tagIds,
-            })}
-          >
-            {(values) => (
-              <BlogPreview
-                title={values.title}
-                excerpt={values.excerpt}
-                content={values.content}
-                publishDate={values.publishDate}
-                readTimeMinutes={values.readTimeMinutes}
-                selectedTags={selectedTags}
-                imagePreviews={
-                  currentFeaturedPreview ? [currentFeaturedPreview] : []
-                }
-              />
-            )}
-          </form.Subscribe>
-        </div>
-      </div>
-    </div>
+                  </div>
+                ) : (
+                  <LexicalEditor
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder="Write the full blog content..."
+                  />
+                )}
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+      </form>
+    </DashboardDetailShell>
   );
 }

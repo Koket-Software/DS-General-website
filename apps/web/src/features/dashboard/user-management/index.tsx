@@ -14,6 +14,7 @@ import {
 import type { User, AssignRoleInput } from "./lib/users-schema";
 import { DeleteDialog } from "../components/deletedialog";
 import { DataTable } from "../components/table/DataTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -175,7 +176,7 @@ export default function Index() {
   // Loading skeleton
   if (isPending) {
     return (
-      <div className="p-8">
+      <DashboardPageShell>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Skeleton className="h-10 w-64" />
@@ -186,7 +187,7 @@ export default function Index() {
             <Skeleton key={i} className="h-16 w-full" />
           ))}
         </div>
-      </div>
+      </DashboardPageShell>
     );
   }
 
@@ -194,7 +195,7 @@ export default function Index() {
   const isEmpty = !users?.data || users.data.length === 0;
   if (isEmpty && !hasActiveFilters) {
     return (
-      <div className="p-8">
+      <DashboardPageShell>
         <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
           <div className="rounded-full bg-primary/10 p-6">
             <Users className="h-12 w-12 text-primary" />
@@ -206,27 +207,33 @@ export default function Index() {
               roles and permissions.
             </p>
           </div>
-          <Button onClick={handleCreate} size="lg">
+          <Button onClick={handleCreate} size="lg" className="rounded-none">
             Create First User
           </Button>
         </div>
-      </div>
+      </DashboardPageShell>
     );
   }
 
   return (
-    <div className="p-8">
+    <DashboardPageShell title={<h1 className="text-2xl font-bold">Users</h1>}>
       {/* Filters section */}
-      <div className="mb-4 flex items-center gap-4">
-        <div className="flex-1">
-          <Label htmlFor="role-filter" className="text-sm mb-2 block">
+      <div className="mb-4 flex flex-wrap items-end gap-3 md:gap-4">
+        <div className="flex w-full flex-col gap-1 sm:w-auto">
+          <Label
+            htmlFor="role-filter"
+            className="text-xs uppercase tracking-wide"
+          >
             Filter by Role
           </Label>
           <Select
             value={roleFilter || "all"}
             onValueChange={handleRoleFilterChange}
           >
-            <SelectTrigger id="role-filter" className="w-[200px]">
+            <SelectTrigger
+              id="role-filter"
+              className="w-full rounded-none sm:w-[200px]"
+            >
               <SelectValue placeholder="All roles" />
             </SelectTrigger>
             <SelectContent>
@@ -241,7 +248,7 @@ export default function Index() {
           <Button
             variant="outline"
             onClick={handleClearFilters}
-            className="mt-7"
+            className="rounded-none"
           >
             <FilterX className="mr-2 h-4 w-4" />
             Clear Filters
@@ -251,7 +258,7 @@ export default function Index() {
 
       {/* Empty state with filters applied */}
       {isEmpty && hasActiveFilters ? (
-        <div className="flex flex-col items-center justify-center h-[50vh] space-y-4 border-2 border-dashed rounded-lg">
+        <div className="flex h-[50vh] flex-col items-center justify-center space-y-4 border-2 border-dashed">
           <div className="rounded-full bg-muted p-6">
             <FilterX className="h-12 w-12 text-muted-foreground" />
           </div>
@@ -262,7 +269,12 @@ export default function Index() {
               filter criteria.
             </p>
           </div>
-          <Button variant="outline" onClick={handleClearFilters}>
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-none"
+            onClick={handleClearFilters}
+          >
             Clear Filters
           </Button>
         </div>
@@ -293,7 +305,7 @@ export default function Index() {
       )}
       {isRoleDialogOpen && selected && (
         <Dialog open={isRoleDialogOpen} onOpenChange={setRoleDialogOpen}>
-          <DialogContent>
+          <DialogContent className="rounded-none">
             <DialogHeader>
               <DialogTitle>Assign Role</DialogTitle>
               <DialogDescription>
@@ -309,7 +321,7 @@ export default function Index() {
                   setSelectedRole(value as "admin" | "blogger" | "user")
                 }
               >
-                <SelectTrigger id="role-select" className="mt-2">
+                <SelectTrigger id="role-select" className="mt-2 rounded-none">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -323,13 +335,17 @@ export default function Index() {
             </div>
             <DialogFooter>
               <Button
+                type="button"
                 variant="ghost"
+                className="rounded-none"
                 onClick={() => setRoleDialogOpen(false)}
                 disabled={assignRoleMutation.isPending}
               >
                 Cancel
               </Button>
               <Button
+                type="button"
+                className="rounded-none"
                 onClick={handleRoleAssignment}
                 disabled={
                   assignRoleMutation.isPending || selectedRole === selected.role
@@ -341,6 +357,6 @@ export default function Index() {
           </DialogContent>
         </Dialog>
       )}
-    </div>
+    </DashboardPageShell>
   );
 }

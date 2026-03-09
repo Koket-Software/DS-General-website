@@ -17,10 +17,10 @@ import {
 } from "../lib/services-schema";
 
 import { LexicalViewer } from "@/components/common/rich-text/LexicalViewer";
-import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { API_BASE_URL } from "@/lib/api-base";
 import { useDashboardForm } from "@/lib/forms";
 import { toastApiError } from "@/lib/toast";
@@ -161,174 +161,151 @@ export function ServiceForm({
         : [];
 
   const isReadOnly = mode === "view";
+  const formId = "service-form";
+  const pageTitle =
+    mode === "create"
+      ? "Create Service"
+      : mode === "edit"
+        ? "Edit Service"
+        : "View Service";
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="p-8 flex items-center justify-between border-b border-border sticky top-0 left-0 right-0 bg-background">
-        <h1 className="text-2xl font-bold">
-          {mode === "create"
-            ? "Create Service"
-            : mode === "edit"
-              ? "Edit Service"
-              : "View Service"}
-        </h1>
-        <div className="flex gap-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/dashboard/services" })}
-          >
-            Back
-          </Button>
-          {mode !== "view" && (
-            <Button type="submit" form="service-form" disabled={isLoading}>
-              {isLoading
-                ? mode === "create"
-                  ? "Creating..."
-                  : "Updating..."
-                : mode === "create"
-                  ? "Create Service"
-                  : "Update Service"}
-            </Button>
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => navigate({ to: "/dashboard/services" })}
+      isSubmitting={isLoading || form.state.isSubmitting}
+      isSubmitDisabled={
+        !form.state.canSubmit || isLoading || form.state.isSubmitting
+      }
+      submitLabel={mode === "create" ? "Create Service" : "Update Service"}
+      submittingLabel={mode === "create" ? "Creating..." : "Updating..."}
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            title: state.values.title,
+            excerpt: state.values.excerpt,
+            description: state.values.description,
+          })}
+        >
+          {(formValues) => (
+            <ServicePreview
+              title={formValues.title}
+              excerpt={formValues.excerpt}
+              description={formValues.description}
+              imagePreviews={currentPreviews}
+            />
           )}
-        </div>
-      </div>
-      <div className="flex flex-1">
-        {/* Scrollable form section */}
-        <div className="w-full lg:w-1/2 p-8 border-r border-border overflow-y-auto">
-          <form
-            id="service-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        {/* Image field */}
+        <Field>
+          <FieldLabel>Images</FieldLabel>
+          <Input
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            multiple
+            onChange={(e) => {
+              if (!e.target.files) return;
+              const { errors } = handleFiles(e.target.files);
+              if (errors.length) toast.error(errors.join("\n"));
             }}
-            className="space-y-6"
-          >
-            {/* Image field */}
-            <Field>
-              <FieldLabel>Images</FieldLabel>
-              <Input
-                type="file"
-                accept="image/jpeg,image/png,image/gif,image/webp"
-                multiple
-                onChange={(e) => {
-                  if (!e.target.files) return;
-                  const { errors } = handleFiles(e.target.files);
-                  if (errors.length) toast.error(errors.join("\n"));
-                }}
-                disabled={isLoading || isReadOnly}
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                Upload service images (max 10MB each). First image is primary.
-              </p>
-            </Field>
+            disabled={isLoading || isReadOnly}
+          />
+          <p className="text-sm text-muted-foreground mt-1">
+            Upload service images (max 10MB each). First image is primary.
+          </p>
+        </Field>
 
-            <form.Field name="title">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Service Title</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      placeholder="Enter service title"
-                      disabled={isLoading || isReadOnly}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+        <form.Field name="title">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Service Title</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  placeholder="Enter service title"
+                  disabled={isLoading || isReadOnly}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-            <form.Field name="excerpt">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
-                    <Textarea
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      rows={3}
-                      maxLength={255}
-                      onBlur={field.handleBlur}
-                      placeholder="Enter service excerpt"
-                      disabled={isLoading || isReadOnly}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+        <form.Field name="excerpt">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  rows={3}
+                  maxLength={255}
+                  onBlur={field.handleBlur}
+                  placeholder="Enter service excerpt"
+                  disabled={isLoading || isReadOnly}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-            <form.Field name="description">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                    {isReadOnly ? (
-                      <div className="rounded-md border bg-muted/50 p-3">
-                        {field.state.value ? (
-                          <LexicalViewer content={field.state.value} />
-                        ) : (
-                          <p className="text-sm text-muted-foreground italic">
-                            No description provided.
-                          </p>
-                        )}
-                      </div>
+        <form.Field name="description">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                {isReadOnly ? (
+                  <div className="rounded-md border bg-muted/50 p-3">
+                    {field.state.value ? (
+                      <LexicalViewer content={field.state.value} />
                     ) : (
-                      <LexicalEditor
-                        value={field.state.value}
-                        onChange={field.handleChange}
-                        placeholder="Write a detailed service description..."
-                      />
+                      <p className="text-sm text-muted-foreground italic">
+                        No description provided.
+                      </p>
                     )}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-          </form>
-        </div>
-
-        {/* Scrollable preview section */}
-        <div className="hidden lg:block lg:w-1/2 p-8 overflow-y-auto bg-muted/30">
-          <form.Subscribe
-            selector={(state) => ({
-              title: state.values.title,
-              excerpt: state.values.excerpt,
-              description: state.values.description,
-            })}
-          >
-            {(formValues) => (
-              <ServicePreview
-                title={formValues.title}
-                excerpt={formValues.excerpt}
-                description={formValues.description}
-                imagePreviews={currentPreviews}
-              />
-            )}
-          </form.Subscribe>
-        </div>
-      </div>
-    </div>
+                  </div>
+                ) : (
+                  <LexicalEditor
+                    value={field.state.value}
+                    onChange={field.handleChange}
+                    placeholder="Write a detailed service description..."
+                  />
+                )}
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+      </form>
+    </DashboardDetailShell>
   );
 }

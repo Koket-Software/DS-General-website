@@ -29,10 +29,10 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function DashboardLayout() {
-  const defaultOpen = Cookies.get("sidebar:state") !== "false";
+  const defaultOpen = Cookies.get("sidebar_state") !== "false";
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
+    <SidebarProvider defaultOpen={defaultOpen} data-dashboard="true">
       <AppSidebar />
       <div
         id="content"
@@ -41,13 +41,15 @@ function DashboardLayout() {
           "peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]",
           "peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]",
           "transition-[width] duration-200 ease-linear",
-          "flex h-svh flex-col",
+          "flex min-h-svh flex-col",
           "group-data-[scroll-locked=1]/body:h-full",
           "group-data-[scroll-locked=1]/body:has-[main.fixed-main]:h-svh",
         )}
       >
         <Header />
-        <Outlet />
+        <main id="dashboard-main" className="flex-1 overflow-x-hidden">
+          <Outlet />
+        </main>
       </div>
     </SidebarProvider>
   );

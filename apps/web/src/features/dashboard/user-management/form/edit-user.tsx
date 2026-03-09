@@ -12,7 +12,7 @@ export default function EditUser() {
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex min-h-[40svh] items-center justify-center">
         <div className="text-lg">Loading user data...</div>
       </div>
     );
@@ -20,7 +20,7 @@ export default function EditUser() {
 
   if (isError || !data?.data) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex min-h-[40svh] items-center justify-center">
         <div className="text-lg text-destructive">
           Failed to load user data. Please try again.
         </div>

@@ -11,6 +11,7 @@ import {
 import { CreateResourceModal } from "../components/CreateResourceModal";
 import { DeleteDialog } from "../components/deletedialog";
 import { ResourceTable } from "../components/ResourceTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { useTableFilters } from "@/lib/useTableFilters";
 
@@ -89,7 +90,7 @@ export default function GalleryCategoriesIndex() {
     : undefined;
 
   return (
-    <div className="p-8">
+    <DashboardPageShell>
       <ResourceTable
         title="Gallery Categories"
         columns={Columns(onView, onEdit, onDelete)}
@@ -148,6 +149,6 @@ export default function GalleryCategoriesIndex() {
           isDeleting={deleteMutation.isPending}
         />
       )}
-    </div>
+    </DashboardPageShell>
   );
 }

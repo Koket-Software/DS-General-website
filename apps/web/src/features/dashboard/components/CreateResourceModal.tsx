@@ -28,7 +28,9 @@ export function CreateResourceModal({
 }: CreateResourceModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={cn("", className)}>
+      <DialogContent
+        className={cn("max-h-[92svh] overflow-hidden rounded-none", className)}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           {description ? (
@@ -39,7 +41,7 @@ export function CreateResourceModal({
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="py-4 px-1 rounded-none overflow-x-auto overflow-y-auto scrollbar-hide ">
+        <div className="scrollbar-hide overflow-x-auto overflow-y-auto rounded-none px-1 py-4">
           {children}
         </div>
       </DialogContent>

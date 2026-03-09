@@ -37,7 +37,10 @@ export function DashboardPreviewCard({
 }: DashboardPreviewCardProps) {
   return (
     <section
-      className={cn("space-y-4 rounded-xl border bg-background p-5", className)}
+      className={cn(
+        "dashboard-box space-y-4 border bg-background p-5",
+        className,
+      )}
     >
       <h2 className="text-base font-semibold text-balance">{title}</h2>
       {children}

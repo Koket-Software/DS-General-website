@@ -22,10 +22,10 @@ import type {
 } from "../lib/business-sectors-schema";
 
 import { LexicalViewer } from "@/components/common/rich-text/LexicalViewer";
-import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { API_BASE_URL } from "@/lib/api-base";
 import { useDashboardForm } from "@/lib/forms";
 import { toastApiError } from "@/lib/toast";
@@ -286,342 +286,305 @@ export function BusinessSectorForm({
     return featuredImageUrl || null;
   }, [featuredImageUrl, featuredPreviews]);
 
+  const pageTitle =
+    mode === "create"
+      ? "Create Business Sector"
+      : mode === "edit"
+        ? "Edit Business Sector"
+        : "View Business Sector";
+
   return (
-    <div className="flex h-screen flex-col">
-      <div className="sticky top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-border bg-background p-8">
-        <h1 className="text-2xl font-bold">
-          {mode === "create"
-            ? "Create Business Sector"
-            : mode === "edit"
-              ? "Edit Business Sector"
-              : "View Business Sector"}
-        </h1>
-
-        <div className="flex gap-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/dashboard/business-sectors" })}
-          >
-            Back
-          </Button>
-          {!isReadOnly && (
-            <Button
-              type="submit"
-              form="business-sector-form"
-              disabled={isLoading}
-            >
-              {isLoading
-                ? mode === "create"
-                  ? "Creating..."
-                  : "Updating..."
-                : mode === "create"
-                  ? "Create Sector"
-                  : "Update Sector"}
-            </Button>
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId="business-sector-form"
+      onBack={() => navigate({ to: "/dashboard/business-sectors" })}
+      isSubmitting={isLoading || form.state.isSubmitting}
+      isSubmitDisabled={
+        isLoading || form.state.isSubmitting || !form.state.canSubmit
+      }
+      submitLabel={mode === "create" ? "Create Sector" : "Update Sector"}
+      submittingLabel={mode === "create" ? "Creating..." : "Updating..."}
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            title: state.values.title,
+            excerpt: state.values.excerpt,
+            publishDate: state.values.publishDate,
+          })}
+        >
+          {(values) => (
+            <div className="dashboard-box space-y-2 border p-4 text-sm text-muted-foreground">
+              <h3 className="text-base font-semibold text-foreground">
+                Live Summary
+              </h3>
+              <p className="text-xl font-medium text-foreground">
+                {values.title || "Untitled sector"}
+              </p>
+              <p>{values.excerpt || "No excerpt"}</p>
+              <p>
+                Publish date:{" "}
+                {values.publishDate ? values.publishDate : "Draft"}
+              </p>
+              <p>Stats: {stats.length}</p>
+              <p>Services: {services.length}</p>
+              <p>Gallery images: {gallery.length}</p>
+            </div>
           )}
-        </div>
-      </div>
-
-      <div className="flex flex-1 overflow-hidden">
-        <div className="w-full overflow-y-auto border-r border-border p-8 lg:w-2/3">
-          <form
-            id="business-sector-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              form.handleSubmit();
+        </form.Subscribe>
+      }
+    >
+      <form
+        id="business-sector-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <Field>
+          <FieldLabel>Featured Image</FieldLabel>
+          <Input
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+            onChange={(event) => {
+              if (!event.target.files) return;
+              const { errors } = handleFeaturedFiles(event.target.files);
+              if (errors.length > 0) {
+                toast.error(errors.join("\n"));
+              }
             }}
-            className="space-y-6"
-          >
+            disabled={isLoading || isReadOnly}
+          />
+
+          {currentFeaturedPreview ? (
+            <div className="mt-3 h-44 overflow-hidden border bg-muted">
+              <img
+                src={currentFeaturedPreview}
+                alt="Featured"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ) : null}
+        </Field>
+
+        <form.Field name="title">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="Sector title"
+                  disabled={isLoading || isReadOnly}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="excerpt">
+          {(field) => (
             <Field>
-              <FieldLabel>Featured Image</FieldLabel>
-              <Input
-                type="file"
-                accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-                onChange={(event) => {
-                  if (!event.target.files) return;
-                  const { errors } = handleFeaturedFiles(event.target.files);
-                  if (errors.length > 0) {
-                    toast.error(errors.join("\n"));
-                  }
-                }}
+              <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
+              <Textarea
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                placeholder="Short summary"
+                rows={3}
                 disabled={isLoading || isReadOnly}
               />
-
-              {currentFeaturedPreview ? (
-                <div className="mt-3 h-44 overflow-hidden rounded-lg border bg-muted">
-                  <img
-                    src={currentFeaturedPreview}
-                    alt="Featured"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              ) : null}
             </Field>
+          )}
+        </form.Field>
 
-            <form.Field name="title">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+        <form.Field name="publishDate">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Publish Date</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="datetime-local"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                disabled={isLoading || isReadOnly}
+              />
+            </Field>
+          )}
+        </form.Field>
 
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      placeholder="Sector title"
-                      disabled={isLoading || isReadOnly}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
+        <form.Field name="history">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
 
-            <form.Field name="excerpt">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    name={field.name}
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel>History</FieldLabel>
+                {isReadOnly ? (
+                  <div className="border bg-muted/50 p-3">
+                    <LexicalViewer content={field.state.value} />
+                  </div>
+                ) : (
+                  <LexicalEditor
                     value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Short summary"
-                    rows={3}
-                    disabled={isLoading || isReadOnly}
+                    onChange={field.handleChange}
+                    placeholder="Write sector history..."
                   />
-                </Field>
-              )}
-            </form.Field>
+                )}
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
 
-            <form.Field name="publishDate">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Publish Date</FieldLabel>
+        <SectorStatsManager
+          stats={stats}
+          onChange={setStats}
+          isReadOnly={isReadOnly}
+        />
+
+        <SectorServicesManager
+          services={services}
+          onChange={setServices}
+          isReadOnly={isReadOnly}
+        />
+
+        <SectorGalleryManager
+          gallery={gallery}
+          onChange={setGallery}
+          isReadOnly={isReadOnly}
+        />
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <form.Field name="phoneNumber">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Phone Number</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="+251..."
+                  disabled={isLoading || isReadOnly}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <form.Field name="emailAddress">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
-                    type="datetime-local"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
+                    placeholder="name@company.com"
                     disabled={isLoading || isReadOnly}
+                    aria-invalid={isInvalid}
                   />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="history">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel>History</FieldLabel>
-                    {isReadOnly ? (
-                      <div className="rounded-md border bg-muted/50 p-3">
-                        <LexicalViewer content={field.state.value} />
-                      </div>
-                    ) : (
-                      <LexicalEditor
-                        value={field.state.value}
-                        onChange={field.handleChange}
-                        placeholder="Write sector history..."
-                      />
-                    )}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <SectorStatsManager
-              stats={stats}
-              onChange={setStats}
-              isReadOnly={isReadOnly}
-            />
-
-            <SectorServicesManager
-              services={services}
-              onChange={setServices}
-              isReadOnly={isReadOnly}
-            />
-
-            <SectorGalleryManager
-              gallery={gallery}
-              onChange={setGallery}
-              isReadOnly={isReadOnly}
-            />
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <form.Field name="phoneNumber">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Phone Number</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      placeholder="+251..."
-                      disabled={isLoading || isReadOnly}
-                    />
-                  </Field>
-                )}
-              </form.Field>
-
-              <form.Field name="emailAddress">
-                {(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
-                        placeholder="name@company.com"
-                        disabled={isLoading || isReadOnly}
-                        aria-invalid={isInvalid}
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              </form.Field>
-            </div>
-
-            <form.Field name="address">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Address</FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Address"
-                    rows={2}
-                    disabled={isLoading || isReadOnly}
-                  />
-                </Field>
-              )}
-            </form.Field>
-
-            <div className="grid gap-4 md:grid-cols-3">
-              <form.Field name="facebookUrl">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Facebook URL</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      placeholder="https://facebook.com/..."
-                      disabled={isLoading || isReadOnly}
-                    />
-                  </Field>
-                )}
-              </form.Field>
-
-              <form.Field name="instagramUrl">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Instagram URL</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      placeholder="https://instagram.com/..."
-                      disabled={isLoading || isReadOnly}
-                    />
-                  </Field>
-                )}
-              </form.Field>
-
-              <form.Field name="linkedinUrl">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>LinkedIn URL</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      placeholder="https://linkedin.com/company/..."
-                      disabled={isLoading || isReadOnly}
-                    />
-                  </Field>
-                )}
-              </form.Field>
-            </div>
-          </form>
+              );
+            }}
+          </form.Field>
         </div>
 
-        <div className="hidden overflow-y-auto bg-muted/30 p-8 lg:block lg:w-1/3">
-          <h3 className="mb-3 text-lg font-semibold">Live Summary</h3>
-          <form.Subscribe
-            selector={(state) => ({
-              title: state.values.title,
-              excerpt: state.values.excerpt,
-              publishDate: state.values.publishDate,
-            })}
-          >
-            {(values) => (
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p className="text-foreground text-xl font-medium">
-                  {values.title || "Untitled sector"}
-                </p>
-                <p>{values.excerpt || "No excerpt"}</p>
-                <p>
-                  Publish date:{" "}
-                  {values.publishDate ? values.publishDate : "Draft"}
-                </p>
-                <p>Stats: {stats.length}</p>
-                <p>Services: {services.length}</p>
-                <p>Gallery images: {gallery.length}</p>
-              </div>
+        <form.Field name="address">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Address</FieldLabel>
+              <Textarea
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                placeholder="Address"
+                rows={2}
+                disabled={isLoading || isReadOnly}
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <form.Field name="facebookUrl">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Facebook URL</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="https://facebook.com/..."
+                  disabled={isLoading || isReadOnly}
+                />
+              </Field>
             )}
-          </form.Subscribe>
+          </form.Field>
+
+          <form.Field name="instagramUrl">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Instagram URL</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="https://instagram.com/..."
+                  disabled={isLoading || isReadOnly}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <form.Field name="linkedinUrl">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>LinkedIn URL</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="https://linkedin.com/company/..."
+                  disabled={isLoading || isReadOnly}
+                />
+              </Field>
+            )}
+          </form.Field>
         </div>
-      </div>
-    </div>
+      </form>
+    </DashboardDetailShell>
   );
 }

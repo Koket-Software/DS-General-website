@@ -29,8 +29,8 @@ export function DataTableLoadingSkeleton<TData, TValue>({
             <TableCell
               key={colIndex}
               className={cn(
-                colIndex === 0 && "rounded-l-2xl",
-                colIndex === columns.length - 1 && "rounded-r-2xl",
+                colIndex === 0 && "pl-3",
+                colIndex === columns.length - 1 && "pr-3",
               )}
             >
               <Skeleton className="h-4 w-[80%] bg-muted-foreground/20" />

@@ -38,10 +38,10 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex flex-col gap-4 items-start justify-start md:flex-row md:items-center md:justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-col gap-3 md:gap-4">
+      <div className="flex w-full flex-wrap items-center gap-2">
         {tableTitle && (
-          <h2 className="text-xl bg-muted-foreground text-background px-4 py-1.5 font-bold">
+          <h2 className="border bg-muted-foreground px-3 py-1.5 text-base font-bold text-background md:text-lg">
             {tableTitle}
           </h2>
         )}
@@ -61,9 +61,12 @@ export function DataTableToolbar<TData>({
                 table.getColumn(searchKey)?.setFilterValue(event.target.value);
               }
             }}
-            className="h-10 w-full md:max-w-sm rounded-3xl bg-sidebar border-none"
+            className="h-10 w-full rounded-none border-border bg-sidebar md:max-w-sm"
           />
         )}
+      </div>
+
+      <div className="flex w-full flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap gap-2">
           {filterableColumns.map((column) => {
             const columnFilter = table.getColumn(column.id);
@@ -82,26 +85,26 @@ export function DataTableToolbar<TData>({
             <Button
               variant="ghost"
               onClick={() => table.resetColumnFilters()}
-              className="h-10 px-2 lg:px-3"
+              className="h-10 rounded-none px-2 lg:px-3"
             >
               Reset
               <X className="ml-2 h-4 w-4" />
             </Button>
           )}
         </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <DataTableViewOptions table={table} />
-        {onAction && (
-          <Button
-            className="px-6 h-9 gap-2 text-primary"
-            onClick={onAction}
-            title="Add New"
-            variant="ghost"
-          >
-            <PlusCircle size={16} /> {actionTitle ?? "Add New"}
-          </Button>
-        )}
+        <div className="flex w-full flex-wrap items-center justify-end gap-2 md:w-auto">
+          <DataTableViewOptions table={table} />
+          {onAction && (
+            <Button
+              className="h-9 gap-2 rounded-none px-4 text-primary"
+              onClick={onAction}
+              title="Add New"
+              variant="ghost"
+            >
+              <PlusCircle size={16} /> {actionTitle ?? "Add New"}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

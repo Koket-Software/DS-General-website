@@ -39,6 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { fetchTags } from "@/features/dashboard/tags/lib/tags-api";
 import { tagKeys } from "@/features/dashboard/tags/lib/tags-query";
 import {
@@ -277,563 +278,553 @@ export function VacancyForm({
   };
 
   const currentFeaturedPreview = previews[0] ?? null;
+  const formId = "vacancy-form";
+  const pageTitle =
+    mode === "create"
+      ? "Create Vacancy"
+      : mode === "edit"
+        ? "Edit Vacancy"
+        : "Vacancy Details";
 
   return (
-    <div className="flex h-screen flex-col">
-      <div className="flex items-center justify-between border-b border-border bg-background p-8">
-        <h1 className="text-2xl font-bold">
-          {mode === "create"
-            ? "Create Vacancy"
-            : mode === "edit"
-              ? "Edit Vacancy"
-              : "Vacancy Details"}
-        </h1>
-        <div className="flex gap-3">
-          {mode !== "create" && initialData?.slug && (
-            <Link
-              to="/dashboard/vacancies/$slug/applications"
-              params={{ slug: initialData.slug }}
-              search={{ id: initialData.id }}
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => navigate({ to: "/dashboard/vacancies" })}
+      isSubmitting={isLoading || form.state.isSubmitting}
+      isSubmitDisabled={
+        !form.state.canSubmit || isLoading || form.state.isSubmitting
+      }
+      submitLabel={mode === "create" ? "Create Vacancy" : "Update Vacancy"}
+      submittingLabel="Saving..."
+      headerActions={
+        mode !== "create" && initialData?.slug ? (
+          <Link
+            to="/dashboard/vacancies/$slug/applications"
+            params={{ slug: initialData.slug }}
+            search={{ id: initialData.id }}
+          >
+            <Button
+              variant="outline"
+              disabled={!initialData.id}
+              className="rounded-none"
             >
-              <Button variant="outline" disabled={!initialData.id}>
-                View Applications
-              </Button>
-            </Link>
-          )}
-          <Button onClick={() => navigate({ to: "/dashboard/vacancies" })}>
-            Back
-          </Button>
-          {mode !== "view" && (
-            <Button type="submit" form="vacancy-form" disabled={isLoading}>
-              {isLoading
-                ? "Saving..."
-                : mode === "create"
-                  ? "Create Vacancy"
-                  : "Update Vacancy"}
+              View Applications
             </Button>
+          </Link>
+        ) : null
+      }
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            title: state.values.title,
+            excerpt: state.values.excerpt,
+            description: state.values.description,
+            department: state.values.department,
+            location: state.values.location,
+            workplaceType: state.values.workplaceType,
+            employmentType: state.values.employmentType,
+            seniority: state.values.seniority,
+            salaryMin: state.values.salaryMin,
+            salaryMax: state.values.salaryMax,
+            salaryCurrency: state.values.salaryCurrency,
+            externalApplyUrl: state.values.externalApplyUrl,
+            applyEmail: state.values.applyEmail,
+            status: state.values.status,
+            publishedAt: state.values.publishedAt,
+            deadlineAt: state.values.deadlineAt,
+            tagIds: state.values.tagIds,
+          })}
+        >
+          {(values) => (
+            <VacancyPreview
+              title={values.title}
+              excerpt={values.excerpt ?? ""}
+              description={values.description ?? ""}
+              department={values.department ?? undefined}
+              location={values.location ?? undefined}
+              workplaceType={values.workplaceType ?? undefined}
+              employmentType={values.employmentType ?? undefined}
+              seniority={values.seniority ?? undefined}
+              salaryMin={values.salaryMin ?? undefined}
+              salaryMax={values.salaryMax ?? undefined}
+              salaryCurrency={values.salaryCurrency ?? undefined}
+              externalApplyUrl={values.externalApplyUrl ?? undefined}
+              applyEmail={values.applyEmail ?? undefined}
+              status={values.status ?? undefined}
+              publishedAt={values.publishedAt ?? undefined}
+              deadlineAt={values.deadlineAt ?? undefined}
+              selectedTags={selectedTags}
+              imagePreviews={
+                currentFeaturedPreview ? [currentFeaturedPreview] : []
+              }
+            />
           )}
-        </div>
-      </div>
-      <div className="flex flex-1">
-        <div className="w-full lg:w-1/2 overflow-y-auto border-r border-border p-8">
-          <form
-            id="vacancy-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              void form.handleSubmit();
-            }}
-            className="space-y-8"
-          >
-            <FieldSet>
-              <FieldGroup>
-                <form.Field name="title">
-                  {(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                        <Input
-                          id={field.name}
-                          value={field.state.value ?? ""}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          disabled={isLoading || isReadOnly}
-                          aria-invalid={isInvalid}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                </form.Field>
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void form.handleSubmit();
+        }}
+        className="space-y-8"
+      >
+        <FieldSet>
+          <FieldGroup>
+            <form.Field name="title">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                    <Input
+                      id={field.name}
+                      value={field.state.value ?? ""}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={isLoading || isReadOnly}
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
 
-                <form.Field name="excerpt">
-                  {(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
-                        <Textarea
-                          id={field.name}
-                          value={field.state.value ?? ""}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          disabled={isLoading || isReadOnly}
-                          aria-invalid={isInvalid}
-                          rows={3}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                </form.Field>
+            <form.Field name="excerpt">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Excerpt</FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      value={field.state.value ?? ""}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      disabled={isLoading || isReadOnly}
+                      aria-invalid={isInvalid}
+                      rows={3}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
 
-                <form.Field name="description">
-                  {(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          Description
-                        </FieldLabel>
-                        {isReadOnly ? (
-                          <div className="rounded-md border bg-muted/50 p-3">
-                            {field.state.value ? (
-                              <LexicalViewer content={field.state.value} />
-                            ) : (
-                              <p className="text-sm text-muted-foreground italic">
-                                No description provided.
-                              </p>
-                            )}
-                          </div>
+            <form.Field name="description">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                    {isReadOnly ? (
+                      <div className="rounded-md border bg-muted/50 p-3">
+                        {field.state.value ? (
+                          <LexicalViewer content={field.state.value} />
                         ) : (
-                          <LexicalEditor
-                            value={field.state.value}
-                            onChange={field.handleChange}
-                            placeholder="Write the job description..."
-                          />
+                          <p className="text-sm text-muted-foreground italic">
+                            No description provided.
+                          </p>
                         )}
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                </form.Field>
-              </FieldGroup>
-            </FieldSet>
-
-            <FieldSet>
-              <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <form.Field name="department">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Department</FieldLabel>
-                      <Input
-                        id={field.name}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="location">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Location</FieldLabel>
-                      <Input
-                        id={field.name}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="workplaceType">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel>Workplace Type</FieldLabel>
-                      <Select
-                        value={field.state.value ?? ""}
-                        onValueChange={(val) =>
-                          field.handleChange(
-                            val
-                              ? (val as ZodInfer<
-                                  typeof vacancyWorkplaceTypeSchema
-                                >)
-                              : undefined,
-                          )
-                        }
-                        disabled={isLoading || isReadOnly}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {vacancyWorkplaceTypeSchema.options.map((opt) => (
-                            <SelectItem key={opt} value={opt}>
-                              {opt}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="employmentType">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel>Employment Type</FieldLabel>
-                      <Select
-                        value={field.state.value ?? ""}
-                        onValueChange={(val) =>
-                          field.handleChange(
-                            val
-                              ? (val as ZodInfer<
-                                  typeof vacancyEmploymentTypeSchema
-                                >)
-                              : undefined,
-                          )
-                        }
-                        disabled={isLoading || isReadOnly}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {vacancyEmploymentTypeSchema.options.map((opt) => (
-                            <SelectItem key={opt} value={opt}>
-                              {opt}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="seniority">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel>Seniority</FieldLabel>
-                      <Select
-                        value={field.state.value ?? ""}
-                        onValueChange={(val) =>
-                          field.handleChange(
-                            val
-                              ? (val as ZodInfer<typeof vacancySenioritySchema>)
-                              : undefined,
-                          )
-                        }
-                        disabled={isLoading || isReadOnly}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {vacancySenioritySchema.options.map((opt) => (
-                            <SelectItem key={opt} value={opt}>
-                              {opt}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
-                </form.Field>
-              </FieldGroup>
-            </FieldSet>
-
-            <FieldSet>
-              <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <form.Field name="salaryCurrency">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>
-                        Salary Currency
-                      </FieldLabel>
-                      <Input
-                        id={field.name}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="salaryMin">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Salary Min</FieldLabel>
-                      <Input
-                        id={field.name}
-                        type="number"
-                        min={0}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) =>
-                          field.handleChange(
-                            e.target.value
-                              ? Number.parseInt(e.target.value, 10)
-                              : undefined,
-                          )
-                        }
-                        disabled={isLoading || isReadOnly}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="salaryMax">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Salary Max</FieldLabel>
-                      <Input
-                        id={field.name}
-                        type="number"
-                        min={0}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) =>
-                          field.handleChange(
-                            e.target.value
-                              ? Number.parseInt(e.target.value, 10)
-                              : undefined,
-                          )
-                        }
-                        disabled={isLoading || isReadOnly}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-              </FieldGroup>
-            </FieldSet>
-
-            <FieldSet>
-              <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <form.Field name="externalApplyUrl">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>
-                        External Apply URL
-                      </FieldLabel>
-                      <Input
-                        id={field.name}
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
-                        placeholder="https://..."
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="applyEmail">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Apply Email</FieldLabel>
-                      <Input
-                        id={field.name}
-                        type="email"
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
-                        placeholder="jobs@company.com"
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-              </FieldGroup>
-            </FieldSet>
-
-            <FieldSet>
-              <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-4">
-                <form.Field name="status">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel>Status</FieldLabel>
-                      <Select
+                      </div>
+                    ) : (
+                      <LexicalEditor
                         value={field.state.value}
-                        onValueChange={(val) =>
-                          field.handleChange(
-                            val as ZodInfer<typeof vacancyStatusSchema>,
-                          )
-                        }
-                        disabled={isLoading || isReadOnly}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {vacancyStatusSchema.options.map((opt) => (
-                            <SelectItem key={opt} value={opt}>
-                              {opt}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
-                </form.Field>
-
-                <form.Field name="publishedAt">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Published At</FieldLabel>
-                      <Input
-                        id={field.name}
-                        type="datetime-local"
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
+                        onChange={field.handleChange}
+                        placeholder="Write the job description..."
                       />
-                    </Field>
-                  )}
-                </form.Field>
+                    )}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+        </FieldSet>
 
-                <form.Field name="deadlineAt">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor={field.name}>Deadline</FieldLabel>
-                      <Input
-                        id={field.name}
-                        type="datetime-local"
-                        value={field.state.value ?? ""}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        disabled={isLoading || isReadOnly}
-                      />
-                    </Field>
-                  )}
-                </form.Field>
-              </FieldGroup>
-            </FieldSet>
-
-            <FieldSet>
-              <FieldLabel>Featured Image</FieldLabel>
-              <div className="flex flex-col gap-3">
-                {!isReadOnly && (
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <form.Field name="department">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Department</FieldLabel>
                   <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const files = e.target.files;
-                      if (!files) return;
-                      handleFiles(files);
-                    }}
-                    disabled={isLoading}
+                    id={field.name}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
                   />
-                )}
-
-                {currentFeaturedPreview ? (
-                  <AppImage
-                    src={currentFeaturedPreview}
-                    alt="Featured preview"
-                    className="h-32 w-48 rounded-md object-cover"
-                  />
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    No image selected.
-                  </p>
-                )}
-              </div>
-            </FieldSet>
-
-            <FieldSet>
-              <FieldLabel htmlFor="tag-select">Tags</FieldLabel>
-              <FieldGroup className="flex-col gap-2">
-                <AsyncSearchableSelect
-                  id="tag-select"
-                  value={undefined}
-                  onChange={handleTagSelect}
-                  query={tagSelect.search}
-                  onQueryChange={tagSelect.setSearch}
-                  options={tagSelect.options}
-                  placeholder={
-                    tagSelect.isLoading ? "Searching tags…" : "Select tags"
-                  }
-                  searchPlaceholder="Type to search tags..."
-                  className="w-full"
-                  isSearching={tagSelect.isLoading}
-                  error={tagSelect.isError ? "Failed to load tags" : null}
-                  disabled={isLoading || isReadOnly}
-                />
-              </FieldGroup>
-
-              {(form.state.values.tagIds?.length ?? 0) > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {selectedTags.map((tag) => (
-                    <Button
-                      key={tag.id}
-                      type="button"
-                      onClick={() => {
-                        if (isReadOnly) return;
-                        const next = (form.state.values.tagIds ?? []).filter(
-                          (id) => id !== tag.id,
-                        );
-                        form.setFieldValue("tagIds", next);
-                      }}
-                      className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
-                      disabled={isReadOnly}
-                    >
-                      <span>{tag.name}</span>
-                      {!isReadOnly && <span aria-hidden>×</span>}
-                    </Button>
-                  ))}
-                </div>
+                </Field>
               )}
-            </FieldSet>
-          </form>
-        </div>
+            </form.Field>
 
-        <div className="hidden lg:block w-1/2 overflow-y-auto bg-muted/30 p-8">
-          <form.Subscribe
-            selector={(state) => ({
-              title: state.values.title,
-              excerpt: state.values.excerpt,
-              description: state.values.description,
-              department: state.values.department,
-              location: state.values.location,
-              workplaceType: state.values.workplaceType,
-              employmentType: state.values.employmentType,
-              seniority: state.values.seniority,
-              salaryMin: state.values.salaryMin,
-              salaryMax: state.values.salaryMax,
-              salaryCurrency: state.values.salaryCurrency,
-              externalApplyUrl: state.values.externalApplyUrl,
-              applyEmail: state.values.applyEmail,
-              status: state.values.status,
-              publishedAt: state.values.publishedAt,
-              deadlineAt: state.values.deadlineAt,
-              tagIds: state.values.tagIds,
-            })}
-          >
-            {(values) => (
-              <VacancyPreview
-                title={values.title}
-                excerpt={values.excerpt ?? ""}
-                description={values.description ?? ""}
-                department={values.department ?? undefined}
-                location={values.location ?? undefined}
-                workplaceType={values.workplaceType ?? undefined}
-                employmentType={values.employmentType ?? undefined}
-                seniority={values.seniority ?? undefined}
-                salaryMin={values.salaryMin ?? undefined}
-                salaryMax={values.salaryMax ?? undefined}
-                salaryCurrency={values.salaryCurrency ?? undefined}
-                externalApplyUrl={values.externalApplyUrl ?? undefined}
-                applyEmail={values.applyEmail ?? undefined}
-                status={values.status ?? undefined}
-                publishedAt={values.publishedAt ?? undefined}
-                deadlineAt={values.deadlineAt ?? undefined}
-                selectedTags={selectedTags}
-                imagePreviews={
-                  currentFeaturedPreview ? [currentFeaturedPreview] : []
-                }
+            <form.Field name="location">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Location</FieldLabel>
+                  <Input
+                    id={field.name}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
+                  />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="workplaceType">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Workplace Type</FieldLabel>
+                  <Select
+                    value={field.state.value ?? ""}
+                    onValueChange={(val) =>
+                      field.handleChange(
+                        val
+                          ? (val as ZodInfer<typeof vacancyWorkplaceTypeSchema>)
+                          : undefined,
+                      )
+                    }
+                    disabled={isLoading || isReadOnly}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vacancyWorkplaceTypeSchema.options.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="employmentType">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Employment Type</FieldLabel>
+                  <Select
+                    value={field.state.value ?? ""}
+                    onValueChange={(val) =>
+                      field.handleChange(
+                        val
+                          ? (val as ZodInfer<
+                              typeof vacancyEmploymentTypeSchema
+                            >)
+                          : undefined,
+                      )
+                    }
+                    disabled={isLoading || isReadOnly}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vacancyEmploymentTypeSchema.options.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="seniority">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Seniority</FieldLabel>
+                  <Select
+                    value={field.state.value ?? ""}
+                    onValueChange={(val) =>
+                      field.handleChange(
+                        val
+                          ? (val as ZodInfer<typeof vacancySenioritySchema>)
+                          : undefined,
+                      )
+                    }
+                    disabled={isLoading || isReadOnly}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vacancySenioritySchema.options.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
+            </form.Field>
+          </FieldGroup>
+        </FieldSet>
+
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <form.Field name="salaryCurrency">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Salary Currency</FieldLabel>
+                  <Input
+                    id={field.name}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
+                  />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="salaryMin">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Salary Min</FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="number"
+                    min={0}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) =>
+                      field.handleChange(
+                        e.target.value
+                          ? Number.parseInt(e.target.value, 10)
+                          : undefined,
+                      )
+                    }
+                    disabled={isLoading || isReadOnly}
+                  />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="salaryMax">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Salary Max</FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="number"
+                    min={0}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) =>
+                      field.handleChange(
+                        e.target.value
+                          ? Number.parseInt(e.target.value, 10)
+                          : undefined,
+                      )
+                    }
+                    disabled={isLoading || isReadOnly}
+                  />
+                </Field>
+              )}
+            </form.Field>
+          </FieldGroup>
+        </FieldSet>
+
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <form.Field name="externalApplyUrl">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>
+                    External Apply URL
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
+                    placeholder="https://..."
+                  />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="applyEmail">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Apply Email</FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="email"
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
+                    placeholder="jobs@company.com"
+                  />
+                </Field>
+              )}
+            </form.Field>
+          </FieldGroup>
+        </FieldSet>
+
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-6 md:grid-cols-4">
+            <form.Field name="status">
+              {(field) => (
+                <Field>
+                  <FieldLabel>Status</FieldLabel>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={(val) =>
+                      field.handleChange(
+                        val as ZodInfer<typeof vacancyStatusSchema>,
+                      )
+                    }
+                    disabled={isLoading || isReadOnly}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {vacancyStatusSchema.options.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="publishedAt">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Published At</FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="datetime-local"
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
+                  />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="deadlineAt">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Deadline</FieldLabel>
+                  <Input
+                    id={field.name}
+                    type="datetime-local"
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isLoading || isReadOnly}
+                  />
+                </Field>
+              )}
+            </form.Field>
+          </FieldGroup>
+        </FieldSet>
+
+        <FieldSet>
+          <FieldLabel>Featured Image</FieldLabel>
+          <div className="flex flex-col gap-3">
+            {!isReadOnly && (
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (!files) return;
+                  handleFiles(files);
+                }}
+                disabled={isLoading}
               />
             )}
-          </form.Subscribe>
-        </div>
-      </div>
-    </div>
+
+            {currentFeaturedPreview ? (
+              <AppImage
+                src={currentFeaturedPreview}
+                alt="Featured preview"
+                className="h-32 w-48 rounded-md object-cover"
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No image selected.
+              </p>
+            )}
+          </div>
+        </FieldSet>
+
+        <FieldSet>
+          <FieldLabel htmlFor="tag-select">Tags</FieldLabel>
+          <FieldGroup className="flex-col gap-2">
+            <AsyncSearchableSelect
+              id="tag-select"
+              value={undefined}
+              onChange={handleTagSelect}
+              query={tagSelect.search}
+              onQueryChange={tagSelect.setSearch}
+              options={tagSelect.options}
+              placeholder={
+                tagSelect.isLoading ? "Searching tags…" : "Select tags"
+              }
+              searchPlaceholder="Type to search tags..."
+              className="w-full"
+              isSearching={tagSelect.isLoading}
+              error={tagSelect.isError ? "Failed to load tags" : null}
+              disabled={isLoading || isReadOnly}
+            />
+          </FieldGroup>
+
+          {(form.state.values.tagIds?.length ?? 0) > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {selectedTags.map((tag) => (
+                <Button
+                  key={tag.id}
+                  type="button"
+                  onClick={() => {
+                    if (isReadOnly) return;
+                    const next = (form.state.values.tagIds ?? []).filter(
+                      (id) => id !== tag.id,
+                    );
+                    form.setFieldValue("tagIds", next);
+                  }}
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-[10px] font-medium text-primary hover:bg-primary/20 disabled:opacity-50"
+                  disabled={isReadOnly}
+                >
+                  <span>{tag.name}</span>
+                  {!isReadOnly && <span aria-hidden>×</span>}
+                </Button>
+              ))}
+            </div>
+          )}
+        </FieldSet>
+      </form>
+    </DashboardDetailShell>
   );
 }

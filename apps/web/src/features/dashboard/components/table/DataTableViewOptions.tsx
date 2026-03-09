@@ -36,7 +36,11 @@ export function DataTableViewOptions<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="ml-auto h-9 flex">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="ml-auto flex h-9 rounded-none"
+        >
           <SlidersHorizontal className="mr-2 h-4 w-4" />
           View
         </Button>

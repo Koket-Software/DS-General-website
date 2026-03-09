@@ -12,6 +12,7 @@ import {
 } from "./lib";
 import { DeleteDialog } from "../components/deletedialog";
 import { ResourceTable } from "../components/ResourceTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -175,8 +176,8 @@ export default function Index() {
   // Loading skeleton
   if (isPending) {
     return (
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-6">
+      <DashboardPageShell>
+        <div className="mb-6 flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-10 w-32" />
         </div>
@@ -185,7 +186,7 @@ export default function Index() {
             <Skeleton key={i} className="h-20 w-full" />
           ))}
         </div>
-      </div>
+      </DashboardPageShell>
     );
   }
 
@@ -198,21 +199,24 @@ export default function Index() {
     !selectedServiceId;
   if (hasNoContacts) {
     return (
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold">Contact Submissions</h1>
-          <Button onClick={handleCreate}>Create Contact</Button>
-        </div>
+      <DashboardPageShell
+        title={<h1 className="text-2xl font-bold">Contact Submissions</h1>}
+        actions={
+          <Button type="button" className="rounded-none" onClick={handleCreate}>
+            Create Contact
+          </Button>
+        }
+      >
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Mail className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">
+          <Mail className="mb-4 h-16 w-16 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-semibold">
             No contact submissions yet
           </h3>
-          <p className="text-muted-foreground max-w-sm">
+          <p className="max-w-sm text-muted-foreground">
             Contact submissions from your website will appear here.
           </p>
         </div>
-      </div>
+      </DashboardPageShell>
     );
   }
 
@@ -223,15 +227,17 @@ export default function Index() {
     (search || statusFilter !== "all" || Boolean(selectedServiceId));
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Contact Submissions</h1>
-      </div>
-
-      {/* Filters */}
-      <div className="mb-4 flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Label htmlFor="status-filter">Status:</Label>
+    <DashboardPageShell
+      title={<h1 className="text-2xl font-bold">Contact Submissions</h1>}
+    >
+      <div className="mb-4 flex flex-wrap items-end gap-3 md:gap-4">
+        <div className="flex w-full flex-col gap-1 sm:w-auto">
+          <Label
+            htmlFor="status-filter"
+            className="text-xs uppercase tracking-wide"
+          >
+            Status
+          </Label>
           <Select
             value={statusFilter}
             onValueChange={(value: "all" | "handled" | "pending") => {
@@ -239,7 +245,10 @@ export default function Index() {
               setPage(1);
             }}
           >
-            <SelectTrigger id="status-filter" className="w-[180px]">
+            <SelectTrigger
+              id="status-filter"
+              className="w-full rounded-none sm:w-[180px]"
+            >
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
@@ -249,13 +258,21 @@ export default function Index() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="service-filter">Service:</Label>
+        <div className="flex w-full flex-col gap-1 sm:w-auto">
+          <Label
+            htmlFor="service-filter"
+            className="text-xs uppercase tracking-wide"
+          >
+            Service
+          </Label>
           <Select
             value={selectedServiceId ? String(selectedServiceId) : "all"}
             onValueChange={handleServiceFilterChange}
           >
-            <SelectTrigger id="service-filter" className="w-[240px]">
+            <SelectTrigger
+              id="service-filter"
+              className="w-full rounded-none sm:w-[240px]"
+            >
               <SelectValue placeholder="Filter by service" />
             </SelectTrigger>
             <SelectContent>
@@ -272,14 +289,16 @@ export default function Index() {
 
       {hasNoResults ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Mail className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No results found</h3>
-          <p className="text-muted-foreground mb-6 max-w-sm">
+          <Mail className="mb-4 h-16 w-16 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-semibold">No results found</h3>
+          <p className="mb-6 max-w-sm text-muted-foreground">
             No contacts match your filters. Try adjusting your search or filter
             criteria.
           </p>
           <Button
+            type="button"
             variant="outline"
+            className="rounded-none"
             onClick={() => {
               setSearch("");
               setStatusFilter("all");
@@ -325,6 +344,6 @@ export default function Index() {
         onDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
       />
-    </div>
+    </DashboardPageShell>
   );
 }

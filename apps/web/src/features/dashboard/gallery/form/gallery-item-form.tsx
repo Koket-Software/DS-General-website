@@ -12,7 +12,6 @@ import {
   useUpdateGalleryItemMutation,
 } from "../lib";
 
-import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { API_BASE_URL } from "@/lib/api-base";
 import { useDashboardForm } from "@/lib/forms";
 import { toastApiError } from "@/lib/toast";
@@ -172,192 +172,162 @@ export function GalleryItemForm({
     .filter((imageUrl): imageUrl is string => Boolean(imageUrl));
 
   const isReadOnly = mode === "view";
+  const formId = "gallery-form";
+  const pageTitle =
+    mode === "create"
+      ? "Add Gallery Entry"
+      : mode === "edit"
+        ? "Edit Gallery Entry"
+        : "View Gallery Entry";
 
   return (
-    <div className="flex h-screen flex-col">
-      <div className="sticky top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-border bg-background p-8">
-        <h1 className="text-2xl font-bold">
-          {mode === "create"
-            ? "Add Gallery Entry"
-            : mode === "edit"
-              ? "Edit Gallery Entry"
-              : "View Gallery Entry"}
-        </h1>
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => navigate({ to: "/dashboard/gallery" })}
+      isSubmitting={isLoading || form.state.isSubmitting}
+      isSubmitDisabled={
+        !form.state.canSubmit || isLoading || form.state.isSubmitting
+      }
+      submitLabel={mode === "create" ? "Add Entry" : "Save Entry"}
+      submittingLabel={mode === "create" ? "Adding..." : "Saving..."}
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            title: state.values.title,
+            description: state.values.description,
+            occurredAt: state.values.occurredAt,
+            categoryId: state.values.categoryId,
+          })}
+        >
+          {(formValues) => {
+            const selectedCategoryName = categories.find(
+              (category) => category.id === formValues.categoryId,
+            )?.name;
 
-        <div className="flex gap-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate({ to: "/dashboard/gallery" })}
-          >
-            Cancel
-          </Button>
-          {!isReadOnly && (
-            <Button type="submit" form="gallery-form" disabled={isLoading}>
-              {isLoading
-                ? mode === "create"
-                  ? "Adding..."
-                  : "Saving..."
-                : mode === "create"
-                  ? "Add Entry"
-                  : "Save Entry"}
-            </Button>
-          )}
-        </div>
-      </div>
+            return (
+              <GalleryPreview
+                title={formValues.title}
+                description={formValues.description}
+                occurredAt={formValues.occurredAt}
+                categoryName={selectedCategoryName}
+                imagePreviews={imagePreviewUrls}
+              />
+            );
+          }}
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <form.Field name="title">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="w-full overflow-y-auto border-r border-border p-8 lg:w-1/2">
-          <form
-            id="gallery-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="space-y-6"
-          >
-            <form.Field name="title">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>
-                      Title <span className="text-destructive">*</span>
-                    </FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      placeholder="Enter gallery title"
-                      disabled={isLoading || isReadOnly}
-                      aria-invalid={isInvalid}
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <form.Field name="categoryId">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel>
-                      Category <span className="text-destructive">*</span>
-                    </FieldLabel>
-                    <Select
-                      value={
-                        field.state.value > 0 ? String(field.state.value) : ""
-                      }
-                      onValueChange={(value) =>
-                        field.handleChange(Number(value))
-                      }
-                      disabled={isLoading || isReadOnly || isCategoriesLoading}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem
-                            key={category.id}
-                            value={String(category.id)}
-                          >
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-
-            <form.Field name="description">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                  <Textarea
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Add an optional description"
-                    disabled={isLoading || isReadOnly}
-                    rows={4}
-                  />
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="occurredAt">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Occurred On</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    type="datetime-local"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    disabled={isLoading || isReadOnly}
-                  />
-                </Field>
-              )}
-            </form.Field>
-
-            <GalleryImagesManager
-              images={images}
-              onChange={setImages}
-              isReadOnly={isReadOnly}
-              allowBulkAdd
-            />
-          </form>
-        </div>
-
-        <div className="hidden w-1/2 overflow-y-auto bg-muted/30 p-8 lg:block">
-          <form.Subscribe
-            selector={(state) => ({
-              title: state.values.title,
-              description: state.values.description,
-              occurredAt: state.values.occurredAt,
-              categoryId: state.values.categoryId,
-            })}
-          >
-            {(formValues) => {
-              const selectedCategoryName = categories.find(
-                (category) => category.id === formValues.categoryId,
-              )?.name;
-
-              return (
-                <GalleryPreview
-                  title={formValues.title}
-                  description={formValues.description}
-                  occurredAt={formValues.occurredAt}
-                  categoryName={selectedCategoryName}
-                  imagePreviews={imagePreviewUrls}
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Title <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="Enter gallery title"
+                  disabled={isLoading || isReadOnly}
+                  aria-invalid={isInvalid}
                 />
-              );
-            }}
-          </form.Subscribe>
-        </div>
-      </div>
-    </div>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="categoryId">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel>
+                  Category <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Select
+                  value={field.state.value > 0 ? String(field.state.value) : ""}
+                  onValueChange={(value) => field.handleChange(Number(value))}
+                  disabled={isLoading || isReadOnly || isCategoriesLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={String(category.id)}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="description">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+              <Textarea
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                placeholder="Add an optional description"
+                disabled={isLoading || isReadOnly}
+                rows={4}
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="occurredAt">
+          {(field) => (
+            <Field>
+              <FieldLabel htmlFor={field.name}>Occurred On</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="datetime-local"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                disabled={isLoading || isReadOnly}
+              />
+            </Field>
+          )}
+        </form.Field>
+
+        <GalleryImagesManager
+          images={images}
+          onChange={setImages}
+          isReadOnly={isReadOnly}
+          allowBulkAdd
+        />
+      </form>
+    </DashboardDetailShell>
   );
 }

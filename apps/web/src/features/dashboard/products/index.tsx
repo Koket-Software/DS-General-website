@@ -10,6 +10,7 @@ import {
 import type { Product } from "./lib/products-schema";
 import { DeleteDialog } from "../components/deletedialog";
 import { ResourceTable } from "../components/ResourceTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { useTableFilters } from "@/lib/useTableFilters";
 
@@ -87,7 +88,7 @@ export default function Index() {
     : undefined;
 
   return (
-    <div className="p-8">
+    <DashboardPageShell>
       <ResourceTable
         columns={Columns(onView, onEdit, onDelete)}
         data={products?.data || []}
@@ -112,6 +113,6 @@ export default function Index() {
           isDeleting={deleteMutation.isPending}
         />
       )}
-    </div>
+    </DashboardPageShell>
   );
 }

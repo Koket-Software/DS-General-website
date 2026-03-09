@@ -11,6 +11,7 @@ import {
 import { ReorderPanel } from "./ReorderPanel";
 import { DeleteDialog } from "../components/deletedialog";
 import { ResourceTable } from "../components/ResourceTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { useTableFilters } from "@/lib/useTableFilters";
 
@@ -77,7 +78,7 @@ export default function AchievementsIndex() {
     : undefined;
 
   return (
-    <div className="space-y-6 p-8">
+    <DashboardPageShell className="space-y-6">
       <ReorderPanel />
 
       <ResourceTable
@@ -104,6 +105,6 @@ export default function AchievementsIndex() {
           isDeleting={deleteMutation.isPending}
         />
       )}
-    </div>
+    </DashboardPageShell>
   );
 }

@@ -26,6 +26,11 @@ type ResourceTableProps<TData, TValue> = {
   actionTitle?: string;
   toolbar?: React.ComponentType<unknown>;
   CustomToolbar?: React.ReactNode;
+  mobileCard?: {
+    enabled?: boolean;
+    className?: string;
+    cardClassName?: string;
+  };
 };
 
 /**
@@ -46,6 +51,7 @@ export function ResourceTable<TData, TValue>({
   actionTitle,
   toolbar,
   CustomToolbar,
+  mobileCard,
 }: ResourceTableProps<TData, TValue>) {
   const pageIndex =
     pagination !== undefined ? Math.max(0, (pagination.page ?? 1) - 1) : 0;
@@ -76,6 +82,7 @@ export function ResourceTable<TData, TValue>({
       actionTitle={actionTitle}
       toolbar={toolbar}
       CustomToolbar={CustomToolbar}
+      mobileCard={mobileCard}
     />
   );
 }

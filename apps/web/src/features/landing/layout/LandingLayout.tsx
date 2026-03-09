@@ -19,7 +19,7 @@ export function LandingLayout() {
     <div className="min-h-screen bg-background text-foreground font-sans">
       <ScrollToTop />
       <Navbar />
-      <main>
+      <main className="min-h-screen">
         <Outlet />
       </main>
       <Footer />

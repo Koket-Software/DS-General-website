@@ -12,6 +12,7 @@ import { OrgMemberForm } from "./OrgMemberForm";
 import { CreateResourceModal } from "../components/CreateResourceModal";
 import { DeleteDialog } from "../components/deletedialog";
 import { DataTable } from "../components/table/DataTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 export default function Index() {
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -129,7 +130,7 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="p-8">
+    <DashboardPageShell>
       <DataTable
         columns={columns}
         data={tableData}
@@ -187,6 +188,6 @@ export default function Index() {
           isDeleting={deleteMutation.isPending}
         />
       )}
-    </div>
+    </DashboardPageShell>
   );
 }

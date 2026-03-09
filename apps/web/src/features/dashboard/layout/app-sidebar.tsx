@@ -23,8 +23,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader
         className={cn(
           state === "expanded"
-            ? "pr-7 pb-4 pt-3 pl-5"
-            : "p-0 pt-3 flex items-center justify-center h-14",
+            ? "pl-4 pr-5 pb-3 pt-3"
+            : "flex h-14 items-center justify-center p-0 pt-3",
         )}
       >
         <Link to="/" className="flex items-center justify-center">
@@ -52,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarTrigger
         className={cn(
-          "absolute z-20 -translate-y-1/2 transition-all duration-300",
+          "absolute z-20 hidden -translate-y-1/2 transition-all duration-300 md:inline-flex",
           state === "expanded" ? "left-64 top-4" : "left-12 top-4",
         )}
       />

@@ -361,3 +361,36 @@ body {
   content-visibility: auto;
   contain-intrinsic-size: 1px 900px;
 }
+
+@layer utilities {
+  [data-dashboard="true"] {
+    --dashboard-radius: 0.125rem;
+    --dashboard-gutter-mobile: 1rem;
+    --dashboard-gutter-tablet: 1.5rem;
+    --dashboard-gutter-desktop: 2rem;
+  }
+
+  [data-dashboard="true"] .dashboard-box {
+    border-radius: var(--dashboard-radius);
+    border-color: color-mix(in oklch, var(--border) 100%, transparent);
+  }
+
+  [data-dashboard="true"] .dashboard-page {
+    padding-inline: var(--dashboard-gutter-mobile);
+    padding-block: var(--dashboard-gutter-mobile);
+  }
+
+  @media (min-width: 48rem) {
+    [data-dashboard="true"] .dashboard-page {
+      padding-inline: var(--dashboard-gutter-tablet);
+      padding-block: var(--dashboard-gutter-tablet);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    [data-dashboard="true"] .dashboard-page {
+      padding-inline: var(--dashboard-gutter-desktop);
+      padding-block: var(--dashboard-gutter-desktop);
+    }
+  }
+}

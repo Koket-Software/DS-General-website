@@ -11,6 +11,7 @@ import {
 } from "./lib";
 import { DeleteDialog } from "../components/deletedialog";
 import { ResourceTable } from "../components/ResourceTable";
+import { DashboardPageShell } from "../layout/dashboard-page-shell";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -121,8 +122,8 @@ export default function NewsletterIndex() {
 
   if (isPending) {
     return (
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-6">
+      <DashboardPageShell>
+        <div className="mb-6 flex items-center justify-between">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-10 w-32" />
         </div>
@@ -131,7 +132,7 @@ export default function NewsletterIndex() {
             <Skeleton key={index} className="h-20 w-full" />
           ))}
         </div>
-      </div>
+      </DashboardPageShell>
     );
   }
 
@@ -140,18 +141,18 @@ export default function NewsletterIndex() {
 
   if (hasNoSubscribers) {
     return (
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-8">
+      <DashboardPageShell>
+        <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Newsletter Subscribers</h1>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Mail className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No subscribers yet</h3>
+          <Mail className="mb-4 h-16 w-16 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-semibold">No subscribers yet</h3>
           <p className="text-muted-foreground max-w-sm">
             Newsletter subscribers from your footer form will appear here.
           </p>
         </div>
-      </div>
+      </DashboardPageShell>
     );
   }
 
@@ -161,43 +162,49 @@ export default function NewsletterIndex() {
     (search || statusFilter !== "all");
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Newsletter Subscribers</h1>
-      </div>
-
-      <div className="mb-4 flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Label htmlFor="status-filter">Status:</Label>
-          <Select
-            value={statusFilter}
-            onValueChange={(value: "all" | "active" | "inactive") => {
-              setStatusFilter(value);
-              setPage(1);
-            }}
+    <DashboardPageShell
+      title={<h1 className="text-2xl font-bold">Newsletter Subscribers</h1>}
+    >
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <Label
+          htmlFor="status-filter"
+          className="text-xs uppercase tracking-wide"
+        >
+          Status
+        </Label>
+        <Select
+          value={statusFilter}
+          onValueChange={(value: "all" | "active" | "inactive") => {
+            setStatusFilter(value);
+            setPage(1);
+          }}
+        >
+          <SelectTrigger
+            id="status-filter"
+            className="w-full rounded-none sm:w-[180px]"
           >
-            <SelectTrigger id="status-filter" className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {hasNoResults ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Mail className="h-16 w-16 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No results found</h3>
-          <p className="text-muted-foreground mb-6 max-w-sm">
+          <Mail className="mb-4 h-16 w-16 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-semibold">No results found</h3>
+          <p className="mb-6 max-w-sm text-muted-foreground">
             No subscribers match your filters. Try adjusting your search or
             filter criteria.
           </p>
           <Button
+            type="button"
             variant="outline"
+            className="rounded-none"
             onClick={() => {
               setSearch("");
               setStatusFilter("all");
@@ -227,6 +234,6 @@ export default function NewsletterIndex() {
         onDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
       />
-    </div>
+    </DashboardPageShell>
   );
 }
