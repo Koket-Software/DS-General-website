@@ -69,14 +69,14 @@ Phase 3 tests:
 
 ### Phase 4: Land on Main
 
-- [ ] Fast-forward `main` to integration branch.
-- [ ] Push `main` to `origin`.
+- [x] Fast-forward `main` to integration branch.
+- [x] Push `main` to `origin`.
 - [ ] Optional cleanup: remove stale integration branch/worktree refs.
 
 Phase 4 tests:
 
-- [ ] `git merge --ff-only codex/integrate-newsletter-into-main`
-- [ ] `git push origin main`
+- [x] `git merge --ff-only codex/integrate-newsletter-into-main`
+- [x] `git push origin main`
 
 ## Acceptance Criteria
 
