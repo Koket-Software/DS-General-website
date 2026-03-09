@@ -39,7 +39,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
 
   if (blogQuery.isPending) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-10">
+      <section className="landing-container landing-section-compact">
         <div className="h-96 bg-muted/50 animate-pulse" />
       </section>
     );
@@ -47,7 +47,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
 
   if (blogQuery.isError || !blogQuery.data?.data) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-16 text-center">
+      <section className="landing-container landing-section text-center">
         <p className="font-sans text-muted-foreground text-[18px] mb-6">
           This article was not found.
         </p>
@@ -67,7 +67,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
     .slice(0, 3);
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24">
+    <section className="landing-container">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 items-start lg:items-center pt-6 pb-6">
         <div className="flex items-center gap-4 lg:w-[60%]">
           <Link

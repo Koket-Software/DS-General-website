@@ -18,9 +18,10 @@ function socialIcon(title: string) {
 export function Footer() {
   const socialsQuery = usePublicSocialsQuery({ page: 1, limit: 20 });
   const socials = socialsQuery.data?.data ?? [];
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-background max-w-360 mx-auto px-6 md:px-24 pt-6">
+    <footer className="bg-background landing-container pt-6">
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
         <div className="flex flex-col gap-6 shrink-0">
           <div className="flex flex-col gap-3">
@@ -44,7 +45,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.title}
-                  className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
+                  className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   {social.iconUrl ? (
                     <img
@@ -133,7 +134,7 @@ export function Footer() {
 
       <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="font-sans font-normal text-foreground text-[14px]">
-          &copy; 2025 DS General PLC. All Rights Reserved
+          &copy; {currentYear} DS General PLC. All Rights Reserved
         </p>
         <div className="flex gap-6 font-sans font-medium text-primary text-[14px]">
           <Link

@@ -2,7 +2,7 @@ import { SectionHeader } from "./section-header";
 
 export function AboutSection() {
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-16 md:py-24">
+    <section className="landing-container landing-section">
       <SectionHeader
         label="/About Us"
         title="What DS General PLC Is All About"

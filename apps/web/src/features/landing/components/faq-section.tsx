@@ -31,7 +31,7 @@ export function FAQSection() {
   );
 
   return (
-    <section className="mx-auto max-w-360 px-6 py-16 md:px-24 md:py-24">
+    <section className="landing-container landing-section">
       <div className="flex flex-col items-start justify-between gap-10 lg:flex-row lg:gap-12">
         <div className="hidden shrink-0 flex-col gap-4 lg:flex lg:w-117.25">
           <p className="font-sans text-[16px] font-normal uppercase text-muted-foreground">

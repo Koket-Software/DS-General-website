@@ -7,7 +7,7 @@ export function HeroSection() {
   return (
     <section>
       {/* Content area */}
-      <div className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+      <div className="landing-container landing-section-compact">
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
           <h1 className="font-semibold text-foreground text-[32px] md:text-[48px] leading-tight max-w-175.25">
             Integrated Construction &amp; Global Supply Chain Solutions
@@ -21,7 +21,7 @@ export function HeroSection() {
             </p>
             <div className="flex flex-wrap gap-8 items-center">
               <Link
-                to="/"
+                to="/sectors/sourcing-logistics"
                 className="bg-primary flex items-center justify-center px-6 py-3 font-medium text-[16px] hover:bg-primary/90 text-primary-foreground "
               >
                 View Our Services
@@ -46,7 +46,7 @@ export function HeroSection() {
         <img
           src={imgHero}
           alt="DS General PLC construction containers"
-          className="absolute inset-0 w-full h-full object-fit"
+          className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
     </section>

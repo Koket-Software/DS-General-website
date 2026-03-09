@@ -43,7 +43,7 @@ export function ProjectsSection() {
   const secondRow = projects.slice(3, 6);
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-16 md:py-24">
+    <section className="landing-container landing-section">
       <SectionHeader
         label="/Featured Project"
         title="Explore the works we have done with our trusted partners"

@@ -13,6 +13,7 @@ import {
   usePublicBlogsQuery,
 } from "@/lib/blogs/blogs-query";
 import type { PublicBlog } from "@/lib/blogs/blogs-schema";
+import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
 import { usePublicTagsQuery } from "@/lib/tags/tags-query";
 import { Route as ArticlesRoute } from "@/routes/_landing/articles";
 
@@ -30,6 +31,15 @@ function CaretRight() {
       <path d={svgPaths.p2c0b8700} fill="var(--primary)" />
     </svg>
   );
+}
+
+function socialIcon(title: string) {
+  const normalized = title.toLowerCase();
+
+  if (normalized.includes("youtube")) return <YoutubeIcon />;
+  if (normalized.includes("instagram")) return <InstagramIcon />;
+  if (normalized.includes("linkedin")) return <LinkedinIcon />;
+  return <XIcon />;
 }
 
 export function ArticleCard({ article }: { article: PublicBlog }) {
@@ -78,6 +88,7 @@ export function ArticlesSection() {
   const [debouncedSearch] = useDebounce(searchInput, 300);
 
   const tagsQuery = usePublicTagsQuery({ page: 1, limit: 50 });
+  const socialsQuery = usePublicSocialsQuery({ page: 1, limit: 6 });
   const articlesQuery = usePublicBlogsQuery({
     page: search.page,
     limit: search.limit,
@@ -88,6 +99,7 @@ export function ArticlesSection() {
   });
 
   const articles = articlesQuery.data?.data ?? [];
+  const socials = socialsQuery.data?.data ?? [];
   const featuredArticle = articles[0];
   const otherArticles = articles.slice(1);
 
@@ -114,7 +126,7 @@ export function ArticlesSection() {
   };
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24">
+    <section className="landing-container">
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start lg:items-end pt-8 pb-10">
         <div className="flex flex-col flex-1 gap-4">
           <div className="flex flex-col gap-2">
@@ -182,18 +194,32 @@ export function ArticlesSection() {
             Follow Us
           </p>
           <div className="flex gap-2 items-center lg:mr-24">
-            <div className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5">
-              <YoutubeIcon />
-            </div>
-            <div className="w-10.5 h-10.5 shrink-0">
-              <XIcon />
-            </div>
-            <div className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5">
-              <InstagramIcon />
-            </div>
-            <div className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5">
-              <LinkedinIcon />
-            </div>
+            {socialsQuery.isError ? (
+              <p className="text-sm text-muted-foreground">
+                Social links unavailable
+              </p>
+            ) : (
+              socials.slice(0, 4).map((social) => (
+                <a
+                  key={social.id}
+                  href={social.baseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.title}
+                  className="bg-primary/5 flex h-10.5 w-10.5 items-center justify-center p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                >
+                  {social.iconUrl ? (
+                    <img
+                      src={social.iconUrl}
+                      alt={social.title}
+                      className="h-5 w-5 object-contain"
+                    />
+                  ) : (
+                    socialIcon(social.title)
+                  )}
+                </a>
+              ))
+            )}
           </div>
         </div>
       </div>

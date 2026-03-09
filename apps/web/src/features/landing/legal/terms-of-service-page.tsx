@@ -79,7 +79,7 @@ export function TermsOfServicePage() {
   };
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-10 md:py-16">
+    <section className="landing-container landing-section-compact">
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
         {/* Main Content */}
         <div className="flex-1 min-w-0 max-w-205.25">

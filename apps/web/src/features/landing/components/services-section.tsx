@@ -22,7 +22,7 @@ export function ServicesSection() {
   const services = servicesQuery.data?.data ?? [];
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-16 md:py-24">
+    <section className="landing-container landing-section">
       <SectionHeader
         label="/Our services"
         title="We specialize in providing reliable and efficient solutions"

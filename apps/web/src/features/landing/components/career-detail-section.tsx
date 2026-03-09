@@ -116,7 +116,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
 
   if (vacancyQuery.isPending) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-10">
+      <section className="landing-container landing-section-compact">
         <div className="h-96 bg-muted/50 animate-pulse" />
       </section>
     );
@@ -124,7 +124,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
 
   if (vacancyQuery.isError || !vacancyQuery.data?.data) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-16 text-center">
+      <section className="landing-container landing-section text-center">
         <p className="font-sans text-muted-foreground text-[18px] mb-6">
           This vacancy was not found.
         </p>
@@ -179,7 +179,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
   };
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-8 md:py-12">
+    <section className="landing-container landing-section-compact">
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
         <div className="flex-1 min-w-0">
           <Button

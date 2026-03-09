@@ -7,7 +7,7 @@ export function TestimonialsSection() {
   const testimonials = testimonialsQuery.data?.data ?? [];
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-16 md:py-24">
+    <section className="landing-container landing-section">
       <SectionHeader
         label="/Testimonials"
         title="Don't just take our word for it. Hear it from our clients"

@@ -51,7 +51,7 @@ export function OrgChartSection() {
   );
 
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+    <section className="landing-container landing-section-compact">
       <div className="flex flex-col gap-2 mb-8">
         <p className="font-sans text-muted-foreground text-[16px] uppercase">
           /Organization

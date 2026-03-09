@@ -109,7 +109,7 @@ export function SourcingLogisticsSection() {
 
   if (sectorQuery.isError) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-16 text-center">
+      <section className="landing-container landing-section text-center">
         <p className="font-sans text-muted-foreground text-[16px]">
           Failed to load sector content.
         </p>
@@ -119,7 +119,7 @@ export function SourcingLogisticsSection() {
 
   if (sectorQuery.isPending || !sector) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+      <section className="landing-container landing-section-compact">
         <div className="h-80 bg-muted/50 animate-pulse mb-8" />
         <div className="h-60 bg-muted/50 animate-pulse" />
       </section>
@@ -128,14 +128,14 @@ export function SourcingLogisticsSection() {
 
   return (
     <>
-      <section className="max-w-360 mx-auto px-6 md:px-24 pt-6 md:pt-8">
+      <section className="landing-container pt-6 md:pt-8">
         <div className="flex flex-col md:flex-row w-full min-h-70 md:h-80.25">
           <div className="bg-primary flex flex-col gap-8 md:gap-10.25 justify-center p-8 md:p-10.25 md:flex-1">
             <div className="flex flex-col gap-3">
               <h1 className="font-sans font-medium text-primary-foreground text-[28px] md:text-[36px] leading-[1.2]">
                 {sector.title}
               </h1>
-              <p className="font-sans text-primary-foreground/70 text-[14px] md:text-[16px]leading-normal max-w-127.5">
+              <p className="font-sans text-primary-foreground/70 text-[14px] leading-normal md:text-[16px] max-w-127.5">
                 {sector.excerpt ?? "Sourcing and logistics services."}
               </p>
             </div>
@@ -164,7 +164,7 @@ export function SourcingLogisticsSection() {
         </div>
       </section>
 
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+      <section className="landing-container landing-section-compact">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
           <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px] shrink-0">
             Sector Stats
@@ -189,7 +189,7 @@ export function SourcingLogisticsSection() {
         </div>
       </section>
 
-      <section className="max-w-360 mx-auto px-6 md:px-24 pb-12">
+      <section className="landing-container pb-12">
         <div className="flex flex-col gap-6">
           <div
             ref={scrollRef}
@@ -230,7 +230,7 @@ export function SourcingLogisticsSection() {
         </div>
       </section>
 
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+      <section className="landing-container landing-section-compact">
         <div className="flex flex-col gap-7 max-w-244">
           <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px]">
             Our History
@@ -241,7 +241,7 @@ export function SourcingLogisticsSection() {
         </div>
       </section>
 
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+      <section className="landing-container landing-section-compact">
         <div className="flex flex-col gap-6">
           <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px]">
             What We Do
@@ -264,7 +264,7 @@ export function SourcingLogisticsSection() {
         </div>
       </section>
 
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-12 md:py-16">
+      <section className="landing-container landing-section-compact">
         <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-10">
           <div className="flex flex-col gap-10">
             <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px]">
@@ -319,7 +319,7 @@ export function SourcingLogisticsSection() {
                   href={sector.facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline"
+                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <XSocialIcon />
                   <span className="font-sans text-muted-foreground text-[14px]">
@@ -332,7 +332,7 @@ export function SourcingLogisticsSection() {
                   href={sector.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline"
+                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <InstagramIcon />
                   <span className="font-sans text-muted-foreground text-[14px]">
@@ -345,7 +345,7 @@ export function SourcingLogisticsSection() {
                   href={sector.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline"
+                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <LinkedinIcon />
                   <span className="font-sans text-muted-foreground text-[14px]">

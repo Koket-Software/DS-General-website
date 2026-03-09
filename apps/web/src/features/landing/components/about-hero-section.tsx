@@ -1,6 +1,6 @@
 export function AboutHeroSection() {
   return (
-    <section className="max-w-[1440px] mx-auto px-6 md:px-24 py-12 md:py-16">
+    <section className="landing-container landing-section-compact">
       {/* Header with stats */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
         <div className="flex flex-col gap-4 flex-1">
@@ -19,12 +19,12 @@ export function AboutHeroSection() {
           </div>
           <div className="w-px h-12 bg-primary/40" />
           <div className="flex flex-col items-center text-foreground">
-            <p className="font-sans font-extrabold text-[24px]">[XX]</p>
+            <p className="font-sans font-extrabold text-[24px]">100+</p>
             <p className="font-sans font-medium text-[16px]">Happy Clients</p>
           </div>
           <div className="w-px h-12 bg-primary/40" />
           <div className="flex flex-col items-center text-foreground">
-            <p className="font-sans font-extrabold text-[24px]">[4.X/5]</p>
+            <p className="font-sans font-extrabold text-[24px]">4.8/5</p>
             <p className="font-sans font-medium text-[16px] text-center">
               Material Sourcing Quality Score
             </p>

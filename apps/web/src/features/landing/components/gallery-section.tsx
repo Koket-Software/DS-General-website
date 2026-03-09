@@ -87,7 +87,7 @@ export function GallerySection() {
 
   if (galleryQuery.isError || categoriesQuery.isError) {
     return (
-      <section className="max-w-360 mx-auto px-6 md:px-24 py-16 text-center">
+      <section className="landing-container landing-section text-center">
         <p className="text-muted-foreground text-sm">
           Failed to load gallery data. Please refresh and try again.
         </p>
@@ -99,9 +99,9 @@ export function GallerySection() {
   const isLoading = galleryQuery.isPending || categoriesQuery.isPending;
 
   return (
-    <section className="max-w-360 mx-auto">
-      <div className="px-6 md:px-16 border-b border-primary/10">
-        <div className="flex items-center overflow-x-auto no-scrollbar -mx-1">
+    <section className="landing-container">
+      <div className="border-b border-primary/10">
+        <div className="flex items-center overflow-x-auto no-scrollbar">
           {tabs.map((tab) => {
             const isActive =
               tab.slug === ALL_TAB ? !categorySlug : categorySlug === tab.slug;
@@ -135,7 +135,7 @@ export function GallerySection() {
         </div>
       </div>
 
-      <div className="px-6 md:px-24 py-10 md:py-16">
+      <div className="landing-section-compact">
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {Array.from({ length: 12 }).map((_, index) => (

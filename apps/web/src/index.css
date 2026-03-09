@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -8,8 +8,8 @@
 
 @theme {
   --font-sans:
-    "Playfair Display", "Geist", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    "Inter", "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-cursive: "Brush Script MT", "Lucida Handwriting", cursive;
 }
 
@@ -20,10 +20,6 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
-}
-
-* {
-  font-family: "Playfair Display";
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -37,6 +33,11 @@ body {
    ────────────────────────────────────────────────────────────── */
 :root {
   --radius: 0.625rem;
+  --landing-content-max: 78rem;
+  --landing-gutter-mobile: 1.5rem;
+  --landing-gutter-desktop: 6rem;
+  --landing-section-y-mobile: 4rem;
+  --landing-section-y-desktop: 6rem;
 
   /* core surfaces & text */
   --background: oklch(1 0 0);
@@ -213,10 +214,9 @@ body {
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    font-family: "Playfair Display";
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
@@ -242,6 +242,40 @@ body {
     animation-direction: reverse;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+  }
+
+  .landing-container {
+    margin-inline: auto;
+    width: 100%;
+    max-width: calc(
+      var(--landing-content-max) + (var(--landing-gutter-mobile) * 2)
+    );
+    padding-inline: var(--landing-gutter-mobile);
+  }
+
+  .landing-section {
+    padding-block: var(--landing-section-y-mobile);
+  }
+
+  .landing-section-compact {
+    padding-block: 2.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    .landing-container {
+      max-width: calc(
+        var(--landing-content-max) + (var(--landing-gutter-desktop) * 2)
+      );
+      padding-inline: var(--landing-gutter-desktop);
+    }
+
+    .landing-section {
+      padding-block: var(--landing-section-y-desktop);
+    }
+
+    .landing-section-compact {
+      padding-block: 4rem;
+    }
   }
 }
 /* Shine animation for ShinyText component */

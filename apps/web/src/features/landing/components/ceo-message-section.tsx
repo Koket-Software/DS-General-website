@@ -2,7 +2,7 @@ import imgSignature from "../../../../assets/fc0a07d840c76d3dcf154dd65bcaf3aef1c
 
 export function CEOMessageSection() {
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-16 md:py-24">
+    <section className="landing-container landing-section">
       <div className="flex flex-col lg:flex-row gap-10 items-center">
         {/* Decorative pattern background */}
         <div className=" w-100 h-109.25 relative shrink-0 overflow-hidden">

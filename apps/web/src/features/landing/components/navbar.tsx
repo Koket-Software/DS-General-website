@@ -60,7 +60,7 @@ export function Navbar() {
 
   return (
     <header className="bg-background sticky top-0 z-50 border-b border-border/60">
-      <div className="max-w-360 mx-auto flex items-center justify-between px-6 md:px-24 py-3">
+      <div className="landing-container flex items-center justify-between py-3">
         <Link to="/" className="flex gap-3 items-center no-underline">
           <Logo size="lg" />
         </Link>
@@ -75,6 +75,9 @@ export function Navbar() {
                     variant="ghost"
                     type="button"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
+                    aria-expanded={dropdownOpen}
+                    aria-haspopup="menu"
+                    aria-label="Toggle business sectors menu"
                     className={`flex items-center gap-2.5 px-4 py-2 font-sans font-medium text-[14px] transition-colors cursor-pointer ${
                       isSectorActive || dropdownOpen
                         ? "bg-primary text-primary-foreground"
@@ -144,6 +147,11 @@ export function Navbar() {
           type="button"
           className="lg:hidden p-2"
           onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={
+            mobileOpen ? "Close navigation menu" : "Open navigation menu"
+          }
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </Button>
@@ -151,7 +159,10 @@ export function Navbar() {
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <nav className="lg:hidden bg-background border-t border-border/60 px-6 py-4 flex flex-col gap-2">
+        <nav
+          id="mobile-navigation"
+          className="lg:hidden bg-background border-t border-border/60 px-6 py-4 flex flex-col gap-2"
+        >
           {navItems.map((item) => {
             if (item.hasDropdown) {
               return (
@@ -160,6 +171,8 @@ export function Navbar() {
                     variant="ghost"
                     type="button"
                     onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                    aria-expanded={mobileDropdownOpen}
+                    aria-label="Toggle mobile business sectors menu"
                     className={`flex items-center justify-between w-full px-4 py-3 font-sans font-medium text-[14px] rounded cursor-pointer ${
                       isSectorActive
                         ? "bg-primary text-primary-foreground"

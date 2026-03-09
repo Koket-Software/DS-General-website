@@ -1,8 +1,10 @@
+import { Link } from "@tanstack/react-router";
+
 import imgCta from "../../../assets/ds/home/DS_CTA.webp";
 
 export function CTASection() {
   return (
-    <section className="max-w-360 mx-auto px-6 md:px-24 py-16 md:py-24">
+    <section className="landing-container landing-section">
       <div className="relative bg-primary overflow-hidden flex flex-col lg:flex-row">
         {/* Text content */}
         <div className="flex-1 px-8 md:px-16 py-8 md:py-20 flex flex-col gap-10 justify-center">
@@ -16,12 +18,12 @@ export function CTASection() {
               electronics, and corporate supplies.
             </p>
           </div>
-          <a
-            href="#"
+          <Link
+            to="/contact"
             className="bg-background inline-flex items-center justify-center px-6 py-3 w-fit text-primary font-sans font-medium text-[16px] hover:bg-muted transition-colors"
           >
             Contact Us
-          </a>
+          </Link>
         </div>
 
         {/* Image */}

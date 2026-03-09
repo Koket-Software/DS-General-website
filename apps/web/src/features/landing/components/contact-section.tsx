@@ -134,7 +134,7 @@ export function ContactSection() {
   const socials = socialsQuery.data?.data ?? [];
 
   return (
-    <section className="max-w-[1440px] mx-auto px-6 md:px-24 py-10 md:py-16">
+    <section className="landing-container landing-section-compact">
       <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
         <div className="flex-1 flex flex-col gap-10">
           <div className="flex flex-col gap-2">
@@ -200,7 +200,7 @@ export function ContactSection() {
                     href={social.baseUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5"
+                    className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     aria-label={social.title}
                   >
                     {social.iconUrl ? (
@@ -219,7 +219,7 @@ export function ContactSection() {
           </div>
         </div>
 
-        <div className="w-full lg:w-125 xl:w-183.5 shrink-0 bg-muted/40 px-6 md:px-24 py-10 md:py-16">
+        <div className="w-full lg:w-125 xl:w-183.5 shrink-0 bg-muted/40 px-6 py-10 md:px-12 md:py-16">
           {submitted ? (
             <div className="text-center py-10">
               <p className="font-sans font-medium text-primary text-[18px] mb-2">
@@ -244,7 +244,11 @@ export function ContactSection() {
               ) : null}
 
               <div className="flex flex-col gap-3">
+                <label htmlFor="contact-full-name" className="sr-only">
+                  Full name
+                </label>
                 <Input
+                  id="contact-full-name"
                   type="text"
                   name="fullName"
                   placeholder="Full name"
@@ -259,7 +263,11 @@ export function ContactSection() {
                   className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
                 />
 
+                <label htmlFor="contact-email-or-phone" className="sr-only">
+                  Email or phone number
+                </label>
                 <Input
+                  id="contact-email-or-phone"
                   type="text"
                   name="emailOrPhone"
                   placeholder="Email or phone number"
@@ -274,7 +282,11 @@ export function ContactSection() {
                   className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
                 />
 
+                <label htmlFor="contact-message" className="sr-only">
+                  Your message
+                </label>
                 <Textarea
+                  id="contact-message"
                   name="message"
                   placeholder="Your Message"
                   required
