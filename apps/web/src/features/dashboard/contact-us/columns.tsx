@@ -72,6 +72,21 @@ export const Columns = (
     },
   },
   {
+    id: "service",
+    meta: {
+      title: "Service",
+    },
+    header: "Service",
+    cell: ({ row }) => {
+      const serviceTitle = row.original.service?.title;
+      return (
+        <div className="max-w-[220px] truncate text-sm">
+          {serviceTitle || "Unspecified"}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "isHandled",
     meta: {
       title: "Status",

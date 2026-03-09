@@ -87,7 +87,7 @@ export function ContactUsForm({
         : false;
 
   type ContactFormValues = Omit<CreateContact, "serviceId"> & {
-    serviceId: number | null;
+    serviceId: number | undefined;
     isHandled: boolean;
   };
 
@@ -96,7 +96,7 @@ export function ContactUsForm({
       fullName: contactUs?.fullName ?? "",
       contact: contactUs?.contact ?? "",
       message: contactUs?.message ?? "",
-      serviceId: contactUs?.serviceId ?? null,
+      serviceId: contactUs?.serviceId ?? undefined,
       isHandled: contactUs?.isHandled ?? false,
     } satisfies ContactFormValues,
     validators: {
@@ -108,11 +108,15 @@ export function ContactUsForm({
       if (mode === "view") return;
 
       if (mode === "create") {
+        if (value.serviceId === undefined) {
+          toast.error("Please provide a service ID.");
+          return;
+        }
         await createMutation.mutateAsync({
           fullName: value.fullName,
           contact: value.contact,
           message: value.message,
-          serviceId: value.serviceId ?? null,
+          serviceId: value.serviceId,
         });
       } else if (mode === "edit" && contactUs) {
         await updateMutation.mutateAsync({
@@ -121,7 +125,7 @@ export function ContactUsForm({
             fullName: value.fullName,
             contact: value.contact,
             message: value.message,
-            serviceId: value.serviceId ?? null,
+            serviceId: value.serviceId,
             isHandled: value.isHandled,
           },
         });
@@ -228,7 +232,7 @@ export function ContactUsForm({
                   disabled={isReadOnly || isLoading}
                   onChange={(e) =>
                     field.handleChange(
-                      e.target.value ? Number(e.target.value) : null,
+                      e.target.value ? Number(e.target.value) : undefined,
                     )
                   }
                   aria-invalid={isInvalid}

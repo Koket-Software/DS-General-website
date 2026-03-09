@@ -22,7 +22,7 @@ export default function ContactEdit({ contactId }: ContactEditProps) {
     fullName: contact.fullName,
     contact: contact.contact,
     message: contact.message,
-    serviceId: contact.serviceId ?? null,
+    serviceId: contact.serviceId ?? undefined,
     isHandled: contact.isHandled,
   };
 

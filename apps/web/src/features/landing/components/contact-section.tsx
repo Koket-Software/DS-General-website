@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreatePublicContactMutation } from "@/lib/contacts/contacts-query";
 import { createPublicContactSchema } from "@/lib/contacts/contacts-schema";
+import { usePublicServices } from "@/lib/services/services-query";
 import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
 
 function PhoneIcon() {
@@ -80,6 +81,9 @@ type ContactFormValues = {
 export function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
+    null,
+  );
   const [values, setValues] = useState<ContactFormValues>({
     fullName: "",
     emailOrPhone: "",
@@ -89,6 +93,12 @@ export function ContactSection() {
   const socialsQuery = usePublicSocialsQuery({
     page: 1,
     limit: 20,
+  });
+  const servicesQuery = usePublicServices({
+    page: 1,
+    limit: 50,
+    sortBy: "createdAt",
+    sortOrder: "desc",
   });
 
   const createContactMutation = useCreatePublicContactMutation({
@@ -105,7 +115,8 @@ export function ContactSection() {
   const canSubmit =
     values.fullName.trim().length > 0 &&
     values.emailOrPhone.trim().length > 0 &&
-    values.message.trim().length > 0;
+    values.message.trim().length > 0 &&
+    selectedServiceId !== null;
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -114,11 +125,16 @@ export function ContactSection() {
       return;
     }
 
+    if (selectedServiceId === null) {
+      setSubmitError("Please select a service.");
+      return;
+    }
+
     const parsed = createPublicContactSchema.safeParse({
       fullName: values.fullName,
       contact: values.emailOrPhone,
       message: values.message,
-      serviceId: null,
+      serviceId: selectedServiceId,
     });
 
     if (!parsed.success) {
@@ -132,6 +148,7 @@ export function ContactSection() {
   };
 
   const socials = socialsQuery.data?.data ?? [];
+  const services = servicesQuery.data?.data ?? [];
 
   return (
     <section className="landing-container landing-section-compact">
@@ -244,43 +261,49 @@ export function ContactSection() {
               ) : null}
 
               <div className="flex flex-col gap-3">
-                <label htmlFor="contact-full-name" className="sr-only">
-                  Full name
-                </label>
-                <Input
-                  id="contact-full-name"
-                  type="text"
-                  name="fullName"
-                  placeholder="Full name"
-                  required
-                  value={values.fullName}
-                  onChange={(event) =>
-                    setValues((prev) => ({
-                      ...prev,
-                      fullName: event.target.value,
-                    }))
-                  }
-                  className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
-                />
+                <p className="font-sans text-[14px] font-semibold uppercase text-muted-foreground">
+                  Contact Information
+                </p>
 
-                <label htmlFor="contact-email-or-phone" className="sr-only">
-                  Email or phone number
-                </label>
-                <Input
-                  id="contact-email-or-phone"
-                  type="text"
-                  name="emailOrPhone"
-                  placeholder="Email or phone number"
-                  required
-                  value={values.emailOrPhone}
-                  onChange={(event) =>
-                    setValues((prev) => ({
-                      ...prev,
-                      emailOrPhone: event.target.value,
-                    }))
-                  }
-                  className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
-                />
+                <div className="grid gap-3 md:grid-cols-2">
+                  <label htmlFor="contact-full-name" className="sr-only">
+                    Full name
+                  </label>
+                  <Input
+                    id="contact-full-name"
+                    type="text"
+                    name="fullName"
+                    placeholder="Full name"
+                    required
+                    value={values.fullName}
+                    onChange={(event) =>
+                      setValues((prev) => ({
+                        ...prev,
+                        fullName: event.target.value,
+                      }))
+                    }
+                    className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
+                  />
+
+                  <label htmlFor="contact-email-or-phone" className="sr-only">
+                    Email or phone number
+                  </label>
+                  <Input
+                    id="contact-email-or-phone"
+                    type="text"
+                    name="emailOrPhone"
+                    placeholder="Email or phone number"
+                    required
+                    value={values.emailOrPhone}
+                    onChange={(event) =>
+                      setValues((prev) => ({
+                        ...prev,
+                        emailOrPhone: event.target.value,
+                      }))
+                    }
+                    className="h-auto rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
+                  />
+                </div>
 
                 <label htmlFor="contact-message" className="sr-only">
                   Your message
@@ -298,8 +321,44 @@ export function ContactSection() {
                       message: event.target.value,
                     }))
                   }
-                  className="min-h-0 resize-none rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
+                  className="min-h-[170px] resize-none rounded-none border-border/60 bg-primary/5 px-4 py-3 font-sans text-[14px] text-foreground placeholder:text-muted-foreground focus-visible:border-primary"
                 />
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <p className="font-sans text-[14px] font-semibold uppercase text-muted-foreground">
+                  What do you need help with?
+                </p>
+                {servicesQuery.isPending ? (
+                  <p className="text-sm text-muted-foreground">
+                    Loading services...
+                  </p>
+                ) : servicesQuery.isError ? (
+                  <p className="text-sm text-destructive">
+                    Could not load services right now.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-3">
+                    {services.map((service) => {
+                      const isSelected = selectedServiceId === service.id;
+                      return (
+                        <button
+                          key={service.id}
+                          type="button"
+                          onClick={() => setSelectedServiceId(service.id)}
+                          aria-pressed={isSelected}
+                          className={`rounded-full border px-4 py-2 text-left font-sans text-[16px] transition-colors ${
+                            isSelected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border/70 bg-background text-foreground hover:border-primary/70"
+                          }`}
+                        >
+                          {service.title}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <Button

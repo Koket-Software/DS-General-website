@@ -37,29 +37,29 @@ const toneStyles: Record<
   Tone,
   {
     badge: string;
-    halo: string;
     panel: string;
     iconWrap: string;
-    orbit: string;
+    rail: string;
+    detail: string;
     signal: string;
   }
 > = {
   notFound: {
-    badge: "border-info/20 bg-info/10 text-info",
-    halo: "from-info/20 via-primary/10 to-transparent dark:from-info/25 dark:via-primary/15",
+    badge: "border-info/25 bg-info/10 text-info",
     panel:
-      "border-border/50 bg-white/75 shadow-[0_30px_120px_-50px_rgba(73,98,225,0.55)] dark:bg-card/75",
-    iconWrap: "bg-info/12 text-info ring-1 ring-info/20",
-    orbit: "border-info/30",
+      "border-border/70 bg-card/95 shadow-[0_18px_55px_-32px_rgba(73,98,225,0.45)]",
+    iconWrap: "border-info/30 bg-info/8 text-info",
+    rail: "border-border/60 bg-[linear-gradient(180deg,rgba(73,98,225,0.09),transparent_72%)]",
+    detail: "border-info/20 bg-info/7",
     signal: "bg-info/70",
   },
   error: {
-    badge: "border-destructive/20 bg-destructive/10 text-destructive",
-    halo: "from-destructive/20 via-primary/10 to-transparent dark:from-destructive/25 dark:via-primary/15",
+    badge: "border-destructive/25 bg-destructive/10 text-destructive",
     panel:
-      "border-border/50 bg-white/75 shadow-[0_30px_120px_-50px_rgba(161,73,57,0.45)] dark:bg-card/75",
-    iconWrap: "bg-destructive/12 text-destructive ring-1 ring-destructive/20",
-    orbit: "border-destructive/30",
+      "border-border/70 bg-card/95 shadow-[0_18px_55px_-32px_rgba(166,64,48,0.38)]",
+    iconWrap: "border-destructive/30 bg-destructive/8 text-destructive",
+    rail: "border-border/60 bg-[linear-gradient(180deg,rgba(166,64,48,0.1),transparent_72%)]",
+    detail: "border-destructive/20 bg-destructive/7",
     signal: "bg-destructive/70",
   },
 };
@@ -73,15 +73,15 @@ export function RouteNotFoundPage(_props: NotFoundRouteProps) {
     <StatusShell
       tone="notFound"
       code="404"
-      eyebrow="Page lost in transit"
-      title="This route slipped off the map."
-      description="The destination you requested is not available here anymore, was renamed, or never existed in this deployment."
-      detail={`Requested path: ${pathname}`}
+      eyebrow="Route not found"
+      title="This page is not available."
+      description="The destination may have moved, been removed, or the URL may be incorrect. Use the options below to continue."
+      detail={`Requested route: ${pathname}\nTip: Verify the URL or continue from the homepage.`}
       primaryAction={
         <Button
           asChild
           size="lg"
-          className="h-12 rounded-full px-6 text-sm font-semibold"
+          className="h-11 rounded-none px-5 text-sm font-semibold uppercase tracking-wide"
         >
           <Link to="/">
             <Home />
@@ -94,11 +94,11 @@ export function RouteNotFoundPage(_props: NotFoundRouteProps) {
           asChild
           size="lg"
           variant="outline"
-          className="h-12 rounded-full border-border/60 bg-background/40 px-6 text-sm font-semibold backdrop-blur-sm"
+          className="h-11 rounded-none border-border/70 bg-background/70 px-5 text-sm font-semibold uppercase tracking-wide"
         >
           <Link to="/contact">
             <LifeBuoy />
-            Contact DS General
+            Contact Team
           </Link>
         </Button>
       }
@@ -106,7 +106,7 @@ export function RouteNotFoundPage(_props: NotFoundRouteProps) {
         <button
           type="button"
           onClick={() => window.history.back()}
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+          className="inline-flex h-11 items-center gap-2 border border-border/70 px-4 text-sm font-medium text-muted-foreground transition hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
           Go Back
@@ -125,15 +125,15 @@ export function RouteErrorPage({ error, reset }: ErrorComponentProps) {
     <StatusShell
       tone="error"
       code="500"
-      eyebrow="Route recovery mode"
-      title="The page hit turbulence."
-      description="Something interrupted rendering for this route. The fastest path is to retry, move to a known page, or contact the team if the issue persists."
+      eyebrow="Route recovery"
+      title="This route could not render."
+      description="The page encountered an unexpected failure. Retry the view or continue to a known page."
       detail={formatErrorDetail(error, pathname)}
       primaryAction={
         <Button
           type="button"
           size="lg"
-          className="h-12 rounded-full px-6 text-sm font-semibold"
+          className="h-11 rounded-none px-5 text-sm font-semibold uppercase tracking-wide"
           onClick={() => reset()}
         >
           <RefreshCcw />
@@ -145,11 +145,11 @@ export function RouteErrorPage({ error, reset }: ErrorComponentProps) {
           asChild
           size="lg"
           variant="outline"
-          className="h-12 rounded-full border-border/60 bg-background/40 px-6 text-sm font-semibold backdrop-blur-sm"
+          className="h-11 rounded-none border-border/70 bg-background/70 px-5 text-sm font-semibold uppercase tracking-wide"
         >
           <Link to="/">
             <Compass />
-            Go To Homepage
+            Go Home
           </Link>
         </Button>
       }
@@ -157,10 +157,10 @@ export function RouteErrorPage({ error, reset }: ErrorComponentProps) {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+          className="inline-flex h-11 items-center gap-2 border border-border/70 px-4 text-sm font-medium text-muted-foreground transition hover:text-foreground"
         >
           <Sparkles className="h-4 w-4" />
-          Reload Application
+          Reload App
         </button>
       }
     />
@@ -182,32 +182,20 @@ function StatusShell({
   const Icon = tone === "notFound" ? Search : ShieldAlert;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(73,98,225,0.16),transparent_28%),linear-gradient(160deg,color-mix(in_oklch,var(--background)_88%,white_12%),var(--background))] text-foreground dark:bg-[radial-gradient(circle_at_top_left,rgba(73,98,225,0.2),transparent_30%),linear-gradient(160deg,color-mix(in_oklch,var(--background)_92%,black_8%),var(--background))]">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0">
-        <div
-          className={cn(
-            "absolute -left-24 top-8 h-72 w-72 rounded-full bg-[radial-gradient(circle,var(--tw-gradient-stops))] blur-3xl",
-            styles.halo,
-          )}
-        />
-        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(to_right,color-mix(in_oklch,var(--border)_55%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklch,var(--border)_55%,transparent)_1px,transparent_1px)] [background-size:72px_72px]" />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(73,98,225,0.14)_0%,transparent_42%),linear-gradient(125deg,color-mix(in_oklch,var(--background)_92%,white_8%),var(--background))]" />
+        <div className="absolute inset-0 opacity-45 [background-image:linear-gradient(to_right,color-mix(in_oklch,var(--border)_55%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklch,var(--border)_55%,transparent)_1px,transparent_1px)] [background-size:48px_48px]" />
+        <div className="absolute inset-x-0 top-20 border-t border-border/70" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl items-center px-5 py-10 sm:px-8 sm:py-14">
-        <section
-          className={cn(
-            "relative w-full overflow-hidden rounded-[2rem] border p-6 backdrop-blur-xl sm:p-8 lg:p-10",
-            styles.panel,
-          )}
-        >
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_0%,rgba(255,255,255,0.28)_100%)] dark:bg-[linear-gradient(135deg,transparent_0%,rgba(255,255,255,0.05)_100%)]" />
-
-          <div className="relative grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_220px]">
-            <div className="max-w-2xl space-y-6">
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1200px] items-center px-4 py-8 sm:px-8 sm:py-12">
+        <section className={cn("w-full overflow-hidden border", styles.panel)}>
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_290px]">
+            <div className="p-6 sm:p-10">
               <div
                 className={cn(
-                  "inline-flex items-center gap-3 rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.32em]",
+                  "inline-flex items-center gap-2 border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em]",
                   styles.badge,
                 )}
               >
@@ -215,81 +203,72 @@ function StatusShell({
                 {eyebrow}
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div
-                    className={cn(
-                      "flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.35rem]",
-                      styles.iconWrap,
-                    )}
-                  >
-                    <Icon className="h-7 w-7" />
-                  </div>
-                  <p className="font-mono text-sm uppercase tracking-[0.42em] text-muted-foreground">
-                    Error {code}
-                  </p>
+              <div className="mt-6 flex items-center gap-4">
+                <div
+                  className={cn(
+                    "flex h-14 w-14 items-center justify-center border",
+                    styles.iconWrap,
+                  )}
+                >
+                  <Icon className="h-7 w-7" />
                 </div>
-
-                <h1 className="max-w-xl text-balance text-4xl leading-none font-semibold tracking-[-0.05em] sm:text-5xl lg:text-6xl">
-                  {title}
-                </h1>
-
-                <p className="max-w-xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
-                  {description}
+                <p className="font-mono text-xs uppercase tracking-[0.34em] text-muted-foreground">
+                  Status {code}
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <h1 className="mt-6 max-w-3xl text-balance text-4xl leading-tight font-semibold tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+                {title}
+              </h1>
+
+              <p className="mt-4 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg">
+                {description}
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
                 {primaryAction}
                 {secondaryAction}
                 {tertiaryAction}
               </div>
 
-              <p className="border-t border-border/50 pt-4 font-mono text-xs leading-6 text-muted-foreground sm:text-sm">
+              <pre
+                className={cn(
+                  "mt-8 overflow-x-auto border p-4 font-mono text-xs leading-6 whitespace-pre-wrap break-words text-muted-foreground sm:text-sm",
+                  styles.detail,
+                )}
+              >
                 {detail}
-              </p>
+              </pre>
             </div>
 
-            <div className="relative mx-auto hidden h-52 w-52 items-center justify-center lg:flex">
-              <div
-                className={cn(
-                  "absolute inset-0 rounded-full border border-dashed opacity-80",
-                  styles.orbit,
-                )}
-              />
-              <div
-                className={cn(
-                  "absolute inset-4 rounded-full border border-dashed opacity-55",
-                  styles.orbit,
-                )}
-              />
-              <div className="absolute inset-0 animate-[spin_18s_linear_infinite]">
-                <span
-                  className={cn(
-                    "absolute left-1/2 top-1 h-3 w-3 -translate-x-1/2 rounded-full shadow-[0_0_24px_currentColor]",
-                    styles.signal,
-                  )}
-                />
+            <aside
+              className={cn(
+                "border-t p-6 sm:p-8 lg:border-t-0 lg:border-l",
+                styles.rail,
+              )}
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                DS General
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Route status panel
+              </p>
+
+              <div className="mt-6 border border-border/70 bg-background/75 p-5">
+                <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+                  Error Code
+                </p>
+                <p className="mt-2 font-mono text-5xl leading-none tracking-[-0.05em]">
+                  {code}
+                </p>
               </div>
-              <div className="absolute inset-6 animate-[spin_24s_linear_infinite_reverse]">
-                <span
-                  className={cn(
-                    "absolute bottom-3 right-3 h-2.5 w-2.5 rounded-full shadow-[0_0_18px_currentColor]",
-                    styles.signal,
-                  )}
-                />
+
+              <div className="mt-6 space-y-3">
+                <SignalStrip label="UI" value="RECOVERY READY" tone={styles} />
+                <SignalStrip label="ROUTE" value="CHECKED" tone={styles} />
+                <SignalStrip label="ACTION" value="AVAILABLE" tone={styles} />
               </div>
-              <div className="flex h-28 w-28 items-center justify-center rounded-full border border-border/60 bg-background/75 text-center shadow-[0_18px_60px_-30px_rgba(73,98,225,0.45)] backdrop-blur-md">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.36em] text-muted-foreground">
-                    DSG
-                  </p>
-                  <p className="mt-1 text-4xl font-semibold tracking-[-0.08em]">
-                    {code}
-                  </p>
-                </div>
-              </div>
-            </div>
+            </aside>
           </div>
         </section>
       </div>
@@ -297,14 +276,55 @@ function StatusShell({
   );
 }
 
-function formatErrorDetail(error: unknown, pathname: string) {
-  const prefix = `Route: ${pathname}`;
-  const message =
-    error instanceof Error ? error.message?.trim() : String(error).trim();
+function SignalStrip({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: { signal: string };
+}) {
+  return (
+    <div className="border border-border/70 bg-background/65 p-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          {label}
+        </p>
+        <span className={cn("h-2.5 w-2.5", tone.signal)} />
+      </div>
+      <p className="mt-2 text-sm font-medium text-foreground">{value}</p>
+    </div>
+  );
+}
 
-  if (!message) {
-    return `${prefix} • Unknown application error`;
+function formatErrorDetail(error: unknown, pathname: string) {
+  const routeLine = `Route: ${pathname}`;
+
+  if (!import.meta.env.PROD) {
+    const message = serializeError(error);
+    return message ? `${routeLine}\n${message}` : `${routeLine}\nUnknown error`;
   }
 
-  return `${prefix} • ${message}`;
+  return `${routeLine}\nAn unexpected error occurred. Detailed diagnostics are hidden in production for security.`;
+}
+
+function serializeError(error: unknown) {
+  if (error instanceof Error) {
+    const name = error.name?.trim() || "Error";
+    const message = error.message?.trim();
+    const stack = error.stack?.trim();
+    const header = message ? `${name}: ${message}` : name;
+    return stack ? `${header}\n${stack}` : header;
+  }
+
+  if (typeof error === "string") {
+    return error.trim();
+  }
+
+  try {
+    return JSON.stringify(error, null, 2);
+  } catch {
+    return String(error);
+  }
 }

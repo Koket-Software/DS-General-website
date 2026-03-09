@@ -6,16 +6,23 @@ export const contactSchema = z.object({
   contact: z.string().min(1),
   message: z.string().min(1),
   serviceId: z.number().nullable(),
+  service: z
+    .object({
+      id: z.number(),
+      title: z.string(),
+      slug: z.string(),
+    })
+    .nullable()
+    .optional(),
   isHandled: z.boolean().default(false),
   createdAt: z.string(),
-  updatedAt: z.string(),
 });
 
 export const createContactSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
   contact: z.string().min(1, "Contact info is required"),
   message: z.string().min(1, "Message is required"),
-  serviceId: z.number().nullable().optional(),
+  serviceId: z.number().int().positive("Service is required"),
 });
 
 export const updateContactSchema = createContactSchema
@@ -38,6 +45,7 @@ export const contactListParamsSchema = z.object({
   sortBy: z.enum(["createdAt"]).default("createdAt"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
   isHandled: z.boolean().optional(),
+  serviceId: z.number().int().positive().optional(),
 });
 
 export type ContactListParams = z.infer<typeof contactListParamsSchema>;

@@ -17,7 +17,7 @@ export const createContactSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
   contact: z.string().min(1, "Contact information is required"),
   message: z.string().min(1, "Message is required"),
-  serviceId: z.number().int().positive().nullish(),
+  serviceId: z.number().int().positive(),
 });
 
 export const updateContactSchema = z.object({

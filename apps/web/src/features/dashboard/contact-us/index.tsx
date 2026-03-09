@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -23,10 +23,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePublicServices } from "@/lib/services/services-query";
 import { useTableFilters } from "@/lib/useTableFilters";
 
 export default function Index() {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: "/dashboard/contact-us" });
+  const searchParams = useSearch({
+    from: "/dashboard/contact-us/",
+  }) as { serviceId?: number };
 
   // State for pagination
   const {
@@ -43,10 +47,17 @@ export default function Index() {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "handled" | "pending"
   >("all");
+  const selectedServiceId = searchParams.serviceId;
 
   // State for delete dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const servicesQuery = usePublicServices({
+    page: 1,
+    limit: 50,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
 
   // Fetch contacts
   const {
@@ -61,6 +72,7 @@ export default function Index() {
     sortBy: "createdAt",
     sortOrder: "desc",
     isHandled: statusFilter === "all" ? undefined : statusFilter === "handled",
+    serviceId: selectedServiceId,
   });
 
   // Update mutation (for toggling handled status)
@@ -125,8 +137,20 @@ export default function Index() {
     setSearch(value);
     setPage(1); // Reset to first page on search
   };
+  const handleServiceFilterChange = (value: string) => {
+    navigate({
+      to: "/dashboard/contact-us",
+      search: (prev: Record<string, unknown>) =>
+        ({
+          ...prev,
+          serviceId: value === "all" ? undefined : Number(value),
+          page: 1,
+        }) as never,
+    });
+  };
 
   const contacts = contactsData?.data || [];
+  const services = servicesQuery.data?.data ?? [];
   const pagination = contactsData?.meta?.pagination
     ? {
         pageCount: contactsData.meta.pagination.totalPages,
@@ -156,7 +180,11 @@ export default function Index() {
 
   // Empty state when no contacts exist
   const hasNoContacts =
-    !isPending && contacts.length === 0 && !search && statusFilter === "all";
+    !isPending &&
+    contacts.length === 0 &&
+    !search &&
+    statusFilter === "all" &&
+    !selectedServiceId;
   if (hasNoContacts) {
     return (
       <div className="p-8">
@@ -178,7 +206,9 @@ export default function Index() {
 
   // Empty state for filtered results
   const hasNoResults =
-    !isPending && contacts.length === 0 && (search || statusFilter !== "all");
+    !isPending &&
+    contacts.length === 0 &&
+    (search || statusFilter !== "all" || Boolean(selectedServiceId));
 
   return (
     <div className="p-8">
@@ -207,6 +237,25 @@ export default function Index() {
             </SelectContent>
           </Select>
         </div>
+        <div className="flex items-center gap-2">
+          <Label htmlFor="service-filter">Service:</Label>
+          <Select
+            value={selectedServiceId ? String(selectedServiceId) : "all"}
+            onValueChange={handleServiceFilterChange}
+          >
+            <SelectTrigger id="service-filter" className="w-[240px]">
+              <SelectValue placeholder="Filter by service" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All services</SelectItem>
+              {services.map((service) => (
+                <SelectItem key={service.id} value={String(service.id)}>
+                  {service.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {hasNoResults ? (
@@ -222,7 +271,15 @@ export default function Index() {
             onClick={() => {
               setSearch("");
               setStatusFilter("all");
-              setPage(1);
+              navigate({
+                to: "/dashboard/contact-us",
+                search: (prev: Record<string, unknown>) =>
+                  ({
+                    ...prev,
+                    serviceId: undefined,
+                    page: 1,
+                  }) as never,
+              });
             }}
           >
             Clear Filters

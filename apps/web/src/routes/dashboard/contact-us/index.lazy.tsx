@@ -12,14 +12,30 @@ import { prefetchResource } from "@/lib/prefetch";
 import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/contact-us/")({
-  validateSearch: (search: Record<string, unknown>) =>
-    contactListParamsSchema.partial().parse({
-      page: search.page ? Number(search.page) : undefined,
-      limit: search.limit ? Number(search.limit) : undefined,
+  validateSearch: (search: Record<string, unknown>) => {
+    const parseOptionalBoolean = (value: unknown) => {
+      if (typeof value === "boolean") return value;
+      if (typeof value === "string") {
+        if (value === "true") return true;
+        if (value === "false") return false;
+      }
+      return undefined;
+    };
+
+    const parseOptionalNumber = (value: unknown) => {
+      if (typeof value === "number") return value;
+      if (typeof value === "string" && value.length > 0) return Number(value);
+      return undefined;
+    };
+
+    return contactListParamsSchema.partial().parse({
+      page: parseOptionalNumber(search.page),
+      limit: parseOptionalNumber(search.limit),
       search: typeof search.search === "string" ? search.search : undefined,
-      isHandled:
-        typeof search.isHandled === "boolean" ? search.isHandled : undefined,
-    }),
+      isHandled: parseOptionalBoolean(search.isHandled),
+      serviceId: parseOptionalNumber(search.serviceId),
+    });
+  },
   loader: async ({ search }: { search: Record<string, unknown> }) => {
     const params = normalizeContactListParams(
       (search as Partial<ContactListParams>) ?? {},
