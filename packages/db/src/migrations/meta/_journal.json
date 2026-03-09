@@ -50,6 +50,13 @@
       "when": 1773071490894,
       "tag": "0006_dazzling_mastermind",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1773075595403,
+      "tag": "0007_brave_ultimatum",
+      "breakpoints": true
     }
   ]
 }
