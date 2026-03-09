@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { API_BASE_URL } from "@/lib/api-base";
 import { normalizeAxiosErrorMessage } from "@/lib/api-error";
+import { normalizeMediaUrlsDeep } from "@/lib/media-url";
 import { handleRateLimitEncounter } from "@/lib/rate-limit-tracker";
 
 const apiClient = axios.create({
@@ -13,7 +14,19 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const requestUrl = response?.config?.url ?? "";
+
+    if (
+      typeof requestUrl === "string" &&
+      requestUrl.includes("/client") &&
+      response?.data
+    ) {
+      response.data = normalizeMediaUrlsDeep(response.data);
+    }
+
+    return response;
+  },
   (error) => {
     normalizeAxiosErrorMessage(error);
     const status = error?.response?.status;

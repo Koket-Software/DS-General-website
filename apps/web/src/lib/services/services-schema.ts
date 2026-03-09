@@ -18,6 +18,7 @@ export const publicServiceDetailSchema = z.object({
   id: z.number(),
   title: z.string(),
   slug: z.string(),
+  excerpt: z.string().nullable(),
   description: z.string().nullable(),
   images: z.array(
     z.object({
