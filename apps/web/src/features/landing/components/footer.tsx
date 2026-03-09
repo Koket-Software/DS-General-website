@@ -1,9 +1,15 @@
 import { Link } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
 
 import { Logo, YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  createPublicNewsletterSchema,
+  normalizeCreatePublicNewsletterInput,
+} from "@/lib/newsletters";
+import { useCreatePublicNewsletterMutation } from "@/lib/newsletters/newsletters-query";
 import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
 
 function socialIcon(title: string) {
@@ -18,7 +24,53 @@ function socialIcon(title: string) {
 export function Footer() {
   const socialsQuery = usePublicSocialsQuery({ page: 1, limit: 20 });
   const socials = socialsQuery.data?.data ?? [];
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const currentYear = new Date().getFullYear();
+
+  const createNewsletterMutation = useCreatePublicNewsletterMutation({
+    onMutate: () => {
+      setSubmitError(null);
+      setSubmitSuccess(null);
+    },
+    onSuccess: () => {
+      setSubmitSuccess("Subscribed successfully. Thank you for joining.");
+      setEmail("");
+      setFullName("");
+      setShowNameInput(false);
+    },
+    onError: (error) => {
+      setSubmitError(error.message || "Failed to subscribe. Please try again.");
+    },
+  });
+
+  const canSubmit = email.trim().length > 0;
+
+  const handleSubscribe = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!canSubmit || createNewsletterMutation.isPending) {
+      return;
+    }
+
+    const parsed = createPublicNewsletterSchema.safeParse({
+      email,
+      fullName: showNameInput ? fullName : undefined,
+    });
+
+    if (!parsed.success) {
+      setSubmitError(
+        parsed.error.issues[0]?.message ?? "Invalid subscription.",
+      );
+      return;
+    }
+
+    createNewsletterMutation.mutate(
+      normalizeCreatePublicNewsletterInput(parsed.data),
+    );
+  };
 
   return (
     <footer className="bg-background landing-container pt-6">
@@ -110,20 +162,64 @@ export function Footer() {
         </div>
 
         <div className="flex-1">
-          <div className="bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
-            <Input
-              type="email"
-              placeholder="Email Address"
-              className="flex-1 border-0 bg-transparent font-sans text-[16px] font-normal text-foreground shadow-none focus-visible:ring-0"
-            />
-            <Button
-              variant="ghost"
+          <form onSubmit={handleSubscribe} className="space-y-3">
+            <div className="bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
+              <Input
+                type="email"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setSubmitSuccess(null);
+                }}
+                placeholder="Email Address"
+                className="flex-1 border-0 bg-transparent font-sans text-[16px] font-normal text-foreground shadow-none focus-visible:ring-0"
+              />
+              <Button
+                variant="ghost"
+                type="submit"
+                disabled={!canSubmit || createNewsletterMutation.isPending}
+                className="ml-4 shrink-0 font-sans text-[16px] font-semibold text-primary transition-opacity hover:opacity-80 disabled:opacity-50"
+              >
+                {createNewsletterMutation.isPending
+                  ? "Subscribing..."
+                  : "Subscribe"}
+              </Button>
+            </div>
+            <button
               type="button"
-              className="ml-4 shrink-0 font-sans text-[16px] font-semibold text-primary transition-opacity hover:opacity-80"
+              onClick={() => {
+                setShowNameInput((prev) => !prev);
+                setSubmitSuccess(null);
+              }}
+              className="font-sans text-[13px] text-primary hover:opacity-80"
             >
-              Subscribe
-            </Button>
-          </div>
+              {showNameInput
+                ? "Hide optional name"
+                : "Add your name (optional)"}
+            </button>
+            {showNameInput ? (
+              <Input
+                type="text"
+                value={fullName}
+                onChange={(event) => {
+                  setFullName(event.target.value);
+                  setSubmitSuccess(null);
+                }}
+                placeholder="Full Name (optional)"
+                className="h-10 border-primary/10 bg-background font-sans text-[14px]"
+              />
+            ) : null}
+            {submitError ? (
+              <p className="font-sans text-[13px] text-destructive">
+                {submitError}
+              </p>
+            ) : null}
+            {submitSuccess ? (
+              <p className="font-sans text-[13px] text-primary">
+                {submitSuccess}
+              </p>
+            ) : null}
+          </form>
           <p className="font-sans font-normal text-foreground text-[14px] mb-10 py-3 lg:py-6">
             Get the latest news and updates subscribe to our newsletter
           </p>

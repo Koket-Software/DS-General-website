@@ -21,6 +21,7 @@ import {
   faqs,
   galleryCategories,
   galleryItems,
+  newsletters,
   partners,
   productImages,
   productTags,
@@ -46,6 +47,7 @@ import {
   faqSeeds,
   galleryCategorySeeds,
   gallerySeeds,
+  newsletterSeeds,
   partnerSeeds,
   productContentSeeds,
   serviceContentSeeds,
@@ -124,6 +126,7 @@ const truncateTables = async () => {
     "vacancy_applications",
     "vacancies",
     "contacts",
+    "newsletters",
     "gallery_categories",
     "gallery_items",
     "faqs",
@@ -502,6 +505,9 @@ async function run() {
     },
   );
   await insertMany(contacts, contactRows);
+
+  // Newsletter subscribers
+  await insertMany(newsletters, newsletterSeeds);
 
   // Company members (manager relationships mapped after insert)
   await insertMany(companyMembers, companyMemberSeeds);

@@ -6,6 +6,7 @@ export * from "./case-studies";
 export * from "./contacts";
 export * from "./faq";
 export * from "./gallery";
+export * from "./newsletters";
 export * from "./partners";
 export * from "./products";
 export * from "./services";

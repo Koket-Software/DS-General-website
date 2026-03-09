@@ -8,6 +8,7 @@ import {
   MessageCircleMore,
   Images,
   Folders,
+  Mail,
   MessageSquareText,
   CircleUserRound,
   UsersRound,
@@ -93,6 +94,11 @@ export const sidebarData: SidebarData = {
           url: "/dashboard/contact-us",
           icon: MessageSquareText,
           separator: true,
+        },
+        {
+          title: "Newsletter",
+          url: "/dashboard/newsletter",
+          icon: Mail,
         },
         {
           title: "User Management",

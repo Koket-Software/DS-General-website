@@ -12,6 +12,7 @@ import type {
   faqs,
   galleryCategories,
   galleryItems,
+  newsletters,
   partners,
   products,
   services,
@@ -50,6 +51,7 @@ type SeedTestimonial = InferInsertModel<typeof testimonials> & {
 };
 
 type SeedContact = InferInsertModel<typeof contacts> & { serviceSlug?: string };
+type SeedNewsletter = InferInsertModel<typeof newsletters>;
 type SeedProduct = InferInsertModel<typeof products> & {
   images: { url: string; position?: number }[];
   tagSlugs: string[];
@@ -715,6 +717,25 @@ export const contactSeeds: SeedContact[] = [
     message: "Seeking product strategy sprint for a fintech MVP.",
     isHandled: false,
     serviceSlug: "product-strategy",
+  },
+];
+
+export const newsletterSeeds: SeedNewsletter[] = [
+  {
+    email: "updates@acme.dev",
+    fullName: "Liya Kebede",
+    isActive: true,
+  },
+  {
+    email: "procurement@dsgeneralplc.com",
+    fullName: null,
+    isActive: false,
+    unsubscribedAt: daysAgo(14),
+  },
+  {
+    email: "finance@midroc.dev",
+    fullName: "Biruk Alemu",
+    isActive: true,
   },
 ];
 

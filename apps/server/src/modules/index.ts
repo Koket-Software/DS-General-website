@@ -8,6 +8,7 @@ import { initContactsModule } from "./contacts";
 import { initFaqsModule } from "./faqs";
 import { initGalleryModule } from "./gallery";
 import { initGalleryCategoriesModule } from "./gallery-categories";
+import { initNewslettersModule } from "./newsletters";
 import { initOgImageModule } from "./og-image";
 import { initOrgModule } from "./org";
 import { initPartnersModule } from "./partners";
@@ -66,6 +67,12 @@ const registrations: ModuleRegistration[] = [
     adminPath: "/api/v1/contacts",
     clientPath: "/api/v1/contacts/client",
     init: initContactsModule,
+  },
+  {
+    name: "newsletters",
+    adminPath: "/api/v1/newsletters",
+    clientPath: "/api/v1/newsletters/client",
+    init: initNewslettersModule,
   },
   {
     name: "faqs",

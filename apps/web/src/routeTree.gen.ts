@@ -80,6 +80,9 @@ const DashboardPartnersIndexLazyRouteImport = createFileRoute(
 const DashboardOrganizationalStructureIndexLazyRouteImport = createFileRoute(
   '/dashboard/organizational-structure/',
 )()
+const DashboardNewsletterIndexLazyRouteImport = createFileRoute(
+  '/dashboard/newsletter/',
+)()
 const DashboardFaqsIndexLazyRouteImport = createFileRoute('/dashboard/faqs/')()
 const DashboardContactUsIndexLazyRouteImport = createFileRoute(
   '/dashboard/contact-us/',
@@ -247,6 +250,14 @@ const DashboardOrganizationalStructureIndexLazyRoute =
     import('./routes/dashboard/organizational-structure/index.lazy').then(
       (d) => d.Route,
     ),
+  )
+const DashboardNewsletterIndexLazyRoute =
+  DashboardNewsletterIndexLazyRouteImport.update({
+    id: '/newsletter/',
+    path: '/newsletter/',
+    getParentRoute: () => DashboardRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboard/newsletter/index.lazy').then((d) => d.Route),
   )
 const DashboardFaqsIndexLazyRoute = DashboardFaqsIndexLazyRouteImport.update({
   id: '/faqs/',
@@ -712,6 +723,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/client-projects': typeof DashboardClientProjectsIndexLazyRoute
   '/dashboard/contact-us': typeof DashboardContactUsIndexLazyRoute
   '/dashboard/faqs': typeof DashboardFaqsIndexLazyRoute
+  '/dashboard/newsletter': typeof DashboardNewsletterIndexLazyRoute
   '/dashboard/organizational-structure': typeof DashboardOrganizationalStructureIndexLazyRoute
   '/dashboard/partners': typeof DashboardPartnersIndexLazyRoute
   '/dashboard/socials': typeof DashboardSocialsIndexLazyRoute
@@ -784,6 +796,7 @@ export interface FileRoutesByTo {
   '/dashboard/client-projects': typeof DashboardClientProjectsIndexLazyRoute
   '/dashboard/contact-us': typeof DashboardContactUsIndexLazyRoute
   '/dashboard/faqs': typeof DashboardFaqsIndexLazyRoute
+  '/dashboard/newsletter': typeof DashboardNewsletterIndexLazyRoute
   '/dashboard/organizational-structure': typeof DashboardOrganizationalStructureIndexLazyRoute
   '/dashboard/partners': typeof DashboardPartnersIndexLazyRoute
   '/dashboard/socials': typeof DashboardSocialsIndexLazyRoute
@@ -859,6 +872,7 @@ export interface FileRoutesById {
   '/dashboard/client-projects/': typeof DashboardClientProjectsIndexLazyRoute
   '/dashboard/contact-us/': typeof DashboardContactUsIndexLazyRoute
   '/dashboard/faqs/': typeof DashboardFaqsIndexLazyRoute
+  '/dashboard/newsletter/': typeof DashboardNewsletterIndexLazyRoute
   '/dashboard/organizational-structure/': typeof DashboardOrganizationalStructureIndexLazyRoute
   '/dashboard/partners/': typeof DashboardPartnersIndexLazyRoute
   '/dashboard/socials/': typeof DashboardSocialsIndexLazyRoute
@@ -934,6 +948,7 @@ export interface FileRouteTypes {
     | '/dashboard/client-projects'
     | '/dashboard/contact-us'
     | '/dashboard/faqs'
+    | '/dashboard/newsletter'
     | '/dashboard/organizational-structure'
     | '/dashboard/partners'
     | '/dashboard/socials'
@@ -1006,6 +1021,7 @@ export interface FileRouteTypes {
     | '/dashboard/client-projects'
     | '/dashboard/contact-us'
     | '/dashboard/faqs'
+    | '/dashboard/newsletter'
     | '/dashboard/organizational-structure'
     | '/dashboard/partners'
     | '/dashboard/socials'
@@ -1080,6 +1096,7 @@ export interface FileRouteTypes {
     | '/dashboard/client-projects/'
     | '/dashboard/contact-us/'
     | '/dashboard/faqs/'
+    | '/dashboard/newsletter/'
     | '/dashboard/organizational-structure/'
     | '/dashboard/partners/'
     | '/dashboard/socials/'
@@ -1269,6 +1286,13 @@ declare module '@tanstack/react-router' {
       path: '/organizational-structure'
       fullPath: '/dashboard/organizational-structure'
       preLoaderRoute: typeof DashboardOrganizationalStructureIndexLazyRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/newsletter/': {
+      id: '/dashboard/newsletter/'
+      path: '/newsletter'
+      fullPath: '/dashboard/newsletter'
+      preLoaderRoute: typeof DashboardNewsletterIndexLazyRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/faqs/': {
@@ -1707,6 +1731,7 @@ interface DashboardRouteChildren {
   DashboardClientProjectsIndexLazyRoute: typeof DashboardClientProjectsIndexLazyRoute
   DashboardContactUsIndexLazyRoute: typeof DashboardContactUsIndexLazyRoute
   DashboardFaqsIndexLazyRoute: typeof DashboardFaqsIndexLazyRoute
+  DashboardNewsletterIndexLazyRoute: typeof DashboardNewsletterIndexLazyRoute
   DashboardOrganizationalStructureIndexLazyRoute: typeof DashboardOrganizationalStructureIndexLazyRoute
   DashboardPartnersIndexLazyRoute: typeof DashboardPartnersIndexLazyRoute
   DashboardSocialsIndexLazyRoute: typeof DashboardSocialsIndexLazyRoute
@@ -1767,6 +1792,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardClientProjectsIndexLazyRoute: DashboardClientProjectsIndexLazyRoute,
   DashboardContactUsIndexLazyRoute: DashboardContactUsIndexLazyRoute,
   DashboardFaqsIndexLazyRoute: DashboardFaqsIndexLazyRoute,
+  DashboardNewsletterIndexLazyRoute: DashboardNewsletterIndexLazyRoute,
   DashboardOrganizationalStructureIndexLazyRoute:
     DashboardOrganizationalStructureIndexLazyRoute,
   DashboardPartnersIndexLazyRoute: DashboardPartnersIndexLazyRoute,
