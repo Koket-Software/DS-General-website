@@ -1,7 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { AppImage } from "@/components/common/AppImage";
+import {
+  type PreviewMediaItem,
+  MediaPreviewDialog,
+} from "@/components/common/MediaPreviewDialog";
 import { Button } from "@/components/ui/button";
 import {
   publicGalleryQueryOptions,
@@ -11,11 +16,20 @@ import {
 import { Route as GalleryRoute } from "@/routes/_landing/gallery";
 
 const ALL_TAB = "all";
+const VIDEO_ASSET_EXTENSION_PATTERN = /\.(mp4|webm|ogg|mov|m4v)(?:$|\?)/i;
+
+const inferMediaType = (src: string): PreviewMediaItem["type"] =>
+  VIDEO_ASSET_EXTENSION_PATTERN.test(src) ? "video" : "image";
 
 export function GallerySection() {
   const navigate = useNavigate();
   const search = GalleryRoute.useSearch();
   const queryClient = useQueryClient();
+  const [activePreview, setActivePreview] = useState<{
+    title: string;
+    description?: string;
+    items: PreviewMediaItem[];
+  } | null>(null);
 
   const page = search.page ?? 1;
   const limit = search.limit ?? 60;
@@ -98,6 +112,40 @@ export function GallerySection() {
   const items = galleryQuery.data?.data ?? [];
   const isLoading = galleryQuery.isPending || categoriesQuery.isPending;
 
+  const closePreview = () => setActivePreview(null);
+
+  const openPreview = (
+    item: (typeof items)[number],
+    selectedAssetIndex = 0,
+  ) => {
+    const previewItems = item.imageUrls.map((src, index) => ({
+      id: `${item.id}-${index}`,
+      type: inferMediaType(src),
+      src,
+      alt: `${item.title} media ${index + 1}`,
+      title: item.title,
+      description: item.description ?? undefined,
+      thumbnailSrc: src,
+    }));
+
+    if (previewItems.length === 0) {
+      return;
+    }
+
+    const sortedItems = [...previewItems];
+    const safeSelectedIndex = Math.min(
+      Math.max(selectedAssetIndex, 0),
+      sortedItems.length - 1,
+    );
+    const [selectedItem] = sortedItems.splice(safeSelectedIndex, 1);
+
+    setActivePreview({
+      title: item.title,
+      description: item.description ?? undefined,
+      items: selectedItem ? [selectedItem, ...sortedItems] : previewItems,
+    });
+  };
+
   return (
     <section className="landing-container">
       <div className="border-b border-primary/10">
@@ -151,21 +199,43 @@ export function GallerySection() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {items.map((image) => (
-              <div
-                key={image.id}
-                className="relative h-50 md:h-78.5 overflow-hidden bg-muted/60 group"
+            {items.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => openPreview(item)}
+                className="group relative h-50 overflow-hidden bg-muted/60 text-left touch-manipulation focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:outline-none md:h-78.5"
+                aria-label={`Open preview for ${item.title}`}
               >
-                <img
-                  alt={image.title}
+                <AppImage
+                  alt={item.title}
+                  width={960}
+                  height={720}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  src={image.coverImageUrl ?? image.imageUrls[0]}
+                  src={item.coverImageUrl ?? item.imageUrls[0]}
                 />
-              </div>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <p className="truncate text-sm font-medium">{item.title}</p>
+                  <p className="text-xs text-white/80">Tap to preview</p>
+                </div>
+              </button>
             ))}
           </div>
         )}
       </div>
+
+      <MediaPreviewDialog
+        open={!!activePreview}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) {
+            closePreview();
+          }
+        }}
+        items={activePreview?.items ?? []}
+        title={activePreview?.title ?? "Gallery Media"}
+        description={activePreview?.description}
+      />
     </section>
   );
 }

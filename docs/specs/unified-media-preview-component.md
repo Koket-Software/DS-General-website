@@ -51,12 +51,12 @@ Tests for this phase:
 Tests for this phase:
 
 - Run `bun --filter web check-types`.
-- Run `bun x eslint apps/web/src/components/common/MediaPreviewDialog.tsx apps/web/src/features/landing/components/gallery-section.tsx docs/specs/unified-media-preview-component.md`.
+- Run `bun x eslint apps/web/src/components/common/MediaPreviewDialog.tsx apps/web/src/features/landing/components/gallery-section.tsx`.
 
 ## Tasks
 
-- [ ] Create spec and confirm architecture/test plan.
-- [ ] Implement shared media preview dialog component with image/video support.
-- [ ] Integrate shared preview into landing gallery item click flow.
-- [ ] Run type-check/lint and address any issues.
-- [ ] Audit updated UI against latest web design guidelines.
+- [x] Create spec and confirm architecture/test plan.
+- [x] Implement shared media preview dialog component with image/video support.
+- [x] Integrate shared preview into landing gallery item click flow.
+- [x] Run type-check/lint and address any issues.
+- [x] Audit updated UI against latest web design guidelines.
