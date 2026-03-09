@@ -106,6 +106,10 @@
 ## Agent Skills
 
 - Always review the available skills list before starting work and use any relevant skill instructions for the task at hand.
+- By default, when planning or building frontend/product work, apply these skills as a baseline to keep the app maintainable, production-grade, and high quality:
+- [$vercel-composition-patterns](/Users/negusnati/.agents/skills/vercel-composition-patterns/SKILL.md) for scalable component architecture and composition patterns.
+- [$vercel-react-best-practices](/Users/negusnati/.agents/skills/vercel-react-best-practices/SKILL.md) for React/Next performance and implementation quality.
+- [$web-design-guidelines](/Users/negusnati/.agents/skills/web-design-guidelines/SKILL.md) for UI/UX and accessibility review quality gates.
 
 ## Environment Rules
 

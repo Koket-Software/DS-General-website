@@ -2,9 +2,10 @@ import { type FormValidateOrFn } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
+import { ContactPreview } from "./detail/ContactPreview";
 import {
+  useCreateContactMutation,
   useDeleteContactMutation,
-  useSubmitContactMutation,
   useUpdateContactMutation,
 } from "./lib/contact-query";
 import {
@@ -15,6 +16,7 @@ import {
 } from "./lib/contact-schema";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldError,
@@ -23,6 +25,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { useDashboardForm } from "@/lib/forms";
 import { toastApiError } from "@/lib/toast";
 
@@ -42,8 +45,9 @@ export function ContactUsForm({
   onSuccess,
 }: ContactUsFormProps) {
   const navigate = useNavigate();
+  const formId = "contact-us-form";
 
-  const createMutation = useSubmitContactMutation({
+  const createMutation = useCreateContactMutation({
     onSuccess: () => {
       toast.success("Contact created successfully!");
       onSuccess?.();
@@ -79,7 +83,7 @@ export function ContactUsForm({
     },
   });
 
-  const isLoading =
+  const isSaving =
     mode === "create"
       ? createMutation.isPending
       : mode === "edit"
@@ -109,9 +113,10 @@ export function ContactUsForm({
 
       if (mode === "create") {
         if (value.serviceId === undefined) {
-          toast.error("Please provide a service ID.");
+          toast.error("Please provide a service ID");
           return;
         }
+
         await createMutation.mutateAsync({
           fullName: value.fullName,
           contact: value.contact,
@@ -135,171 +140,203 @@ export function ContactUsForm({
 
   const isReadOnly = mode === "view";
 
+  const pageTitle =
+    mode === "create"
+      ? "Create Contact"
+      : mode === "edit"
+        ? "Edit Contact"
+        : "View Contact";
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-      className="space-y-4"
-    >
-      <FieldGroup>
-        <form.Field name="fullName">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Enter full name"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name="contact">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Contact</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Enter contact information"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name="message">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Message</FieldLabel>
-                <Textarea
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Enter message"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  rows={4}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name="serviceId">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Service ID</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="number"
-                  value={field.state.value ?? ""}
-                  onBlur={field.handleBlur}
-                  placeholder="Enter service ID"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) =>
-                    field.handleChange(
-                      e.target.value ? Number(e.target.value) : undefined,
-                    )
-                  }
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        {mode !== "create" && (
-          <form.Field name="isHandled">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Handled</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="checkbox"
-                  checked={field.state.value ?? false}
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.checked)}
-                />
-              </Field>
-            )}
-          </form.Field>
-        )}
-
-        <div className="flex justify-end gap-2">
-          {mode === "view" && contactUs && (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => deleteMutation.mutate(contactUs.id)}
-              disabled={isLoading}
-            >
-              Delete
-            </Button>
-          )}
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => onClose?.() ?? navigate({ to: "/dashboard/contact-us" })}
+      isSubmitting={form.state.isSubmitting || isSaving}
+      isSubmitDisabled={
+        !form.state.canSubmit || form.state.isSubmitting || isSaving
+      }
+      submitLabel={mode === "create" ? "Create Contact" : "Update Contact"}
+      submittingLabel={mode === "create" ? "Creating…" : "Updating…"}
+      headerActions={
+        mode === "view" && contactUs ? (
           <Button
             type="button"
-            variant="outline"
-            onClick={() =>
-              onClose?.() ?? navigate({ to: "/dashboard/contact-us" })
-            }
-            disabled={isLoading}
+            variant="destructive"
+            onClick={() => deleteMutation.mutate(contactUs.id)}
+            disabled={deleteMutation.isPending}
           >
-            Close
+            {deleteMutation.isPending ? "Deleting…" : "Delete"}
           </Button>
-          {mode !== "view" && (
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting || isLoading
-                    ? mode === "create"
-                      ? "Creating..."
-                      : "Updating..."
-                    : mode === "create"
-                      ? "Create Contact"
-                      : "Update Contact"}
-                </Button>
-              )}
+        ) : null
+      }
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            fullName: state.values.fullName,
+            contact: state.values.contact,
+            message: state.values.message,
+            serviceId: state.values.serviceId,
+            isHandled: state.values.isHandled,
+          })}
+        >
+          {(values) => (
+            <ContactPreview
+              fullName={values.fullName}
+              contact={values.contact}
+              message={values.message}
+              serviceId={values.serviceId}
+              isHandled={values.isHandled}
             />
           )}
-        </div>
-      </FieldGroup>
-    </form>
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          void form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <FieldGroup>
+          <form.Field name="fullName">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Enter full name…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="contact">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Contact</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Email or phone…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="message">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Message</FieldLabel>
+                  <Textarea
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Message details…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                    rows={5}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="serviceId">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Service ID</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="number"
+                    min={1}
+                    inputMode="numeric"
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    placeholder="Enter a service ID…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) =>
+                      field.handleChange(
+                        event.target.value
+                          ? Number.parseInt(event.target.value, 10)
+                          : undefined,
+                      )
+                    }
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          {mode !== "create" && (
+            <form.Field name="isHandled">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Handled Status</FieldLabel>
+                  <div className="flex h-10 items-center gap-3 rounded-md border border-input px-3">
+                    <Checkbox
+                      id={field.name}
+                      checked={field.state.value ?? false}
+                      onCheckedChange={(checked) =>
+                        field.handleChange(Boolean(checked))
+                      }
+                      disabled={isReadOnly || isSaving}
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {field.state.value ? "Handled" : "Pending"}
+                    </span>
+                  </div>
+                </Field>
+              )}
+            </form.Field>
+          )}
+        </FieldGroup>
+      </form>
+    </DashboardDetailShell>
   );
 }

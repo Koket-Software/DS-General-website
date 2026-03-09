@@ -1,9 +1,7 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute("/dashboard/contact-us/create")({
-  component: RouteComponent,
-});
+import { ContactUsForm } from "@/features/dashboard/contact-us/ContactUsForm";
 
-function RouteComponent() {
-  return <div>create contact</div>;
-}
+export const Route = createLazyFileRoute("/dashboard/contact-us/create")({
+  component: () => <ContactUsForm mode="create" />,
+});

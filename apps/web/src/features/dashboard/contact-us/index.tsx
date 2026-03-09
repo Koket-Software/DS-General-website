@@ -105,6 +105,17 @@ export default function Index() {
     });
   };
 
+  const handleEdit = (contact: Contact) => {
+    navigate({
+      to: `/dashboard/contact-us/$id/edit`,
+      params: { id: String(contact.id) },
+    });
+  };
+
+  const handleCreate = () => {
+    navigate({ to: "/dashboard/contact-us/create" });
+  };
+
   const handleToggleStatus = (contact: Contact) => {
     updateMutation.mutate({
       id: contact.id,
@@ -190,6 +201,7 @@ export default function Index() {
       <div className="p-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Contact Submissions</h1>
+          <Button onClick={handleCreate}>Create Contact</Button>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <Mail className="h-16 w-16 text-muted-foreground mb-4" />
@@ -287,8 +299,15 @@ export default function Index() {
         </div>
       ) : (
         <ResourceTable
-          columns={Columns(handleView, handleToggleStatus, handleDelete)}
+          columns={Columns(
+            handleView,
+            handleEdit,
+            handleToggleStatus,
+            handleDelete,
+          )}
           data={contacts}
+          onAction={handleCreate}
+          actionTitle="Create Contact"
           pagination={pagination}
           isLoading={isPending}
           isError={isError}

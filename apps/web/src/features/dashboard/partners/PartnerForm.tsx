@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { infer as ZodInfer } from "zod";
 
+import { PartnerPreview } from "./detail/PartnerPreview";
 import {
   useCreatePartnerMutation,
   useDeletePartnerMutation,
@@ -14,7 +15,6 @@ import {
   type PartnerUpdatePayload,
 } from "./lib/partners-schema";
 
-import { AppImage } from "@/components/common/AppImage";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
 import { API_BASE_URL } from "@/lib/api-base";
 import { useDashboardForm } from "@/lib/forms";
 import { toastApiError } from "@/lib/toast";
@@ -48,11 +49,14 @@ export function PartnerForm({
   onSuccess,
 }: PartnerFormProps) {
   const navigate = useNavigate();
+  const formId = "partner-form";
+
   const baseUrl = (API_BASE_URL ?? "").replace(/\/$/, "");
   const resolveImageUrl = (imageUrl?: string | null) => {
     if (!imageUrl) return null;
     return imageUrl.startsWith("/") ? `${baseUrl}${imageUrl}` : imageUrl;
   };
+
   const existingLogo = resolveImageUrl(partner?.logoUrl ?? null);
 
   const {
@@ -109,7 +113,7 @@ export function PartnerForm({
     },
   });
 
-  const isLoading =
+  const isSaving =
     mode === "create"
       ? createMutation.isPending
       : mode === "edit"
@@ -123,9 +127,7 @@ export function PartnerForm({
       websiteUrl: partner?.websiteUrl ?? "",
     } satisfies PartnerFormValues,
     validators: {
-      onSubmit: (mode === "create"
-        ? partnerFormSchema
-        : partnerFormSchema) as FormValidateOrFn<PartnerFormValues>,
+      onSubmit: partnerFormSchema as FormValidateOrFn<PartnerFormValues>,
     },
     onSubmit: async ({ value }) => {
       if (mode === "view") return;
@@ -136,6 +138,7 @@ export function PartnerForm({
           toast.error("Please upload a logo");
           return;
         }
+
         createMutation.mutate({ ...value, logo });
       } else if (mode === "edit" && partner) {
         const payload: PartnerUpdatePayload = {
@@ -143,14 +146,17 @@ export function PartnerForm({
           description: value.description,
           websiteUrl: value.websiteUrl,
         };
+
         if (files[0]) {
           payload.logo = files[0];
         }
+
         updateMutation.mutate({
           id: partner.id,
           payload,
         });
       }
+
       resetUploads();
     },
   });
@@ -158,151 +164,161 @@ export function PartnerForm({
   const isReadOnly = mode === "view";
   const currentLogo = previews[0] ?? existingLogo ?? null;
 
+  const pageTitle =
+    mode === "create"
+      ? "Create Partner"
+      : mode === "edit"
+        ? "Edit Partner"
+        : "View Partner";
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-      className="space-y-4"
-    >
-      <FieldGroup>
-        <form.Field name="title">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Enter partner title"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name="description">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                <Textarea
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Enter partner description"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  rows={4}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name="websiteUrl">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Website URL</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="https://example.com"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <Field>
-          <FieldLabel>Logo</FieldLabel>
-          <Input
-            type="file"
-            accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-            onChange={(e) => {
-              if (!e.target.files) return;
-              const { errors } = handleFiles(e.target.files);
-              if (errors.length) toast.error(errors.join("\n"));
-            }}
-            disabled={isReadOnly || isLoading}
-          />
-          {currentLogo && (
-            <div className="mt-2 flex items-center gap-3">
-              <AppImage
-                src={currentLogo}
-                alt="Partner logo preview"
-                className="h-12 w-12 object-contain rounded border"
-              />
-              <span className="text-xs text-muted-foreground">
-                Preview (first image used as logo)
-              </span>
-            </div>
-          )}
-        </Field>
-
-        <div className="flex justify-end space-x-2">
-          {mode === "view" && partner && (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => deleteMutation.mutate(partner.id)}
-              disabled={isLoading}
-            >
-              Delete
-            </Button>
-          )}
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => onClose?.() ?? navigate({ to: "/dashboard/partners" })}
+      isSubmitting={form.state.isSubmitting || isSaving}
+      isSubmitDisabled={
+        !form.state.canSubmit || form.state.isSubmitting || isSaving
+      }
+      submitLabel={mode === "create" ? "Create Partner" : "Update Partner"}
+      submittingLabel={mode === "create" ? "Creating…" : "Updating…"}
+      headerActions={
+        mode === "view" && partner ? (
           <Button
             type="button"
-            variant="outline"
-            onClick={() =>
-              onClose?.() ?? navigate({ to: "/dashboard/partners" })
-            }
-            disabled={isLoading}
+            variant="destructive"
+            onClick={() => deleteMutation.mutate(partner.id)}
+            disabled={deleteMutation.isPending}
           >
-            Close
+            {deleteMutation.isPending ? "Deleting…" : "Delete"}
           </Button>
-          {mode !== "view" && (
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting || isLoading
-                    ? mode === "create"
-                      ? "Creating..."
-                      : "Updating..."
-                    : mode === "create"
-                      ? "Create Partner"
-                      : "Update Partner"}
-                </Button>
-              )}
+        ) : null
+      }
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            title: state.values.title,
+            description: state.values.description,
+            websiteUrl: state.values.websiteUrl,
+          })}
+        >
+          {(values) => (
+            <PartnerPreview
+              title={values.title}
+              description={values.description}
+              websiteUrl={values.websiteUrl}
+              logoUrl={currentLogo}
             />
           )}
-        </div>
-      </FieldGroup>
-    </form>
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          void form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <FieldGroup>
+          <form.Field name="title">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Partner title…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="description">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                  <Textarea
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Summarize the partner relationship…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                    rows={4}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="websiteUrl">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Website URL</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="url"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="https://example.com…"
+                    autoComplete="off"
+                    spellCheck={false}
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <Field>
+            <FieldLabel htmlFor="partner-logo">Logo</FieldLabel>
+            <Input
+              id="partner-logo"
+              name="logo"
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+              onChange={(event) => {
+                if (!event.target.files) return;
+                const { errors } = handleFiles(event.target.files);
+                if (errors.length) toast.error(errors.join("\n"));
+              }}
+              disabled={isReadOnly || isSaving}
+            />
+          </Field>
+        </FieldGroup>
+      </form>
+    </DashboardDetailShell>
   );
 }

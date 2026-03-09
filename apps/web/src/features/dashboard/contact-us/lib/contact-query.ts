@@ -9,6 +9,7 @@ import {
 import {
   fetchContacts,
   fetchContactById,
+  createContact,
   updateContact,
   deleteContact,
   submitContactForm,
@@ -62,6 +63,38 @@ export const useContactByIdQuery = (
     queryKey: contactKeys.detail(id),
     queryFn: () => fetchContactById(id),
     ...options,
+  });
+};
+
+/**
+ * Update contact mutation options (Admin only - for isHandled status)
+ */
+type CreateContactMutationOptions = Omit<
+  UseMutationOptions<ContactDetailResponse, Error, CreateContact>,
+  "mutationFn"
+>;
+
+/**
+ * Create a contact (Admin dashboard)
+ */
+export const useCreateContactMutation = (
+  options?: CreateContactMutationOptions,
+) => {
+  const queryClient = useQueryClient();
+  const { onSuccess, onError, ...rest } = options || {};
+
+  return useMutation<ContactDetailResponse, Error, CreateContact>({
+    mutationFn: createContact,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: contactKeys.lists() });
+      const created = args[0]?.data;
+      if (created?.id) {
+        queryClient.setQueryData(contactKeys.detail(created.id), args[0]);
+      }
+      onSuccess?.(...args);
+    },
+    ...(onError && { onError }),
+    ...rest,
   });
 };
 

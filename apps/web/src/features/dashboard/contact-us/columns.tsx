@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { CheckCircle2, Eye, Trash2, XCircle } from "lucide-react";
+import { CheckCircle2, Eye, Pencil, Trash2, XCircle } from "lucide-react";
 
 import type { Contact } from "./lib/contact-schema";
 
@@ -19,6 +19,7 @@ import { humanizeDate } from "@/utils/dateHuman";
  */
 export const Columns = (
   onView: (contact: Contact) => void,
+  onEdit: (contact: Contact) => void,
   onToggleStatus: (contact: Contact) => void,
   onDelete: (contact: Contact) => void,
 ): ColumnDef<Contact>[] => [
@@ -103,12 +104,12 @@ export const Columns = (
         >
           {isHandled ? (
             <>
-              <CheckCircle2 className="mr-1 h-3 w-3" />
+              <CheckCircle2 className="mr-1 h-3 w-3" aria-hidden="true" />
               Handled
             </>
           ) : (
             <>
-              <XCircle className="mr-1 h-3 w-3" />
+              <XCircle className="mr-1 h-3 w-3" aria-hidden="true" />
               Pending
             </>
           )}
@@ -155,6 +156,7 @@ export const Columns = (
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   className="h-4 w-4"
+                  aria-hidden="true"
                 >
                   <circle cx="12" cy="12" r="1" />
                   <circle cx="12" cy="5" r="1" />
@@ -164,24 +166,28 @@ export const Columns = (
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onView(contact)}>
-                <Eye className="mr-2 h-4 w-4" />
+                <Eye className="mr-2 h-4 w-4" aria-hidden="true" />
                 View Details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onEdit(contact)}>
+                <Pencil className="mr-2 h-4 w-4" aria-hidden="true" />
+                Edit
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onToggleStatus(contact)}>
                 {isHandled ? (
                   <>
-                    <XCircle className="mr-2 h-4 w-4" />
+                    <XCircle className="mr-2 h-4 w-4" aria-hidden="true" />
                     Mark as Pending
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    <CheckCircle2 className="mr-2 h-4 w-4" aria-hidden="true" />
                     Mark as Handled
                   </>
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDelete(contact)}>
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

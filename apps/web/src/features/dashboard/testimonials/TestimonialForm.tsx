@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { infer as ZodInfer } from "zod";
 
+import { TestimonialPreview } from "./detail/TestimonialPreview";
 import {
   useCreateTestimonialMutation,
   useDeleteTestimonialMutation,
@@ -17,7 +18,6 @@ import {
 import { AsyncSearchableSelect } from "../components/AsyncSearchableSelect";
 import type { Partner } from "../partners/lib/partners-schema";
 
-import { AppImage } from "@/components/common/AppImage";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardDetailShell } from "@/features/dashboard/components/detail/DashboardDetailShell";
+import { API_BASE_URL } from "@/lib/api-base";
 import { AUTH_API_ENDPOINTS } from "@/lib/API_ENDPOINTS";
 import apiClient from "@/lib/axios";
 import { DEFAULT_DEBOUNCE_MS, useDashboardForm } from "@/lib/forms";
@@ -53,6 +55,12 @@ interface TestimonialFormProps {
   onSuccess?: () => void;
 }
 
+const toResolvedAssetUrl = (url?: string | null) => {
+  if (!url) return null;
+  const baseUrl = (API_BASE_URL ?? "").replace(/\/$/, "");
+  return url.startsWith("/") ? `${baseUrl}${url}` : url;
+};
+
 export function TestimonialForm({
   mode = "create",
   testimonial,
@@ -60,6 +68,7 @@ export function TestimonialForm({
   onSuccess,
 }: TestimonialFormProps) {
   const navigate = useNavigate();
+  const formId = "testimonial-form";
 
   const companyLogoUpload = useUploadField({
     accept: [
@@ -72,7 +81,10 @@ export function TestimonialForm({
     maxSize: 5 * 1024 * 1024,
     multiple: false,
     initialUrls: testimonial?.companyLogoUrl
-      ? [testimonial.companyLogoUrl]
+      ? [
+          toResolvedAssetUrl(testimonial.companyLogoUrl) ??
+            testimonial.companyLogoUrl,
+        ]
       : [],
   });
 
@@ -81,7 +93,10 @@ export function TestimonialForm({
     maxSize: 5 * 1024 * 1024,
     multiple: false,
     initialUrls: testimonial?.spokePersonHeadshotUrl
-      ? [testimonial.spokePersonHeadshotUrl]
+      ? [
+          toResolvedAssetUrl(testimonial.spokePersonHeadshotUrl) ??
+            testimonial.spokePersonHeadshotUrl,
+        ]
       : [],
   });
 
@@ -141,7 +156,7 @@ export function TestimonialForm({
     },
   });
 
-  const isLoading =
+  const isSaving =
     mode === "create"
       ? createMutation.isPending
       : mode === "edit"
@@ -196,6 +211,7 @@ export function TestimonialForm({
           payload,
         });
       }
+
       companyLogoUpload.reset();
       headshotUpload.reset();
     },
@@ -203,210 +219,247 @@ export function TestimonialForm({
 
   const isReadOnly = mode === "view";
 
+  const pageTitle =
+    mode === "create"
+      ? "Create Testimonial"
+      : mode === "edit"
+        ? "Edit Testimonial"
+        : "View Testimonial";
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-      className="space-y-4"
-    >
-      <FieldGroup>
-        <form.Field name="comment">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Comment</FieldLabel>
-                <Textarea
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="What did the client say?"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  rows={4}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name="companyName">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Company Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Acme Inc."
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <div className="grid grid-cols-2 gap-4">
-          <form.Field name="spokePersonName">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Spokesperson Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="Jane Doe"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
-
-          <form.Field name="spokePersonTitle">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Spokesperson Title</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  placeholder="CTO"
-                  disabled={isReadOnly || isLoading}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
-        </div>
-
-        <form.Field name="partnerId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Linked Partner</FieldLabel>
-              <AsyncSearchableSelect
-                id="partner-select"
-                value={field.state.value}
-                onChange={(val) => field.handleChange(Number(val))}
-                query={partnerSelect.search}
-                onQueryChange={partnerSelect.setSearch}
-                options={partnerSelect.options}
-                placeholder={
-                  partnerSelect.isLoading
-                    ? "Searching partners…"
-                    : "Select partner"
-                }
-                searchPlaceholder="Type to search partners..."
-                className="w-full"
-                isSearching={partnerSelect.isLoading}
-                error={partnerSelect.isError ? "Failed to load partners" : null}
-                disabled={isReadOnly || isLoading}
-              />
-            </Field>
-          )}
-        </form.Field>
-
-        <Field>
-          <FieldLabel>Company Logo</FieldLabel>
-          <Input
-            type="file"
-            accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
-            onChange={(e) => {
-              if (!e.target.files) return;
-              const { errors } = companyLogoUpload.handleFiles(e.target.files);
-              if (errors.length) toast.error(errors.join("\n"));
-            }}
-            disabled={isReadOnly || isLoading}
-          />
-          {companyLogoUpload.previews[0] && (
-            <div className="mt-2">
-              <AppImage
-                src={companyLogoUpload.previews[0]}
-                alt="Company logo preview"
-                className="h-16 w-auto rounded border object-contain"
-              />
-            </div>
-          )}
-        </Field>
-
-        <Field>
-          <FieldLabel>Spokesperson Headshot</FieldLabel>
-          <Input
-            type="file"
-            accept="image/jpeg,image/png,image/gif,image/webp"
-            onChange={(e) => {
-              if (!e.target.files) return;
-              const { errors } = headshotUpload.handleFiles(e.target.files);
-              if (errors.length) toast.error(errors.join("\n"));
-            }}
-            disabled={isReadOnly || isLoading}
-          />
-          {headshotUpload.previews[0] && (
-            <div className="mt-2">
-              <AppImage
-                src={headshotUpload.previews[0]}
-                alt="Spokesperson headshot preview"
-                className="h-16 w-16 rounded-full border object-cover"
-              />
-            </div>
-          )}
-        </Field>
-
-        <div className="flex justify-end gap-2">
-          {mode === "view" && testimonial && (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => deleteMutation.mutate(testimonial.id)}
-              disabled={isLoading}
-            >
-              Delete
-            </Button>
-          )}
+    <DashboardDetailShell
+      mode={mode}
+      title={pageTitle}
+      formId={formId}
+      onBack={() => onClose?.() ?? navigate({ to: "/dashboard/testimonials" })}
+      isSubmitting={form.state.isSubmitting || isSaving}
+      isSubmitDisabled={
+        !form.state.canSubmit || form.state.isSubmitting || isSaving
+      }
+      submitLabel={
+        mode === "create" ? "Create Testimonial" : "Update Testimonial"
+      }
+      submittingLabel={mode === "create" ? "Creating…" : "Updating…"}
+      headerActions={
+        mode === "view" && testimonial ? (
           <Button
             type="button"
-            variant="outline"
-            onClick={() =>
-              onClose?.() ?? navigate({ to: "/dashboard/testimonials" })
-            }
-            disabled={isLoading}
+            variant="destructive"
+            onClick={() => deleteMutation.mutate(testimonial.id)}
+            disabled={deleteMutation.isPending}
           >
-            Close
+            {deleteMutation.isPending ? "Deleting…" : "Delete"}
           </Button>
-          {mode !== "view" && (
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting || isLoading
-                    ? mode === "create"
-                      ? "Creating..."
-                      : "Updating..."
-                    : mode === "create"
-                      ? "Create Testimonial"
-                      : "Update Testimonial"}
-                </Button>
+        ) : null
+      }
+      preview={
+        <form.Subscribe
+          selector={(state) => ({
+            comment: state.values.comment,
+            companyName: state.values.companyName,
+            spokePersonName: state.values.spokePersonName,
+            spokePersonTitle: state.values.spokePersonTitle,
+            partnerId: state.values.partnerId,
+          })}
+        >
+          {(values) => {
+            const selectedPartner = partnerSelect.options.find(
+              (option) => option.id === values.partnerId,
+            );
+
+            return (
+              <TestimonialPreview
+                comment={values.comment}
+                companyName={values.companyName}
+                spokePersonName={values.spokePersonName}
+                spokePersonTitle={values.spokePersonTitle}
+                partnerLabel={
+                  selectedPartner?.title ||
+                  testimonial?.partner?.title ||
+                  (values.partnerId
+                    ? `Partner #${values.partnerId}`
+                    : undefined)
+                }
+                companyLogoUrl={companyLogoUpload.previews[0] ?? null}
+                spokePersonHeadshotUrl={headshotUpload.previews[0] ?? null}
+              />
+            );
+          }}
+        </form.Subscribe>
+      }
+    >
+      <form
+        id={formId}
+        onSubmit={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          void form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <FieldGroup>
+          <form.Field name="comment">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Comment</FieldLabel>
+                  <Textarea
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="What did the client say…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                    rows={5}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <form.Field name="companyName">
+            {(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Company Name</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Acme Inc…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <form.Field name="spokePersonName">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>
+                    Spokesperson Name
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="Jane Doe…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                </Field>
               )}
+            </form.Field>
+
+            <form.Field name="spokePersonTitle">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>
+                    Spokesperson Title
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    placeholder="CTO…"
+                    autoComplete="off"
+                    disabled={isReadOnly || isSaving}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                  />
+                </Field>
+              )}
+            </form.Field>
+          </div>
+
+          <form.Field name="partnerId">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Linked Partner</FieldLabel>
+                <AsyncSearchableSelect
+                  id="partner-select"
+                  value={field.state.value}
+                  onChange={(value) => field.handleChange(Number(value))}
+                  query={partnerSelect.search}
+                  onQueryChange={partnerSelect.setSearch}
+                  options={partnerSelect.options}
+                  placeholder={
+                    partnerSelect.isLoading
+                      ? "Searching partners…"
+                      : "Select partner…"
+                  }
+                  searchPlaceholder="Type to search partners…"
+                  className="w-full"
+                  isSearching={partnerSelect.isLoading}
+                  error={
+                    partnerSelect.isError ? "Failed to load partners" : null
+                  }
+                  disabled={isReadOnly || isSaving}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <Field>
+            <FieldLabel htmlFor="testimonial-company-logo">
+              Company Logo
+            </FieldLabel>
+            <Input
+              id="testimonial-company-logo"
+              name="companyLogo"
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+              onChange={(event) => {
+                if (!event.target.files) return;
+                const { errors } = companyLogoUpload.handleFiles(
+                  event.target.files,
+                );
+                if (errors.length) toast.error(errors.join("\n"));
+              }}
+              disabled={isReadOnly || isSaving}
             />
-          )}
-        </div>
-      </FieldGroup>
-    </form>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="testimonial-headshot">
+              Spokesperson Headshot
+            </FieldLabel>
+            <Input
+              id="testimonial-headshot"
+              name="spokespersonHeadshot"
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              onChange={(event) => {
+                if (!event.target.files) return;
+                const { errors } = headshotUpload.handleFiles(
+                  event.target.files,
+                );
+                if (errors.length) toast.error(errors.join("\n"));
+              }}
+              disabled={isReadOnly || isSaving}
+            />
+          </Field>
+        </FieldGroup>
+      </form>
+    </DashboardDetailShell>
   );
 }

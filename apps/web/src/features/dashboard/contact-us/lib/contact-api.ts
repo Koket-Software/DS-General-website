@@ -73,6 +73,21 @@ export async function fetchContactById(
 }
 
 /**
+ * Create a contact (Admin dashboard)
+ * @param data - Contact payload
+ * @returns Created contact
+ */
+export async function createContact(
+  data: CreateContact,
+): Promise<ContactDetailResponse> {
+  const response = await apiClient.post<ContactDetailResponse>(
+    AUTH_API_ENDPOINTS.CONTACT_US,
+    data,
+  );
+  return response.data;
+}
+
+/**
  * Update contact status (Admin only - only isHandled can be updated)
  * @param id - Contact ID
  * @param data - Update data (isHandled)
