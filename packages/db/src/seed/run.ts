@@ -103,6 +103,7 @@ if (GUARDED) {
 const truncateTables = async () => {
   if (!fresh) return;
   const tableList = [
+    "achievements",
     "business_sector_gallery_images",
     "business_sector_services",
     "business_sector_stats",

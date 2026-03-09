@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { AboutPage } from "@/features/landing/pages/AboutPage";
+import { publicAchievementsQueryOptions } from "@/lib/achievements";
 import { publicCaseStudiesQueryOptions } from "@/lib/case-study/case-study-query";
 import { publicOrgQueryOptions } from "@/lib/org/org-query";
 import { clientPartnersQueryOptions } from "@/lib/partners/partners-query";
@@ -10,6 +11,9 @@ import { queryClient } from "@/main";
 export const Route = createFileRoute("/_landing/about")({
   loader: async () => {
     await Promise.all([
+      queryClient.ensureQueryData(
+        publicAchievementsQueryOptions({ page: 1, limit: 6 }),
+      ),
       queryClient.ensureQueryData(clientPartnersQueryOptions()),
       queryClient.ensureQueryData(
         publicServicesQueryOptions({

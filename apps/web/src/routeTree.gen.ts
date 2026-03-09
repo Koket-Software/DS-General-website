@@ -45,6 +45,7 @@ import { Route as DashboardContactUsIdIndexRouteImport } from './routes/dashboar
 import { Route as DashboardClientProjectsSlugIndexRouteImport } from './routes/dashboard/client-projects/$slug/index'
 import { Route as DashboardBusinessSectorsSlugIndexRouteImport } from './routes/dashboard/business-sectors/$slug/index'
 import { Route as DashboardBlogsSlugIndexRouteImport } from './routes/dashboard/blogs/$slug/index'
+import { Route as DashboardAchievementsIdIndexRouteImport } from './routes/dashboard/achievements/$id/index'
 import { Route as DashboardVacanciesSlugEditRouteImport } from './routes/dashboard/vacancies/$slug/edit'
 import { Route as DashboardVacanciesSlugApplicationsRouteImport } from './routes/dashboard/vacancies/$slug/applications'
 import { Route as DashboardUserManagementUserIdEditRouteImport } from './routes/dashboard/user-management/$userId/edit'
@@ -57,6 +58,7 @@ import { Route as DashboardContactUsIdEditRouteImport } from './routes/dashboard
 import { Route as DashboardClientProjectsSlugEditRouteImport } from './routes/dashboard/client-projects/$slug/edit'
 import { Route as DashboardBusinessSectorsSlugEditRouteImport } from './routes/dashboard/business-sectors/$slug/edit'
 import { Route as DashboardBlogsSlugEditRouteImport } from './routes/dashboard/blogs/$slug/edit'
+import { Route as DashboardAchievementsIdEditRouteImport } from './routes/dashboard/achievements/$id/edit'
 
 const RegisterLazyRouteImport = createFileRoute('/register')()
 const RateLimitLazyRouteImport = createFileRoute('/rate-limit')()
@@ -85,6 +87,9 @@ const DashboardContactUsIndexLazyRouteImport = createFileRoute(
 const DashboardClientProjectsIndexLazyRouteImport = createFileRoute(
   '/dashboard/client-projects/',
 )()
+const DashboardAchievementsIndexLazyRouteImport = createFileRoute(
+  '/dashboard/achievements/',
+)()
 const DashboardVacanciesCreateLazyRouteImport = createFileRoute(
   '/dashboard/vacancies/create',
 )()
@@ -111,6 +116,9 @@ const DashboardClientProjectsCreateLazyRouteImport = createFileRoute(
 )()
 const DashboardBlogsCreateLazyRouteImport = createFileRoute(
   '/dashboard/blogs/create',
+)()
+const DashboardAchievementsCreateLazyRouteImport = createFileRoute(
+  '/dashboard/achievements/create',
 )()
 
 const RegisterLazyRoute = RegisterLazyRouteImport.update({
@@ -265,6 +273,14 @@ const DashboardClientProjectsIndexLazyRoute =
       (d) => d.Route,
     ),
   )
+const DashboardAchievementsIndexLazyRoute =
+  DashboardAchievementsIndexLazyRouteImport.update({
+    id: '/achievements/',
+    path: '/achievements/',
+    getParentRoute: () => DashboardRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboard/achievements/index.lazy').then((d) => d.Route),
+  )
 const DashboardVacanciesIndexRoute = DashboardVacanciesIndexRouteImport.update({
   id: '/vacancies/',
   path: '/vacancies/',
@@ -385,6 +401,14 @@ const DashboardBlogsCreateLazyRoute =
     getParentRoute: () => DashboardRoute,
   } as any).lazy(() =>
     import('./routes/dashboard/blogs/create.lazy').then((d) => d.Route),
+  )
+const DashboardAchievementsCreateLazyRoute =
+  DashboardAchievementsCreateLazyRouteImport.update({
+    id: '/achievements/create',
+    path: '/achievements/create',
+    getParentRoute: () => DashboardRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboard/achievements/create.lazy').then((d) => d.Route),
   )
 const DashboardServicesCreateRoute = DashboardServicesCreateRouteImport.update({
   id: '/services/create',
@@ -523,6 +547,16 @@ const DashboardBlogsSlugIndexRoute = DashboardBlogsSlugIndexRouteImport.update({
 } as any).lazy(() =>
   import('./routes/dashboard/blogs/$slug/index.lazy').then((d) => d.Route),
 )
+const DashboardAchievementsIdIndexRoute =
+  DashboardAchievementsIdIndexRouteImport.update({
+    id: '/achievements/$id/',
+    path: '/achievements/$id/',
+    getParentRoute: () => DashboardRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboard/achievements/$id/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const DashboardVacanciesSlugEditRoute =
   DashboardVacanciesSlugEditRouteImport.update({
     id: '/vacancies/$slug/edit',
@@ -626,6 +660,16 @@ const DashboardBlogsSlugEditRoute = DashboardBlogsSlugEditRouteImport.update({
 } as any).lazy(() =>
   import('./routes/dashboard/blogs/$slug/edit.lazy').then((d) => d.Route),
 )
+const DashboardAchievementsIdEditRoute =
+  DashboardAchievementsIdEditRouteImport.update({
+    id: '/achievements/$id/edit',
+    path: '/achievements/$id/edit',
+    getParentRoute: () => DashboardRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboard/achievements/$id/edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
@@ -648,6 +692,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
   '/dashboard/services/create': typeof DashboardServicesCreateRoute
+  '/dashboard/achievements/create': typeof DashboardAchievementsCreateLazyRoute
   '/dashboard/blogs/create': typeof DashboardBlogsCreateLazyRoute
   '/dashboard/client-projects/create': typeof DashboardClientProjectsCreateLazyRoute
   '/dashboard/contact-us/create': typeof DashboardContactUsCreateLazyRoute
@@ -663,6 +708,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/products': typeof DashboardProductsIndexRoute
   '/dashboard/services': typeof DashboardServicesIndexRoute
   '/dashboard/vacancies': typeof DashboardVacanciesIndexRoute
+  '/dashboard/achievements': typeof DashboardAchievementsIndexLazyRoute
   '/dashboard/client-projects': typeof DashboardClientProjectsIndexLazyRoute
   '/dashboard/contact-us': typeof DashboardContactUsIndexLazyRoute
   '/dashboard/faqs': typeof DashboardFaqsIndexLazyRoute
@@ -672,6 +718,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/tags': typeof DashboardTagsIndexLazyRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsIndexLazyRoute
   '/dashboard/user-management': typeof DashboardUserManagementIndexLazyRoute
+  '/dashboard/achievements/$id/edit': typeof DashboardAchievementsIdEditRoute
   '/dashboard/blogs/$slug/edit': typeof DashboardBlogsSlugEditRoute
   '/dashboard/business-sectors/$slug/edit': typeof DashboardBusinessSectorsSlugEditRoute
   '/dashboard/client-projects/$slug/edit': typeof DashboardClientProjectsSlugEditRoute
@@ -684,6 +731,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/user-management/$userId/edit': typeof DashboardUserManagementUserIdEditRoute
   '/dashboard/vacancies/$slug/applications': typeof DashboardVacanciesSlugApplicationsRoute
   '/dashboard/vacancies/$slug/edit': typeof DashboardVacanciesSlugEditRoute
+  '/dashboard/achievements/$id': typeof DashboardAchievementsIdIndexRoute
   '/dashboard/blogs/$slug': typeof DashboardBlogsSlugIndexRoute
   '/dashboard/business-sectors/$slug': typeof DashboardBusinessSectorsSlugIndexRoute
   '/dashboard/client-projects/$slug': typeof DashboardClientProjectsSlugIndexRoute
@@ -716,6 +764,7 @@ export interface FileRoutesByTo {
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
   '/dashboard/services/create': typeof DashboardServicesCreateRoute
+  '/dashboard/achievements/create': typeof DashboardAchievementsCreateLazyRoute
   '/dashboard/blogs/create': typeof DashboardBlogsCreateLazyRoute
   '/dashboard/client-projects/create': typeof DashboardClientProjectsCreateLazyRoute
   '/dashboard/contact-us/create': typeof DashboardContactUsCreateLazyRoute
@@ -731,6 +780,7 @@ export interface FileRoutesByTo {
   '/dashboard/products': typeof DashboardProductsIndexRoute
   '/dashboard/services': typeof DashboardServicesIndexRoute
   '/dashboard/vacancies': typeof DashboardVacanciesIndexRoute
+  '/dashboard/achievements': typeof DashboardAchievementsIndexLazyRoute
   '/dashboard/client-projects': typeof DashboardClientProjectsIndexLazyRoute
   '/dashboard/contact-us': typeof DashboardContactUsIndexLazyRoute
   '/dashboard/faqs': typeof DashboardFaqsIndexLazyRoute
@@ -740,6 +790,7 @@ export interface FileRoutesByTo {
   '/dashboard/tags': typeof DashboardTagsIndexLazyRoute
   '/dashboard/testimonials': typeof DashboardTestimonialsIndexLazyRoute
   '/dashboard/user-management': typeof DashboardUserManagementIndexLazyRoute
+  '/dashboard/achievements/$id/edit': typeof DashboardAchievementsIdEditRoute
   '/dashboard/blogs/$slug/edit': typeof DashboardBlogsSlugEditRoute
   '/dashboard/business-sectors/$slug/edit': typeof DashboardBusinessSectorsSlugEditRoute
   '/dashboard/client-projects/$slug/edit': typeof DashboardClientProjectsSlugEditRoute
@@ -752,6 +803,7 @@ export interface FileRoutesByTo {
   '/dashboard/user-management/$userId/edit': typeof DashboardUserManagementUserIdEditRoute
   '/dashboard/vacancies/$slug/applications': typeof DashboardVacanciesSlugApplicationsRoute
   '/dashboard/vacancies/$slug/edit': typeof DashboardVacanciesSlugEditRoute
+  '/dashboard/achievements/$id': typeof DashboardAchievementsIdIndexRoute
   '/dashboard/blogs/$slug': typeof DashboardBlogsSlugIndexRoute
   '/dashboard/business-sectors/$slug': typeof DashboardBusinessSectorsSlugIndexRoute
   '/dashboard/client-projects/$slug': typeof DashboardClientProjectsSlugIndexRoute
@@ -787,6 +839,7 @@ export interface FileRoutesById {
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
   '/dashboard/services/create': typeof DashboardServicesCreateRoute
+  '/dashboard/achievements/create': typeof DashboardAchievementsCreateLazyRoute
   '/dashboard/blogs/create': typeof DashboardBlogsCreateLazyRoute
   '/dashboard/client-projects/create': typeof DashboardClientProjectsCreateLazyRoute
   '/dashboard/contact-us/create': typeof DashboardContactUsCreateLazyRoute
@@ -802,6 +855,7 @@ export interface FileRoutesById {
   '/dashboard/products/': typeof DashboardProductsIndexRoute
   '/dashboard/services/': typeof DashboardServicesIndexRoute
   '/dashboard/vacancies/': typeof DashboardVacanciesIndexRoute
+  '/dashboard/achievements/': typeof DashboardAchievementsIndexLazyRoute
   '/dashboard/client-projects/': typeof DashboardClientProjectsIndexLazyRoute
   '/dashboard/contact-us/': typeof DashboardContactUsIndexLazyRoute
   '/dashboard/faqs/': typeof DashboardFaqsIndexLazyRoute
@@ -811,6 +865,7 @@ export interface FileRoutesById {
   '/dashboard/tags/': typeof DashboardTagsIndexLazyRoute
   '/dashboard/testimonials/': typeof DashboardTestimonialsIndexLazyRoute
   '/dashboard/user-management/': typeof DashboardUserManagementIndexLazyRoute
+  '/dashboard/achievements/$id/edit': typeof DashboardAchievementsIdEditRoute
   '/dashboard/blogs/$slug/edit': typeof DashboardBlogsSlugEditRoute
   '/dashboard/business-sectors/$slug/edit': typeof DashboardBusinessSectorsSlugEditRoute
   '/dashboard/client-projects/$slug/edit': typeof DashboardClientProjectsSlugEditRoute
@@ -823,6 +878,7 @@ export interface FileRoutesById {
   '/dashboard/user-management/$userId/edit': typeof DashboardUserManagementUserIdEditRoute
   '/dashboard/vacancies/$slug/applications': typeof DashboardVacanciesSlugApplicationsRoute
   '/dashboard/vacancies/$slug/edit': typeof DashboardVacanciesSlugEditRoute
+  '/dashboard/achievements/$id/': typeof DashboardAchievementsIdIndexRoute
   '/dashboard/blogs/$slug/': typeof DashboardBlogsSlugIndexRoute
   '/dashboard/business-sectors/$slug/': typeof DashboardBusinessSectorsSlugIndexRoute
   '/dashboard/client-projects/$slug/': typeof DashboardClientProjectsSlugIndexRoute
@@ -858,6 +914,7 @@ export interface FileRouteTypes {
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
     | '/dashboard/services/create'
+    | '/dashboard/achievements/create'
     | '/dashboard/blogs/create'
     | '/dashboard/client-projects/create'
     | '/dashboard/contact-us/create'
@@ -873,6 +930,7 @@ export interface FileRouteTypes {
     | '/dashboard/products'
     | '/dashboard/services'
     | '/dashboard/vacancies'
+    | '/dashboard/achievements'
     | '/dashboard/client-projects'
     | '/dashboard/contact-us'
     | '/dashboard/faqs'
@@ -882,6 +940,7 @@ export interface FileRouteTypes {
     | '/dashboard/tags'
     | '/dashboard/testimonials'
     | '/dashboard/user-management'
+    | '/dashboard/achievements/$id/edit'
     | '/dashboard/blogs/$slug/edit'
     | '/dashboard/business-sectors/$slug/edit'
     | '/dashboard/client-projects/$slug/edit'
@@ -894,6 +953,7 @@ export interface FileRouteTypes {
     | '/dashboard/user-management/$userId/edit'
     | '/dashboard/vacancies/$slug/applications'
     | '/dashboard/vacancies/$slug/edit'
+    | '/dashboard/achievements/$id'
     | '/dashboard/blogs/$slug'
     | '/dashboard/business-sectors/$slug'
     | '/dashboard/client-projects/$slug'
@@ -926,6 +986,7 @@ export interface FileRouteTypes {
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
     | '/dashboard/services/create'
+    | '/dashboard/achievements/create'
     | '/dashboard/blogs/create'
     | '/dashboard/client-projects/create'
     | '/dashboard/contact-us/create'
@@ -941,6 +1002,7 @@ export interface FileRouteTypes {
     | '/dashboard/products'
     | '/dashboard/services'
     | '/dashboard/vacancies'
+    | '/dashboard/achievements'
     | '/dashboard/client-projects'
     | '/dashboard/contact-us'
     | '/dashboard/faqs'
@@ -950,6 +1012,7 @@ export interface FileRouteTypes {
     | '/dashboard/tags'
     | '/dashboard/testimonials'
     | '/dashboard/user-management'
+    | '/dashboard/achievements/$id/edit'
     | '/dashboard/blogs/$slug/edit'
     | '/dashboard/business-sectors/$slug/edit'
     | '/dashboard/client-projects/$slug/edit'
@@ -962,6 +1025,7 @@ export interface FileRouteTypes {
     | '/dashboard/user-management/$userId/edit'
     | '/dashboard/vacancies/$slug/applications'
     | '/dashboard/vacancies/$slug/edit'
+    | '/dashboard/achievements/$id'
     | '/dashboard/blogs/$slug'
     | '/dashboard/business-sectors/$slug'
     | '/dashboard/client-projects/$slug'
@@ -996,6 +1060,7 @@ export interface FileRouteTypes {
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
     | '/dashboard/services/create'
+    | '/dashboard/achievements/create'
     | '/dashboard/blogs/create'
     | '/dashboard/client-projects/create'
     | '/dashboard/contact-us/create'
@@ -1011,6 +1076,7 @@ export interface FileRouteTypes {
     | '/dashboard/products/'
     | '/dashboard/services/'
     | '/dashboard/vacancies/'
+    | '/dashboard/achievements/'
     | '/dashboard/client-projects/'
     | '/dashboard/contact-us/'
     | '/dashboard/faqs/'
@@ -1020,6 +1086,7 @@ export interface FileRouteTypes {
     | '/dashboard/tags/'
     | '/dashboard/testimonials/'
     | '/dashboard/user-management/'
+    | '/dashboard/achievements/$id/edit'
     | '/dashboard/blogs/$slug/edit'
     | '/dashboard/business-sectors/$slug/edit'
     | '/dashboard/client-projects/$slug/edit'
@@ -1032,6 +1099,7 @@ export interface FileRouteTypes {
     | '/dashboard/user-management/$userId/edit'
     | '/dashboard/vacancies/$slug/applications'
     | '/dashboard/vacancies/$slug/edit'
+    | '/dashboard/achievements/$id/'
     | '/dashboard/blogs/$slug/'
     | '/dashboard/business-sectors/$slug/'
     | '/dashboard/client-projects/$slug/'
@@ -1224,6 +1292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardClientProjectsIndexLazyRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/achievements/': {
+      id: '/dashboard/achievements/'
+      path: '/achievements'
+      fullPath: '/dashboard/achievements'
+      preLoaderRoute: typeof DashboardAchievementsIndexLazyRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/vacancies/': {
       id: '/dashboard/vacancies/'
       path: '/vacancies'
@@ -1327,6 +1402,13 @@ declare module '@tanstack/react-router' {
       path: '/blogs/create'
       fullPath: '/dashboard/blogs/create'
       preLoaderRoute: typeof DashboardBlogsCreateLazyRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/achievements/create': {
+      id: '/dashboard/achievements/create'
+      path: '/achievements/create'
+      fullPath: '/dashboard/achievements/create'
+      preLoaderRoute: typeof DashboardAchievementsCreateLazyRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/services/create': {
@@ -1448,6 +1530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBlogsSlugIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/achievements/$id/': {
+      id: '/dashboard/achievements/$id/'
+      path: '/achievements/$id'
+      fullPath: '/dashboard/achievements/$id'
+      preLoaderRoute: typeof DashboardAchievementsIdIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/vacancies/$slug/edit': {
       id: '/dashboard/vacancies/$slug/edit'
       path: '/vacancies/$slug/edit'
@@ -1532,6 +1621,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBlogsSlugEditRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/achievements/$id/edit': {
+      id: '/dashboard/achievements/$id/edit'
+      path: '/achievements/$id/edit'
+      fullPath: '/dashboard/achievements/$id/edit'
+      preLoaderRoute: typeof DashboardAchievementsIdEditRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
@@ -1591,6 +1687,7 @@ interface DashboardRouteChildren {
   DashboardBusinessSectorsCreateRoute: typeof DashboardBusinessSectorsCreateRoute
   DashboardGalleryCategoriesRoute: typeof DashboardGalleryCategoriesRoute
   DashboardServicesCreateRoute: typeof DashboardServicesCreateRoute
+  DashboardAchievementsCreateLazyRoute: typeof DashboardAchievementsCreateLazyRoute
   DashboardBlogsCreateLazyRoute: typeof DashboardBlogsCreateLazyRoute
   DashboardClientProjectsCreateLazyRoute: typeof DashboardClientProjectsCreateLazyRoute
   DashboardContactUsCreateLazyRoute: typeof DashboardContactUsCreateLazyRoute
@@ -1606,6 +1703,7 @@ interface DashboardRouteChildren {
   DashboardProductsIndexRoute: typeof DashboardProductsIndexRoute
   DashboardServicesIndexRoute: typeof DashboardServicesIndexRoute
   DashboardVacanciesIndexRoute: typeof DashboardVacanciesIndexRoute
+  DashboardAchievementsIndexLazyRoute: typeof DashboardAchievementsIndexLazyRoute
   DashboardClientProjectsIndexLazyRoute: typeof DashboardClientProjectsIndexLazyRoute
   DashboardContactUsIndexLazyRoute: typeof DashboardContactUsIndexLazyRoute
   DashboardFaqsIndexLazyRoute: typeof DashboardFaqsIndexLazyRoute
@@ -1615,6 +1713,7 @@ interface DashboardRouteChildren {
   DashboardTagsIndexLazyRoute: typeof DashboardTagsIndexLazyRoute
   DashboardTestimonialsIndexLazyRoute: typeof DashboardTestimonialsIndexLazyRoute
   DashboardUserManagementIndexLazyRoute: typeof DashboardUserManagementIndexLazyRoute
+  DashboardAchievementsIdEditRoute: typeof DashboardAchievementsIdEditRoute
   DashboardBlogsSlugEditRoute: typeof DashboardBlogsSlugEditRoute
   DashboardBusinessSectorsSlugEditRoute: typeof DashboardBusinessSectorsSlugEditRoute
   DashboardClientProjectsSlugEditRoute: typeof DashboardClientProjectsSlugEditRoute
@@ -1627,6 +1726,7 @@ interface DashboardRouteChildren {
   DashboardUserManagementUserIdEditRoute: typeof DashboardUserManagementUserIdEditRoute
   DashboardVacanciesSlugApplicationsRoute: typeof DashboardVacanciesSlugApplicationsRoute
   DashboardVacanciesSlugEditRoute: typeof DashboardVacanciesSlugEditRoute
+  DashboardAchievementsIdIndexRoute: typeof DashboardAchievementsIdIndexRoute
   DashboardBlogsSlugIndexRoute: typeof DashboardBlogsSlugIndexRoute
   DashboardBusinessSectorsSlugIndexRoute: typeof DashboardBusinessSectorsSlugIndexRoute
   DashboardClientProjectsSlugIndexRoute: typeof DashboardClientProjectsSlugIndexRoute
@@ -1645,6 +1745,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBusinessSectorsCreateRoute: DashboardBusinessSectorsCreateRoute,
   DashboardGalleryCategoriesRoute: DashboardGalleryCategoriesRoute,
   DashboardServicesCreateRoute: DashboardServicesCreateRoute,
+  DashboardAchievementsCreateLazyRoute: DashboardAchievementsCreateLazyRoute,
   DashboardBlogsCreateLazyRoute: DashboardBlogsCreateLazyRoute,
   DashboardClientProjectsCreateLazyRoute:
     DashboardClientProjectsCreateLazyRoute,
@@ -1662,6 +1763,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardProductsIndexRoute: DashboardProductsIndexRoute,
   DashboardServicesIndexRoute: DashboardServicesIndexRoute,
   DashboardVacanciesIndexRoute: DashboardVacanciesIndexRoute,
+  DashboardAchievementsIndexLazyRoute: DashboardAchievementsIndexLazyRoute,
   DashboardClientProjectsIndexLazyRoute: DashboardClientProjectsIndexLazyRoute,
   DashboardContactUsIndexLazyRoute: DashboardContactUsIndexLazyRoute,
   DashboardFaqsIndexLazyRoute: DashboardFaqsIndexLazyRoute,
@@ -1672,6 +1774,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardTagsIndexLazyRoute: DashboardTagsIndexLazyRoute,
   DashboardTestimonialsIndexLazyRoute: DashboardTestimonialsIndexLazyRoute,
   DashboardUserManagementIndexLazyRoute: DashboardUserManagementIndexLazyRoute,
+  DashboardAchievementsIdEditRoute: DashboardAchievementsIdEditRoute,
   DashboardBlogsSlugEditRoute: DashboardBlogsSlugEditRoute,
   DashboardBusinessSectorsSlugEditRoute: DashboardBusinessSectorsSlugEditRoute,
   DashboardClientProjectsSlugEditRoute: DashboardClientProjectsSlugEditRoute,
@@ -1686,6 +1789,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardVacanciesSlugApplicationsRoute:
     DashboardVacanciesSlugApplicationsRoute,
   DashboardVacanciesSlugEditRoute: DashboardVacanciesSlugEditRoute,
+  DashboardAchievementsIdIndexRoute: DashboardAchievementsIdIndexRoute,
   DashboardBlogsSlugIndexRoute: DashboardBlogsSlugIndexRoute,
   DashboardBusinessSectorsSlugIndexRoute:
     DashboardBusinessSectorsSlugIndexRoute,

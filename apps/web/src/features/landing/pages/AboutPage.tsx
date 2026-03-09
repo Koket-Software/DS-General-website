@@ -1,4 +1,5 @@
 import { AboutHeroSection } from "../components/about-hero-section";
+import { AchievementsSection } from "../components/achievements-section";
 import { CEOMessageSection } from "../components/ceo-message-section";
 import { OrgChartSection } from "../components/org-chart-section";
 import { PartnersSection } from "../components/partners-section";
@@ -12,6 +13,7 @@ export function AboutPage() {
       <PartnersSection />
       <CEOMessageSection />
       <ServicesSection />
+      <AchievementsSection />
       <OrgChartSection />
       <ProjectsSection />
     </>

@@ -1,4 +1,5 @@
 export * from "./auth";
+export * from "./achievements";
 export * from "./blogs";
 export * from "./business-sectors";
 export * from "./case-studies";

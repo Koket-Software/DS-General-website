@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 
+import { initAchievementsModule } from "./achievements";
 import { initBlogsModule } from "./blogs";
 import { initBusinessSectorsModule } from "./business-sectors";
 import { initCaseStudiesModule } from "./case-studies";
@@ -36,6 +37,12 @@ interface ModuleRegistration {
 }
 
 const registrations: ModuleRegistration[] = [
+  {
+    name: "achievements",
+    adminPath: "/api/v1/achievements",
+    clientPath: "/api/v1/achievements/client",
+    init: initAchievementsModule,
+  },
   {
     name: "blogs",
     adminPath: "/api/v1/blogs",

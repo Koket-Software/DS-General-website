@@ -13,6 +13,7 @@ import {
   UsersRound,
   Tags,
   Building2,
+  Award,
 } from "lucide-react";
 
 import { type SidebarData } from "@/types/types";
@@ -41,6 +42,11 @@ export const sidebarData: SidebarData = {
           title: "Testimonials",
           url: "/dashboard/testimonials",
           icon: MessageCircleMore,
+        },
+        {
+          title: "Achievements",
+          url: "/dashboard/achievements",
+          icon: Award,
         },
         {
           title: "Partners",

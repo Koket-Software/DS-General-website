@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 
+import { achievements } from "./achievements";
 import { user } from "./auth";
 import { blogs, blogTags } from "./blogs";
 import {
@@ -30,6 +31,8 @@ export const userProfilesRelations = relations(
     blogs: many(blogs),
   }),
 );
+
+export const achievementsRelations = relations(achievements, () => ({}));
 
 export const blogsRelations = relations(blogs, ({ one, many }) => ({
   author: one(user, {

@@ -1,4 +1,5 @@
 export const AUTH_API_ENDPOINTS = {
+  ACHIEVEMENTS: "/api/v1/achievements",
   BLOG: "/api/v1/blogs",
   BUSINESS_SECTORS: "/api/v1/business-sectors",
   CLIENT_PROJECTS: "/api/v1/case-studies",
@@ -18,6 +19,7 @@ export const AUTH_API_ENDPOINTS = {
 };
 
 export const LANDING_API_ENDPOINTS = {
+  ACHIEVEMENTS_CLIENT: "/api/v1/achievements/client",
   BLOG_CLIENT: "/api/v1/blogs/client",
   CASE_STUDIES_CLIENT: "/api/v1/case-studies/client",
   CONTACT_US: "/api/v1/contacts",

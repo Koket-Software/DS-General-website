@@ -167,3 +167,6 @@ export const uploadBusinessSectorGalleryImage = (file: File): Promise<string> =>
     subdir: "business-sectors/gallery",
     maxSize: getGalleryUploadMaxBytes(),
   });
+
+export const uploadAchievementImage = (file: File): Promise<string> =>
+  uploadFile(file, { subdir: "achievements" });

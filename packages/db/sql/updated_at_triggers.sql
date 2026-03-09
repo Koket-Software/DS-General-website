@@ -21,6 +21,17 @@ BEGIN
       FOR EACH ROW EXECUTE FUNCTION set_updated_at();
   END IF;
 
+  -- achievements
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'achievements' AND column_name = 'updated_at'
+  ) THEN
+    DROP TRIGGER IF EXISTS set_updated_at_achievements ON achievements;
+    CREATE TRIGGER set_updated_at_achievements
+      BEFORE UPDATE ON achievements
+      FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+  END IF;
+
   -- services
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
