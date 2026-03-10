@@ -40,7 +40,7 @@ export function dehydrateAppQueryClient(
   };
 }
 
-export async function hydrateAppQueryClient(
+export function hydrateAppQueryClient(
   queryClient: QueryClient,
   dehydrated?: AppRouterDehydratedState,
 ) {

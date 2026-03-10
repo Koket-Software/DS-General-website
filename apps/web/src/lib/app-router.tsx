@@ -43,7 +43,7 @@ export function createAppRouter({
       // DehydratedState shape, so we cast only at this SSR boundary.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       dehydrateAppQueryClient(queryClient) as any,
-    hydrate: async (dehydrated) =>
+    hydrate: (dehydrated) =>
       hydrateAppQueryClient(
         queryClient,
         dehydrated as unknown as AppRouterDehydratedState | undefined,
