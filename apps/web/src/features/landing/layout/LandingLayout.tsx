@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import type { Transition } from "motion/react";
 import { useEffect } from "react";
 
 import { Footer } from "../components/footer";
@@ -26,9 +27,9 @@ function LandingRouteTransition() {
   const exit = reduceMotion
     ? { opacity: 1 }
     : { opacity: 0, y: -8, filter: "blur(2px)" };
-  const transition = reduceMotion
+  const transition: Transition = reduceMotion
     ? { duration: 0.01 }
-    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] };
+    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
     <AnimatePresence mode="wait" initial={false}>

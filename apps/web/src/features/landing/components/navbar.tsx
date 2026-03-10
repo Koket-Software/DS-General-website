@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import type { Transition } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Logo } from "./icons";
@@ -74,12 +75,12 @@ export function Navbar() {
     isSectorActive || dropdownOpen
       ? "Business Sectors"
       : desktopActivePathItemLabel;
-  const indicatorTransition = reduceMotion
+  const indicatorTransition: Transition = reduceMotion
     ? { duration: 0.01 }
     : { type: "spring", stiffness: 460, damping: 38, mass: 0.6 };
-  const menuTransition = reduceMotion
+  const menuTransition: Transition = reduceMotion
     ? { duration: 0.01 }
-    : { duration: 0.22, ease: [0.22, 1, 0.36, 1] };
+    : { duration: 0.22, ease: [0.22, 1, 0.36, 1] as const };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

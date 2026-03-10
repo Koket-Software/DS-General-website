@@ -1,5 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import type { Transition } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AppImage } from "@/components/common/AppImage";
@@ -25,6 +27,7 @@ export function GallerySection() {
   const navigate = useNavigate();
   const search = GalleryRoute.useSearch();
   const queryClient = useQueryClient();
+  const reduceMotion = useReducedMotion();
   const [activePreview, setActivePreview] = useState<{
     title: string;
     description?: string;
@@ -111,6 +114,22 @@ export function GallerySection() {
 
   const items = galleryQuery.data?.data ?? [];
   const isLoading = galleryQuery.isPending || categoriesQuery.isPending;
+  const activeTabKey = categorySlug ?? ALL_TAB;
+  const tabIndicatorTransition: Transition = reduceMotion
+    ? { duration: 0.01 }
+    : { type: "spring", stiffness: 460, damping: 38, mass: 0.6 };
+  const contentTransition: Transition = reduceMotion
+    ? { duration: 0.01 }
+    : { duration: 0.24, ease: [0.22, 1, 0.36, 1] as const };
+  const contentInitial = reduceMotion
+    ? { opacity: 1 }
+    : { opacity: 0, y: 8, filter: "blur(2px)" };
+  const contentAnimate = reduceMotion
+    ? { opacity: 1 }
+    : { opacity: 1, y: 0, filter: "blur(0px)" };
+  const contentExit = reduceMotion
+    ? { opacity: 1 }
+    : { opacity: 0, y: -6, filter: "blur(2px)" };
 
   const closePreview = () => setActivePreview(null);
 
@@ -161,6 +180,8 @@ export function GallerySection() {
                 type="button"
                 onClick={() => onTabChange(tab.slug)}
                 className={`
+                  relative
+                  isolate
                   shrink-0
                   px-5 sm:px-6 lg:px-8
                   py-3.5 sm:py-4
@@ -168,15 +189,21 @@ export function GallerySection() {
                   text-[15px] sm:text-[16px]
                   whitespace-nowrap
                   transition-colors
-                  relative
                   ${
                     isActive
-                      ? "font-semibold text-primary border-b-2 border-primary"
+                      ? "font-semibold text-primary"
                       : "font-normal text-foreground hover:text-primary"
                   }
                 `}
               >
-                {tab.label}
+                {isActive ? (
+                  <motion.span
+                    layoutId="landing-gallery-tab-indicator"
+                    transition={tabIndicatorTransition}
+                    className="absolute right-0 bottom-0 left-0 h-0.5 bg-primary"
+                  />
+                ) : null}
+                <span className="relative z-10">{tab.label}</span>
               </Button>
             );
           })}
@@ -184,45 +211,58 @@ export function GallerySection() {
       </div>
 
       <div className="landing-section-compact">
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <div
-                key={index}
-                className="relative h-50 md:h-78.5 overflow-hidden bg-muted/60 animate-pulse"
-              />
-            ))}
-          </div>
-        ) : items.length === 0 ? (
-          <div className="text-center py-20 text-muted-foreground text-sm">
-            No gallery items found for this filter.
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {items.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => openPreview(item)}
-                className="group relative h-50 overflow-hidden bg-muted/60 text-left touch-manipulation focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:outline-none md:h-78.5"
-                aria-label={`Open preview for ${item.title}`}
-              >
-                <AppImage
-                  alt={item.title}
-                  width={960}
-                  height={720}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  src={item.coverImageUrl ?? item.imageUrls[0]}
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  <p className="truncate text-sm font-medium">{item.title}</p>
-                  <p className="text-xs text-white/80">Tap to preview</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeTabKey}
+            initial={contentInitial}
+            animate={contentAnimate}
+            exit={contentExit}
+            transition={contentTransition}
+            className="will-change-[opacity,transform,filter]"
+          >
+            {isLoading ? (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="relative h-50 overflow-hidden bg-muted/60 animate-pulse md:h-78.5"
+                  />
+                ))}
+              </div>
+            ) : items.length === 0 ? (
+              <div className="py-20 text-center text-sm text-muted-foreground">
+                No gallery items found for this filter.
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => openPreview(item)}
+                    className="group relative h-50 overflow-hidden bg-muted/60 text-left touch-manipulation focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:outline-none md:h-78.5"
+                    aria-label={`Open preview for ${item.title}`}
+                  >
+                    <AppImage
+                      alt={item.title}
+                      width={960}
+                      height={720}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      src={item.coverImageUrl ?? item.imageUrls[0]}
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="pointer-events-none absolute right-0 bottom-0 left-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                      <p className="truncate text-sm font-medium">
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-white/80">Tap to preview</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <MediaPreviewDialog
