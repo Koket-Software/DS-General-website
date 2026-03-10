@@ -45,7 +45,7 @@ export default function Header() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 md:gap-3">
-          <ThemeSwitch />
+          <ThemeSwitch density="compact" />
           <User />
         </div>
       </div>

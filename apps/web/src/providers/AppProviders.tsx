@@ -8,7 +8,7 @@ export function AppProviders({
   queryClient,
 }: PropsWithChildren<{ queryClient: QueryClient }>) {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </ThemeProvider>
   );

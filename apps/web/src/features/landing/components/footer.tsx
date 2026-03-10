@@ -8,6 +8,7 @@ import {
   shouldUseResolvedLandingSocialIcon,
 } from "./socials";
 
+import { ThemeSwitch } from "@/components/theme-switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -246,6 +247,9 @@ export function Footer() {
               </p>
             ) : null}
           </form>
+          <div className="py-2">
+            <ThemeSwitch />
+          </div>
           <p className="font-sans font-normal text-foreground text-[14px] mb-10 py-3 lg:py-6">
             Get the latest news and updates subscribe to our newsletter
           </p>
