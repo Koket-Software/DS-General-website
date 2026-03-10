@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { BusinessSectorPage } from "@/features/landing/pages/SourcingLogisticsPage";
 import type {
   PublicBusinessSectorDetailResponse,
   PublicBusinessSectorsListResponse,
@@ -54,10 +53,4 @@ export const Route = createFileRoute("/_landing/sectors/$slug")({
 
     return { sector, sectors } satisfies SectorRouteLoaderData;
   },
-  component: SectorRoutePage,
 });
-
-function SectorRoutePage() {
-  const { slug } = Route.useParams();
-  return <BusinessSectorPage slug={slug} />;
-}

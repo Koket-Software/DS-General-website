@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { CareerDetailPage } from "@/features/landing/pages/CareerDetailPage";
 import { buildCareerDetailHead } from "@/lib/seo";
 import type { PublicVacancyResponse } from "@/lib/vacancies/vacancies-api";
 import { publicVacancyBySlugQueryOptions } from "@/lib/vacancies/vacancies-query";
@@ -34,10 +33,4 @@ export const Route = createFileRoute("/_landing/career/$slug")({
       publicVacancyBySlugQueryOptions(slug),
     );
   },
-  component: CareerRoutePage,
 });
-
-function CareerRoutePage() {
-  const { slug } = Route.useParams();
-  return <CareerDetailPage slug={slug} />;
-}

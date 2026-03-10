@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ServiceDetailPage } from "@/features/landing/pages/ServiceDetailPage";
 import { buildServiceDetailHead } from "@/lib/seo";
 import type {
   PublicServiceDetailResponse,
@@ -55,10 +54,4 @@ export const Route = createFileRoute("/_landing/services/$slug")({
 
     return { service, relatedServices } satisfies ServiceRouteLoaderData;
   },
-  component: ServiceDetailRoutePage,
 });
-
-function ServiceDetailRoutePage() {
-  const { slug } = Route.useParams();
-  return <ServiceDetailPage slug={slug} />;
-}

@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ArticleDetailPage } from "@/features/landing/pages/ArticleDetailPage";
 import type { PublicBlogDetailResponse } from "@/lib/blogs/blogs-api";
 import { publicBlogBySlugQueryOptions } from "@/lib/blogs/blogs-query";
 import { buildArticleDetailHead } from "@/lib/seo";
@@ -33,10 +32,4 @@ export const Route = createFileRoute("/_landing/articles/$slug")({
       publicBlogBySlugQueryOptions(slug),
     );
   },
-  component: ArticleRoutePage,
 });
-
-function ArticleRoutePage() {
-  const { slug } = Route.useParams();
-  return <ArticleDetailPage slug={slug} />;
-}

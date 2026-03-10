@@ -166,47 +166,65 @@ const LandingIndexRoute = LandingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/index.lazy').then((d) => d.Route),
+)
 const LandingTermsOfServiceRoute = LandingTermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/terms-of-service.lazy').then((d) => d.Route),
+)
 const LandingServicesRoute = LandingServicesRouteImport.update({
   id: '/services',
   path: '/services',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/services.lazy').then((d) => d.Route),
+)
 const LandingPrivacyPolicyRoute = LandingPrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/privacy-policy.lazy').then((d) => d.Route),
+)
 const LandingGalleryRoute = LandingGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/gallery.lazy').then((d) => d.Route),
+)
 const LandingContactRoute = LandingContactRouteImport.update({
   id: '/contact',
   path: '/contact',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/contact.lazy').then((d) => d.Route),
+)
 const LandingCareerRoute = LandingCareerRouteImport.update({
   id: '/career',
   path: '/career',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/career.lazy').then((d) => d.Route),
+)
 const LandingArticlesRoute = LandingArticlesRouteImport.update({
   id: '/articles',
   path: '/articles',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/articles.lazy').then((d) => d.Route),
+)
 const LandingAboutRoute = LandingAboutRouteImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/about.lazy').then((d) => d.Route),
+)
 const DashboardUserManagementIndexLazyRoute =
   DashboardUserManagementIndexLazyRouteImport.update({
     id: '/user-management/',
@@ -457,22 +475,30 @@ const LandingServicesSlugRoute = LandingServicesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => LandingServicesRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/services.$slug.lazy').then((d) => d.Route),
+)
 const LandingSectorsSlugRoute = LandingSectorsSlugRouteImport.update({
   id: '/sectors/$slug',
   path: '/sectors/$slug',
   getParentRoute: () => LandingRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/sectors.$slug.lazy').then((d) => d.Route),
+)
 const LandingCareerSlugRoute = LandingCareerSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => LandingCareerRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/career.$slug.lazy').then((d) => d.Route),
+)
 const LandingArticlesSlugRoute = LandingArticlesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => LandingArticlesRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_landing/articles.$slug.lazy').then((d) => d.Route),
+)
 const DashboardVacanciesSlugIndexRoute =
   DashboardVacanciesSlugIndexRouteImport.update({
     id: '/vacancies/$slug/',

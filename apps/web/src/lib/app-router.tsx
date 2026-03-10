@@ -39,14 +39,14 @@ export function createAppRouter({
       <AppProviders queryClient={queryClient}>{children}</AppProviders>
     ),
     dehydrate: () =>
-      dehydrateAppQueryClient(queryClient) as unknown as Record<
-        string,
-        unknown
-      >,
+      // TanStack Router's serializer typing is narrower than React Query's
+      // DehydratedState shape, so we cast only at this SSR boundary.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      dehydrateAppQueryClient(queryClient) as any,
     hydrate: async (dehydrated) =>
       hydrateAppQueryClient(
         queryClient,
-        dehydrated as AppRouterDehydratedState | undefined,
+        dehydrated as unknown as AppRouterDehydratedState | undefined,
       ),
   });
 

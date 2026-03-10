@@ -1,10 +1,5 @@
-import {
-  Outlet,
-  createFileRoute,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { ArticlesPage } from "@/features/landing/pages/ArticlesPage";
 import { publicBlogsQueryOptions } from "@/lib/blogs/blogs-query";
 import {
   normalizePublicBlogsParams,
@@ -43,17 +38,4 @@ export const Route = createFileRoute("/_landing/articles")({
       ),
     ]);
   },
-  component: ArticlesRouteShell,
 });
-
-function ArticlesRouteShell() {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-
-  if (pathname.startsWith("/articles/")) {
-    return <Outlet />;
-  }
-
-  return <ArticlesPage />;
-}

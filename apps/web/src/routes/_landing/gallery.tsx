@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { GalleryPage } from "@/features/landing/pages/GalleryPage";
 import {
   publicGalleryCategoriesQueryOptions,
   publicGalleryQueryOptions,
@@ -53,5 +52,4 @@ export const Route = createFileRoute("/_landing/gallery")({
       ),
     ]);
   },
-  component: GalleryPage,
 });

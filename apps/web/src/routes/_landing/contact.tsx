@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ContactPage } from "@/features/landing/pages/ContactPage";
 import { buildStaticPageHead } from "@/lib/seo";
 import { publicServicesQueryOptions } from "@/lib/services/services-query";
 import { publicSocialsQueryOptions } from "@/lib/socials/socials-query";
@@ -22,5 +21,4 @@ export const Route = createFileRoute("/_landing/contact")({
       ),
     ]);
   },
-  component: ContactPage,
 });

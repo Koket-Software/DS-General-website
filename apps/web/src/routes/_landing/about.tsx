@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { AboutPage } from "@/features/landing/pages/AboutPage";
 import { publicAchievementsQueryOptions } from "@/lib/achievements";
 import { publicCaseStudiesQueryOptions } from "@/lib/case-study/case-study-query";
 import { publicOrgQueryOptions } from "@/lib/org/org-query";
@@ -37,5 +36,4 @@ export const Route = createFileRoute("/_landing/about")({
       ),
     ]);
   },
-  component: AboutPage,
 });

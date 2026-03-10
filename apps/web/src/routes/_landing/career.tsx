@@ -1,10 +1,5 @@
-import {
-  Outlet,
-  createFileRoute,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { CareerPage } from "@/features/landing/pages/CareerPage";
 import { buildStaticPageHead } from "@/lib/seo";
 import { publicVacanciesQueryOptions } from "@/lib/vacancies/vacancies-query";
 import {
@@ -46,17 +41,4 @@ export const Route = createFileRoute("/_landing/career")({
       publicVacanciesQueryOptions(params),
     );
   },
-  component: CareerRouteShell,
 });
-
-function CareerRouteShell() {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-
-  if (pathname.startsWith("/career/")) {
-    return <Outlet />;
-  }
-
-  return <CareerPage />;
-}
