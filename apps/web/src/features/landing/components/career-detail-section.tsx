@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { formatPublicDate } from "@/lib/public-date";
 import {
   usePublicVacanciesQuery,
   usePublicVacancyBySlugQuery,
@@ -17,10 +18,7 @@ import {
 import { createPublicVacancyApplicationSchema } from "@/lib/vacancies/vacancies-schema";
 
 function formatDate(value: string | null) {
-  if (!value) return "Open until filled";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Open until filled";
-  return date.toLocaleDateString();
+  return formatPublicDate(value, "Open until filled");
 }
 
 function EnumLabel({ value }: { value: string | null }) {
