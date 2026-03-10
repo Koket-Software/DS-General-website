@@ -8,6 +8,7 @@ import {
   usePublicBlogBySlugQuery,
   usePublicBlogsQuery,
 } from "@/lib/blogs/blogs-query";
+import { formatPublicDate } from "@/lib/public-date";
 
 function ArrowLeft() {
   return (
@@ -108,9 +109,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-0 font-sans text-muted-foreground">
               <span className="text-[16px]">
-                {article.publishDate
-                  ? new Date(article.publishDate).toLocaleDateString()
-                  : new Date(article.createdAt).toLocaleDateString()}
+                {formatPublicDate(article.publishDate ?? article.createdAt)}
               </span>
               <span className="mx-2 text-[14px]">&bull;</span>
               <span className="text-[16px]">
@@ -200,9 +199,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
                 </div>
                 <div className="flex flex-1 flex-col gap-2 p-4">
                   <p className="font-sans text-[14px] text-muted-foreground">
-                    {item.publishDate
-                      ? new Date(item.publishDate).toLocaleDateString()
-                      : new Date(item.createdAt).toLocaleDateString()}
+                    {formatPublicDate(item.publishDate ?? item.createdAt)}
                   </p>
                   <p className="line-clamp-2 font-sans text-[16px] font-semibold text-foreground">
                     {item.title}

@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
+import { formatPublicDate } from "@/lib/public-date";
 import {
   publicVacanciesQueryOptions,
   usePublicVacanciesQuery,
@@ -12,10 +13,7 @@ import type { PublicVacancy } from "@/lib/vacancies/vacancies-schema";
 import { Route as CareerRoute } from "@/routes/_landing/career";
 
 function formatDate(value: string | null) {
-  if (!value) return "Open until filled";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Open until filled";
-  return date.toLocaleDateString();
+  return formatPublicDate(value, "Open until filled");
 }
 
 function vacancyTypeLabel(vacancy: PublicVacancy) {

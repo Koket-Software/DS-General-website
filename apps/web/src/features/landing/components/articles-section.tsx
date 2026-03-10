@@ -17,6 +17,7 @@ import {
   usePublicBlogsQuery,
 } from "@/lib/blogs/blogs-query";
 import type { PublicBlog } from "@/lib/blogs/blogs-schema";
+import { formatPublicDate } from "@/lib/public-date";
 import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
 import { usePublicTagsQuery } from "@/lib/tags/tags-query";
 import { Route as ArticlesRoute } from "@/routes/_landing/articles";
@@ -63,9 +64,7 @@ export function ArticleCard({ article }: { article: PublicBlog }) {
       </div>
       <div className="flex flex-col gap-2 p-4">
         <p className="font-sans text-[14px] text-muted-foreground">
-          {article.publishDate
-            ? new Date(article.publishDate).toLocaleDateString()
-            : new Date(article.createdAt).toLocaleDateString()}
+          {formatPublicDate(article.publishDate ?? article.createdAt)}
         </p>
         <p className="font-sans font-semibold text-[14px] text-foreground line-clamp-2">
           {article.title}
@@ -260,9 +259,9 @@ export function ArticlesSection() {
                   </p>
                 </div>
                 <p className="font-sans text-[14px] text-muted-foreground mt-4">
-                  {featuredArticle.publishDate
-                    ? new Date(featuredArticle.publishDate).toLocaleDateString()
-                    : new Date(featuredArticle.createdAt).toLocaleDateString()}
+                  {formatPublicDate(
+                    featuredArticle.publishDate ?? featuredArticle.createdAt,
+                  )}
                 </p>
               </div>
             </Link>

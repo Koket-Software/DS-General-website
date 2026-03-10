@@ -1,6 +1,7 @@
 import { SectionHeader } from "./section-header";
 
 import { usePublicCaseStudiesQuery } from "@/lib/case-study/case-study-query";
+import { formatPublicDate } from "@/lib/public-date";
 
 interface ProjectCardProps {
   image: string | null;
@@ -71,7 +72,7 @@ export function ProjectsSection() {
                   <ProjectCard
                     key={project.id}
                     image={project.featuredImage}
-                    date={new Date(project.createdAt).toLocaleDateString()}
+                    date={formatPublicDate(project.createdAt)}
                     title={project.title}
                     wide={index === 0}
                   />
@@ -82,7 +83,7 @@ export function ProjectsSection() {
                   <ProjectCard
                     key={project.id}
                     image={project.featuredImage}
-                    date={new Date(project.createdAt).toLocaleDateString()}
+                    date={formatPublicDate(project.createdAt)}
                     title={project.title}
                     wide={index === 2}
                   />
