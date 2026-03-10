@@ -10,7 +10,8 @@ const normalizeBaseUrl = (value: string): string => {
 };
 
 const resolveBaseUrl = (): string => {
-  const envBaseUrl = import.meta.env.VITE_SERVER_URL ?? "";
+  const envBaseUrl =
+    import.meta.env.VITE_SERVER_URL ?? import.meta.env.VITE_SITE_URL ?? "";
   const runtimeBaseUrl =
     typeof window !== "undefined" ? window.location.origin : "";
   const baseUrl = envBaseUrl || runtimeBaseUrl;

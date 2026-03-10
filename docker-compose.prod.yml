@@ -22,6 +22,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.server
+      args:
+        VITE_SERVER_URL: ${VITE_SERVER_URL}
+        VITE_SITE_URL: ${VITE_SITE_URL}
+        VITE_FRONTEND_URL: ${VITE_FRONTEND_URL:-}
     env_file:
       - .env
     environment:
@@ -68,7 +72,14 @@ services:
       - proxy
     healthcheck:
       test:
-        ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1/healthz",
+        ]
       interval: 30s
       timeout: 3s
       retries: 3

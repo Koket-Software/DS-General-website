@@ -17,6 +17,14 @@ COPY packages ./packages
 # Install dependencies for the entire monorepo
 RUN bun install --frozen-lockfile || bun install
 
+# Inject build-time environment variables for the SSR web bundle.
+ARG VITE_SERVER_URL
+ARG VITE_SITE_URL
+ARG VITE_FRONTEND_URL
+ENV VITE_SERVER_URL=${VITE_SERVER_URL}
+ENV VITE_SITE_URL=${VITE_SITE_URL}
+ENV VITE_FRONTEND_URL=${VITE_FRONTEND_URL}
+
 # Build the web client + SSR bundle used by the server renderer
 WORKDIR /app/apps/web
 RUN bun run build
