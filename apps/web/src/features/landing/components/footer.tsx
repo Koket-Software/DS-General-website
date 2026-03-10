@@ -8,6 +8,7 @@ import {
   shouldUseResolvedLandingSocialIcon,
 } from "./socials";
 
+import envelopeSvg from "@/assets/ds/envelop.svg";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -182,9 +183,16 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex-1">
-          <form onSubmit={handleSubscribe} className="space-y-3">
-            <div className="bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
+        <div className="relative flex-1">
+          <img
+            src={envelopeSvg}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-[64px] right-2 z-0 h-auto w-[168px] max-w-none sm:-top-[72px] sm:right-4 sm:w-[184px]"
+            loading="lazy"
+          />
+          <form onSubmit={handleSubscribe} className="relative z-10 space-y-3">
+            <div className="relative z-20 bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
               <Input
                 type="email"
                 aria-label="Newsletter email address"
@@ -247,10 +255,10 @@ export function Footer() {
               </p>
             ) : null}
           </form>
-          <div className="py-2">
+          <div className="relative z-10 py-2">
             <ThemeSwitch />
           </div>
-          <p className="font-sans font-normal text-foreground text-[14px] mb-10 py-3 lg:py-6">
+          <p className="relative z-10 font-sans font-normal text-foreground text-[14px] mb-10 py-3 lg:py-6">
             Get the latest news and updates subscribe to our newsletter
           </p>
         </div>
