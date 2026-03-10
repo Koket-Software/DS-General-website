@@ -1,12 +1,10 @@
 import {
+  DEFAULT_BRAND_OG_IMAGE_PATH,
   buildBrandSeoConfig,
   type BrandSeoConfig,
 } from "@suba-company-template/types";
 
 import { SITE } from "@/config/template";
-
-const DEFAULT_DYNAMIC_HOME_OG_PATH =
-  "/api/og/page?title=Integrated%20Construction%20%26%20Global%20Supply%20Chain%20Solutions&description=DS%20General%20PLC%20delivers%20integrated%20construction%2C%20sourcing%2C%20and%20operational%20support%20for%20high-impact%20business%20sectors%20in%20Ethiopia.&category=DS%20General%20PLC&theme=home&highlight=General%20Contracting&highlight=Material%20Supply&highlight=Global%20Sourcing";
 
 const parseKeywords = (value?: string): string[] | undefined => {
   if (!value) return undefined;
@@ -37,7 +35,7 @@ export const BRAND_SEO_CONFIG: BrandSeoConfig = buildBrandSeoConfig({
   twitterHandle: getEnvValue("VITE_TWITTER_HANDLE") || SITE.twitterHandle,
   themeColor: getEnvValue("VITE_THEME_COLOR") || SITE.themeColor,
   ogDefaultPath:
-    getEnvValue("VITE_OG_DEFAULT_PATH") || DEFAULT_DYNAMIC_HOME_OG_PATH,
+    getEnvValue("VITE_OG_DEFAULT_PATH") || DEFAULT_BRAND_OG_IMAGE_PATH,
   brandPrimary:
     getEnvValue("VITE_BRAND_PRIMARY") ||
     getEnvValue("VITE_THEME_COLOR") ||

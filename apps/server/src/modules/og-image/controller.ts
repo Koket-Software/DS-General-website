@@ -58,6 +58,14 @@ const PAGE_THEME_SET = new Set<string>(PAGE_THEMES);
 
 export const createOgImageController = (deps: OgImageControllerDeps) => {
   const brand = getServerBrandSeoConfig();
+  const brandDefaultPath = brand.ogDefaultPath.trim();
+  const brandDefaultPathname = (() => {
+    if (/^https?:\/\//i.test(brandDefaultPath)) {
+      return new URL(brandDefaultPath).pathname;
+    }
+    return brandDefaultPath.split("?")[0] || "/";
+  })();
+  const usesDynamicDefaultEndpoint = brandDefaultPathname === "/api/og/default";
 
   const formatDate = (dateStr: string | null): string | undefined => {
     if (!dateStr) return undefined;
@@ -88,9 +96,22 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
     });
   };
 
-  const getDefaultResponse = async (): Promise<Response> => {
-    const defaultImage = await generateDefaultOgImage({ brand });
-    return returnImageResponse(defaultImage);
+  const getDefaultResponse = async (c: Context): Promise<Response> => {
+    if (usesDynamicDefaultEndpoint) {
+      const defaultImage = await generateDefaultOgImage({ brand });
+      return returnImageResponse(defaultImage);
+    }
+
+    const fallbackUrl = /^https?:\/\//i.test(brandDefaultPath)
+      ? brandDefaultPath
+      : new URL(
+          brandDefaultPath.startsWith("/")
+            ? brandDefaultPath
+            : `/${brandDefaultPath}`,
+          c.req.url,
+        ).toString();
+
+    return c.redirect(fallbackUrl, 302);
   };
 
   const sanitizeText = (value: string | undefined, maxLength: number) => {
@@ -120,13 +141,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const blog = await deps.blogRepository.findPublishedBySlug(slug);
 
         if (!blog) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const data: OgImageData = {
@@ -145,7 +166,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating blog OG image", error as Error);
-        return getDefaultResponse();
+        return getDefaultResponse(c);
       }
     },
 
@@ -154,13 +175,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const service = await deps.serviceRepository.findPublishedBySlug(slug);
 
         if (!service) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const data: OgImageData = {
@@ -175,7 +196,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating service OG image", error as Error);
-        return getDefaultResponse();
+        return getDefaultResponse(c);
       }
     },
 
@@ -184,14 +205,14 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const project =
           await deps.caseStudyRepository.findPublishedBySlug(slug);
 
         if (!project) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const data: OgImageData = {
@@ -207,7 +228,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating project OG image", error as Error);
-        return getDefaultResponse();
+        return getDefaultResponse(c);
       }
     },
 
@@ -216,13 +237,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!slug) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const vacancy = await deps.vacancyRepository.findPublishedBySlug(slug);
 
         if (!vacancy) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const jobTags: string[] = [];
@@ -242,7 +263,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating career OG image", error as Error);
-        return getDefaultResponse();
+        return getDefaultResponse(c);
       }
     },
 
@@ -256,7 +277,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
 
       try {
         if (!title) {
-          return getDefaultResponse();
+          return getDefaultResponse(c);
         }
 
         const data: OgImageData = {
@@ -273,13 +294,13 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         return returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating page OG image", error as Error);
-        return getDefaultResponse();
+        return getDefaultResponse(c);
       }
     },
 
     async getDefaultOgImage(c: Context): Promise<Response> {
       try {
-        return getDefaultResponse();
+        return getDefaultResponse(c);
       } catch (error) {
         logger.error("Error generating default OG image", error as Error);
         return c.text("Error generating image", 500);

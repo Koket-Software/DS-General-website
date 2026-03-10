@@ -14,6 +14,9 @@ export interface BrandSeoConfig {
   keywords: string[];
 }
 
+export const DEFAULT_BRAND_LOGO_PATH = "/favicon.ico";
+export const DEFAULT_BRAND_OG_IMAGE_PATH = "/og_image_ds.webp";
+
 export const DEFAULT_BRAND_SEO_CONFIG: BrandSeoConfig = {
   siteName: "Your Company",
   siteUrl: "http://localhost:5173",
@@ -23,11 +26,11 @@ export const DEFAULT_BRAND_SEO_CONFIG: BrandSeoConfig = {
   locale: "en_US",
   twitterHandle: "@yourcompany",
   themeColor: "#0600ab",
-  ogDefaultPath: "/api/og/default",
+  ogDefaultPath: DEFAULT_BRAND_OG_IMAGE_PATH,
   brandPrimary: "#0600ab",
   brandSecondary: "#0f172a",
   brandAccent: "#2dd4bf",
-  logoPath: "/favicon.ico",
+  logoPath: DEFAULT_BRAND_LOGO_PATH,
   keywords: [
     "software engineering",
     "digital innovation",
@@ -58,9 +61,13 @@ const normalizeTwitterHandle = (value: string): string => {
 export const buildBrandSeoConfig = (
   overrides: Partial<BrandSeoConfig> = {},
 ): BrandSeoConfig => {
+  const sanitizedOverrides = Object.fromEntries(
+    Object.entries(overrides).filter(([, value]) => value !== undefined),
+  ) as Partial<BrandSeoConfig>;
+
   const merged: BrandSeoConfig = {
     ...DEFAULT_BRAND_SEO_CONFIG,
-    ...overrides,
+    ...sanitizedOverrides,
   };
 
   return {

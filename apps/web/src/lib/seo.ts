@@ -16,6 +16,7 @@ import homeHeroImage from "@/assets/ds/home/DS_Hero.webp";
 import {
   buildSeoMeta,
   getCareerOgImageUrl,
+  getDefaultOgImageUrl,
   getPageOgImageUrl,
   getServiceOgImageUrl,
   SITE_METADATA,
@@ -158,13 +159,16 @@ export function buildStaticPageHead(path: string) {
     path: route.path,
     title: route.title,
     description: route.description,
-    ogImage: getPageOgImageUrl({
-      title: route.title,
-      description: route.description,
-      category: route.category,
-      theme: route.pageTheme,
-      highlights: route.highlights,
-    }),
+    ogImage:
+      route.path === PUBLIC_ROUTE_PATHS.home()
+        ? getDefaultOgImageUrl()
+        : getPageOgImageUrl({
+            title: route.title,
+            description: route.description,
+            category: route.category,
+            theme: route.pageTheme,
+            highlights: route.highlights,
+          }),
     jsonLd: baseJsonLd,
     preloadImage:
       route.path === PUBLIC_ROUTE_PATHS.home() ? homeHeroImage : undefined,

@@ -168,10 +168,8 @@ function buildNoIndexShellHtml(input: {
     <meta name="theme-color" content="${escapeHtml(input.themeColor)}" />
     <meta name="application-name" content="${escapeHtml(input.siteName)}" />
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/site/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/site/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/site/favicon-16x16.png" />
-    <link rel="icon" type="image/x-icon" href="/site/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="manifest" href="/site/site.webmanifest" />
     ${input.assets.styles
       .map((href) => `<link rel="stylesheet" href="${escapeHtml(href)}" />`)

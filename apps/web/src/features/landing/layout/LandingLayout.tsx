@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from "@tanstack/react-router";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect } from "react";
 
 import { Footer } from "../components/footer";
@@ -14,13 +15,44 @@ function ScrollToTop() {
   return null;
 }
 
+function LandingRouteTransition() {
+  const { pathname } = useLocation();
+  const reduceMotion = useReducedMotion();
+
+  const initial = reduceMotion
+    ? { opacity: 1 }
+    : { opacity: 0, y: 10, filter: "blur(3px)" };
+  const animate = { opacity: 1, y: 0, filter: "blur(0px)" };
+  const exit = reduceMotion
+    ? { opacity: 1 }
+    : { opacity: 0, y: -8, filter: "blur(2px)" };
+  const transition = reduceMotion
+    ? { duration: 0.01 }
+    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] };
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={pathname}
+        initial={initial}
+        animate={animate}
+        exit={exit}
+        transition={transition}
+        className="min-h-screen will-change-[opacity,transform,filter]"
+      >
+        <Outlet />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export function LandingLayout() {
   return (
     <div className="landing-boxy min-h-screen bg-background text-foreground font-sans">
       <ScrollToTop />
       <Navbar />
       <main className="min-h-screen">
-        <Outlet />
+        <LandingRouteTransition />
       </main>
       <Footer />
     </div>

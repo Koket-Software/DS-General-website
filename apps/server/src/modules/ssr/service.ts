@@ -208,14 +208,7 @@ export function createHomeMeta(
   return {
     title: config.defaultTitle,
     description: config.defaultDescription,
-    ogImage: buildPageOgImageUrl({
-      title: "Integrated Construction & Global Supply Chain Solutions",
-      description: config.defaultDescription,
-      category: config.siteName,
-      pageTheme: "home",
-      highlights: ["General Contracting", "Material Supply", "Global Sourcing"],
-      section: "Home",
-    }),
+    ogImage: config.ogDefaultPath,
     ogType: "website",
     canonicalUrl: canonicalPath,
     section: "Home",

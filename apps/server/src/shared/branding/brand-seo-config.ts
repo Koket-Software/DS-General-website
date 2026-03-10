@@ -1,10 +1,8 @@
 import {
+  DEFAULT_BRAND_OG_IMAGE_PATH,
   buildBrandSeoConfig,
   type BrandSeoConfig,
 } from "@suba-company-template/types";
-
-const DEFAULT_DYNAMIC_HOME_OG_PATH =
-  "/api/og/page?title=Integrated%20Construction%20%26%20Global%20Supply%20Chain%20Solutions&description=DS%20General%20PLC%20delivers%20integrated%20construction%2C%20sourcing%2C%20and%20operational%20support%20for%20high-impact%20business%20sectors%20in%20Ethiopia.&category=DS%20General%20PLC&theme=home&highlight=General%20Contracting&highlight=Material%20Supply&highlight=Global%20Sourcing";
 
 const getEnvValue = (...keys: string[]): string => {
   for (const key of keys) {
@@ -41,7 +39,7 @@ export const getServerBrandSeoConfig = (): BrandSeoConfig => {
     themeColor: getEnvValue("THEME_COLOR", "VITE_THEME_COLOR"),
     ogDefaultPath:
       getEnvValue("OG_DEFAULT_PATH", "VITE_OG_DEFAULT_PATH") ||
-      DEFAULT_DYNAMIC_HOME_OG_PATH,
+      DEFAULT_BRAND_OG_IMAGE_PATH,
     brandPrimary: getEnvValue("BRAND_PRIMARY", "VITE_BRAND_PRIMARY"),
     brandSecondary: getEnvValue("BRAND_SECONDARY", "VITE_BRAND_SECONDARY"),
     brandAccent: getEnvValue("BRAND_ACCENT", "VITE_BRAND_ACCENT"),

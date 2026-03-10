@@ -95,10 +95,10 @@ export function createCanvasStyle(brand: BrandSeoConfig): React.CSSProperties {
     overflow: "hidden",
     color: "#f8fafc",
     background: [
-      `radial-gradient(circle at 12% 16%, ${hexToRgba(brand.brandAccent, 0.22)} 0%, rgba(255,255,255,0) 28%)`,
-      `radial-gradient(circle at 86% 16%, ${hexToRgba(brand.brandPrimary, 0.28)} 0%, rgba(255,255,255,0) 32%)`,
-      `radial-gradient(circle at 76% 88%, ${hexToRgba(brand.brandAccent, 0.12)} 0%, rgba(255,255,255,0) 28%)`,
-      `linear-gradient(135deg, #070b16 0%, ${hexToRgba(brand.brandSecondary, 0.98)} 38%, ${hexToRgba(brand.brandPrimary, 0.88)} 100%)`,
+      `radial-gradient(circle at 10% 12%, ${hexToRgba(brand.brandAccent, 0.32)} 0%, rgba(255,255,255,0) 26%)`,
+      `radial-gradient(circle at 87% 14%, ${hexToRgba(brand.brandPrimary, 0.36)} 0%, rgba(255,255,255,0) 31%)`,
+      `radial-gradient(circle at 78% 88%, ${hexToRgba(brand.brandAccent, 0.2)} 0%, rgba(255,255,255,0) 30%)`,
+      `linear-gradient(148deg, #050916 0%, ${hexToRgba(brand.brandSecondary, 0.98)} 34%, ${hexToRgba(brand.brandPrimary, 0.9)} 100%)`,
     ].join(", "),
     fontFamily: '"Manrope", sans-serif',
   };
@@ -115,10 +115,36 @@ export function BackgroundDecor({
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage:
-            "linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(180deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
-          backgroundSize: "72px 72px",
-          opacity: 0.24,
+          backgroundImage: [
+            "linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
+            "linear-gradient(180deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+          ].join(", "),
+          backgroundSize: "68px 68px",
+          opacity: 0.18,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: "-8%",
+          width: "46%",
+          height: "2px",
+          transform: "rotate(-12deg)",
+          background: `linear-gradient(90deg, rgba(255,255,255,0) 0%, ${hexToRgba(brand.brandAccent, 0.7)} 52%, rgba(255,255,255,0) 100%)`,
+          opacity: 0.8,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "14%",
+          right: "-8%",
+          width: "52%",
+          height: "2px",
+          transform: "rotate(-12deg)",
+          background: `linear-gradient(90deg, rgba(255,255,255,0) 0%, ${hexToRgba(brand.brandAccent, 0.56)} 44%, rgba(255,255,255,0) 100%)`,
+          opacity: 0.68,
         }}
       />
       <div
@@ -148,12 +174,25 @@ export function BackgroundDecor({
       <div
         style={{
           position: "absolute",
-          left: "-6%",
-          bottom: "-18%",
-          width: "540px",
-          height: "280px",
-          transform: "rotate(-14deg)",
-          background: `linear-gradient(90deg, ${hexToRgba(brand.brandAccent, 0.12)} 0%, rgba(255,255,255,0) 100%)`,
+          left: "-12%",
+          bottom: "-28%",
+          width: "680px",
+          height: "360px",
+          borderRadius: "999px",
+          background: `radial-gradient(circle at 60% 40%, ${hexToRgba(brand.brandPrimary, 0.26)} 0%, rgba(255,255,255,0) 68%)`,
+          opacity: 0.7,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: "16%",
+          left: "35%",
+          width: "120px",
+          height: "120px",
+          border: `1px solid ${hexToRgba(brand.brandAccent, 0.16)}`,
+          transform: "rotate(45deg)",
+          opacity: 0.44,
         }}
       />
     </>
