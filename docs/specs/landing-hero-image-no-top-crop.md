@@ -107,3 +107,15 @@ Tasks:
 - [x] Apply the white fade overlay only on `lg+` breakpoints.
 - [x] Increase overlay intensity slightly on `lg+`.
 - [x] Run `bun run --cwd apps/web check-types`.
+
+### Phase 7: Dark Mode Overlay Correction
+
+Prepare tests:
+
+- Web TypeScript check (`bun run --cwd apps/web check-types`).
+
+Tasks:
+
+- [x] Add a dedicated dark-mode (`dark:lg`) hero overlay gradient.
+- [x] Keep light-mode overlay behavior unchanged.
+- [x] Run `bun run --cwd apps/web check-types`.
