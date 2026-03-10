@@ -5,12 +5,12 @@ import {
 } from "@tanstack/react-router";
 
 import { CareerPage } from "@/features/landing/pages/CareerPage";
+import { buildStaticPageHead } from "@/lib/seo";
 import { publicVacanciesQueryOptions } from "@/lib/vacancies/vacancies-query";
 import {
   normalizePublicVacanciesParams,
   publicVacanciesParamsSchema,
 } from "@/lib/vacancies/vacancies-schema";
-import { queryClient } from "@/main";
 
 const toFiniteNumber = (value: unknown) => {
   const parsed = Number(value);
@@ -18,6 +18,7 @@ const toFiniteNumber = (value: unknown) => {
 };
 
 export const Route = createFileRoute("/_landing/career")({
+  head: () => buildStaticPageHead("/career"),
   validateSearch: (search: Record<string, unknown>) =>
     publicVacanciesParamsSchema.partial().parse({
       page: toFiniteNumber(search.page),
@@ -38,12 +39,12 @@ export const Route = createFileRoute("/_landing/career")({
               : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizePublicVacanciesParams(deps);
 
-    await queryClient.ensureQueryData(publicVacanciesQueryOptions(params));
-
-    return null;
+    return context.queryClient.ensureQueryData(
+      publicVacanciesQueryOptions(params),
+    );
   },
   component: CareerRouteShell,
 });

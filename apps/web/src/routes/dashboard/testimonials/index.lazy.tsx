@@ -8,7 +8,6 @@ import {
   testimonialsListParamsSchema,
 } from "@/features/dashboard/testimonials/lib/testimonials-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/testimonials/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -17,10 +16,12 @@ export const Route = createLazyFileRoute("/dashboard/testimonials/")({
       limit: search.limit ? Number(search.limit) : undefined,
       search: typeof search.search === "string" ? search.search : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeTestimonialsListParams(search);
-    await prefetchResource(queryClient, testimonialKeys.list(params), () =>
-      fetchTestimonials(params),
+    await prefetchResource(
+      context.queryClient,
+      testimonialKeys.list(params),
+      () => fetchTestimonials(params),
     );
     return null;
   },

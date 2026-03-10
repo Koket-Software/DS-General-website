@@ -5,16 +5,18 @@ import {
   fetchVacancyBySlug,
 } from "@/features/dashboard/vacancies/lib/vacancies-api";
 import { vacancyKeys } from "@/features/dashboard/vacancies/lib/vacancies-query";
+import type { AppRouterContext } from "@/lib/app-router";
 import { prefetchResource } from "@/lib/prefetch";
 import { parseSearchId, resolvePrefetchedSlugId } from "@/lib/route-loader";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/vacancies/$slug/edit")({
   validateSearch: parseSearchId,
   loader: async ({
+    context,
     search = {},
     params,
   }: {
+    context: AppRouterContext;
     search?: Record<string, unknown>;
     params: { slug: string };
   }) => {
@@ -22,13 +24,15 @@ export const Route = createFileRoute("/dashboard/vacancies/$slug/edit")({
       rawId: search.id,
       slug: params.slug,
       fetchBySlug: (slug) =>
-        prefetchResource(queryClient, vacancyKeys.slug(slug), () =>
+        prefetchResource(context.queryClient, vacancyKeys.slug(slug), () =>
           fetchVacancyBySlug(slug),
         ),
       getIdFromSlugResponse: (response) => response?.data?.id,
       prefetchById: (resolvedId) =>
-        prefetchResource(queryClient, vacancyKeys.detail(resolvedId), () =>
-          fetchVacancyById(resolvedId),
+        prefetchResource(
+          context.queryClient,
+          vacancyKeys.detail(resolvedId),
+          () => fetchVacancyById(resolvedId),
         ),
       missingIdMessage:
         "Missing vacancy identifier. Please navigate from the vacancies list.",

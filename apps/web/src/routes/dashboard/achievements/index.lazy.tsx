@@ -8,7 +8,6 @@ import {
   normalizeAchievementsListParams,
 } from "@/features/dashboard/achievements/lib/achievements-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/achievements/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -28,11 +27,13 @@ export const Route = createLazyFileRoute("/dashboard/achievements/")({
             ? search.isActive === "true"
             : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeAchievementsListParams(search);
 
-    await prefetchResource(queryClient, achievementKeys.list(params), () =>
-      fetchAchievements(params),
+    await prefetchResource(
+      context.queryClient,
+      achievementKeys.list(params),
+      () => fetchAchievements(params),
     );
 
     return null;

@@ -10,7 +10,7 @@ import {
   normalizePublicGalleryParams,
   publicGalleryParamsSchema,
 } from "@/lib/gallery/gallery-schema";
-import { queryClient } from "@/main";
+import { buildStaticPageHead } from "@/lib/seo";
 
 const toFiniteNumber = (value: unknown) => {
   const parsed = Number(value);
@@ -18,6 +18,7 @@ const toFiniteNumber = (value: unknown) => {
 };
 
 export const Route = createFileRoute("/_landing/gallery")({
+  head: () => buildStaticPageHead("/gallery"),
   validateSearch: (search: Record<string, unknown>) =>
     publicGalleryParamsSchema.partial().parse({
       page: toFiniteNumber(search.page),
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/_landing/gallery")({
           : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const itemParams = normalizePublicGalleryParams(deps);
     const categoryParams = normalizePublicGalleryCategoryParams({
       page: 1,
@@ -43,14 +44,14 @@ export const Route = createFileRoute("/_landing/gallery")({
       sortOrder: "asc",
     });
 
-    await Promise.all([
-      queryClient.ensureQueryData(publicGalleryQueryOptions(itemParams)),
-      queryClient.ensureQueryData(
+    return Promise.all([
+      context.queryClient.ensureQueryData(
+        publicGalleryQueryOptions(itemParams),
+      ),
+      context.queryClient.ensureQueryData(
         publicGalleryCategoriesQueryOptions(categoryParams),
       ),
     ]);
-
-    return null;
   },
   component: GalleryPage,
 });

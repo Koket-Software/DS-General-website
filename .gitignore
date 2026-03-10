@@ -69,3 +69,5 @@ node_modules/**
 
 docs
 docs/**
+
+apps/web/dist-ssr

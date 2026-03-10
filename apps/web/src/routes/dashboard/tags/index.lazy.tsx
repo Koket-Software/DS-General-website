@@ -9,7 +9,6 @@ import {
   type TagListParams,
 } from "@/features/dashboard/tags/lib/tags-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/tags/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -18,11 +17,11 @@ export const Route = createLazyFileRoute("/dashboard/tags/")({
       limit: search.limit ? Number(search.limit) : undefined,
       search: typeof search.search === "string" ? search.search : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeTagListParams(
       (search as Partial<TagListParams>) ?? {},
     );
-    await prefetchResource(queryClient, tagKeys.list(params), () =>
+    await prefetchResource(context.queryClient, tagKeys.list(params), () =>
       fetchTags(params),
     );
     return null;

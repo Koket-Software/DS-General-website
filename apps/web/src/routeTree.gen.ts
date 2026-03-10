@@ -11,6 +11,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as RateLimitRouteImport } from './routes/rate-limit'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForbiddenRouteImport } from './routes/forbidden'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
@@ -62,10 +66,6 @@ import { Route as DashboardBusinessSectorsSlugEditRouteImport } from './routes/d
 import { Route as DashboardBlogsSlugEditRouteImport } from './routes/dashboard/blogs/$slug/edit'
 import { Route as DashboardAchievementsIdEditRouteImport } from './routes/dashboard/achievements/$id/edit'
 
-const RegisterLazyRouteImport = createFileRoute('/register')()
-const RateLimitLazyRouteImport = createFileRoute('/rate-limit')()
-const LoginLazyRouteImport = createFileRoute('/login')()
-const ForbiddenLazyRouteImport = createFileRoute('/forbidden')()
 const DashboardUserManagementIndexLazyRouteImport = createFileRoute(
   '/dashboard/user-management/',
 )()
@@ -126,22 +126,22 @@ const DashboardAchievementsCreateLazyRouteImport = createFileRoute(
   '/dashboard/achievements/create',
 )()
 
-const RegisterLazyRoute = RegisterLazyRouteImport.update({
+const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/register.lazy').then((d) => d.Route))
-const RateLimitLazyRoute = RateLimitLazyRouteImport.update({
+const RateLimitRoute = RateLimitRouteImport.update({
   id: '/rate-limit',
   path: '/rate-limit',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/rate-limit.lazy').then((d) => d.Route))
-const LoginLazyRoute = LoginLazyRouteImport.update({
+const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
-const ForbiddenLazyRoute = ForbiddenLazyRouteImport.update({
+const ForbiddenRoute = ForbiddenRouteImport.update({
   id: '/forbidden',
   path: '/forbidden',
   getParentRoute: () => rootRouteImport,
@@ -150,7 +150,7 @@ const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/dashboard.lazy').then((d) => d.Route))
 const LandingRoute = LandingRouteImport.update({
   id: '/_landing',
   getParentRoute: () => rootRouteImport,
@@ -695,10 +695,10 @@ const DashboardAchievementsIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
-  '/forbidden': typeof ForbiddenLazyRoute
-  '/login': typeof LoginLazyRoute
-  '/rate-limit': typeof RateLimitLazyRoute
-  '/register': typeof RegisterLazyRoute
+  '/forbidden': typeof ForbiddenRoute
+  '/login': typeof LoginRoute
+  '/rate-limit': typeof RateLimitRoute
+  '/register': typeof RegisterRoute
   '/about': typeof LandingAboutRoute
   '/articles': typeof LandingArticlesRouteWithChildren
   '/career': typeof LandingCareerRouteWithChildren
@@ -770,10 +770,10 @@ export interface FileRoutesByFullPath {
   '/dashboard/vacancies/$slug': typeof DashboardVacanciesSlugIndexRoute
 }
 export interface FileRoutesByTo {
-  '/forbidden': typeof ForbiddenLazyRoute
-  '/login': typeof LoginLazyRoute
-  '/rate-limit': typeof RateLimitLazyRoute
-  '/register': typeof RegisterLazyRoute
+  '/forbidden': typeof ForbiddenRoute
+  '/login': typeof LoginRoute
+  '/rate-limit': typeof RateLimitRoute
+  '/register': typeof RegisterRoute
   '/about': typeof LandingAboutRoute
   '/articles': typeof LandingArticlesRouteWithChildren
   '/career': typeof LandingCareerRouteWithChildren
@@ -848,10 +848,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_landing': typeof LandingRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
-  '/forbidden': typeof ForbiddenLazyRoute
-  '/login': typeof LoginLazyRoute
-  '/rate-limit': typeof RateLimitLazyRoute
-  '/register': typeof RegisterLazyRoute
+  '/forbidden': typeof ForbiddenRoute
+  '/login': typeof LoginRoute
+  '/rate-limit': typeof RateLimitRoute
+  '/register': typeof RegisterRoute
   '/_landing/about': typeof LandingAboutRoute
   '/_landing/articles': typeof LandingArticlesRouteWithChildren
   '/_landing/career': typeof LandingCareerRouteWithChildren
@@ -1156,10 +1156,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   LandingRoute: typeof LandingRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
-  ForbiddenLazyRoute: typeof ForbiddenLazyRoute
-  LoginLazyRoute: typeof LoginLazyRoute
-  RateLimitLazyRoute: typeof RateLimitLazyRoute
-  RegisterLazyRoute: typeof RegisterLazyRoute
+  ForbiddenRoute: typeof ForbiddenRoute
+  LoginRoute: typeof LoginRoute
+  RateLimitRoute: typeof RateLimitRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1168,28 +1168,28 @@ declare module '@tanstack/react-router' {
       id: '/register'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof RegisterLazyRouteImport
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rate-limit': {
       id: '/rate-limit'
       path: '/rate-limit'
       fullPath: '/rate-limit'
-      preLoaderRoute: typeof RateLimitLazyRouteImport
+      preLoaderRoute: typeof RateLimitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof LoginLazyRouteImport
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forbidden': {
       id: '/forbidden'
       path: '/forbidden'
       fullPath: '/forbidden'
-      preLoaderRoute: typeof ForbiddenLazyRouteImport
+      preLoaderRoute: typeof ForbiddenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -1889,10 +1889,10 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   LandingRoute: LandingRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
-  ForbiddenLazyRoute: ForbiddenLazyRoute,
-  LoginLazyRoute: LoginLazyRoute,
-  RateLimitLazyRoute: RateLimitLazyRoute,
-  RegisterLazyRoute: RegisterLazyRoute,
+  ForbiddenRoute: ForbiddenRoute,
+  LoginRoute: LoginRoute,
+  RateLimitRoute: RateLimitRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

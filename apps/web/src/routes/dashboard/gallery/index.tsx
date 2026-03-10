@@ -7,7 +7,6 @@ import {
   normalizeGalleryListParams,
 } from "@/features/dashboard/gallery/lib/gallery-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/gallery/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -22,9 +21,9 @@ export const Route = createFileRoute("/dashboard/gallery/")({
           : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizeGalleryListParams(deps);
-    await prefetchResource(queryClient, galleryKeys.list(params), () =>
+    await prefetchResource(context.queryClient, galleryKeys.list(params), () =>
       fetchGalleryItems(params),
     );
     return null;

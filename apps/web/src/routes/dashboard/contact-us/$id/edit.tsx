@@ -2,11 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { fetchContactById } from "@/features/dashboard/contact-us/lib/contact-api";
 import { contactKeys } from "@/features/dashboard/contact-us/lib/contact-query";
+import type { AppRouterContext } from "@/lib/app-router";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/contact-us/$id/edit")({
-  loader: async ({ params }: { params: { id: string } }) => {
+  loader: async ({
+    context,
+    params,
+  }: {
+    context: AppRouterContext;
+    params: { id: string };
+  }) => {
     const id = Number(params.id);
 
     if (!Number.isFinite(id) || id <= 0) {
@@ -15,7 +21,7 @@ export const Route = createFileRoute("/dashboard/contact-us/$id/edit")({
       );
     }
 
-    await prefetchResource(queryClient, contactKeys.detail(id), () =>
+    await prefetchResource(context.queryClient, contactKeys.detail(id), () =>
       fetchContactById(id),
     );
 

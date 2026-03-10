@@ -5,17 +5,18 @@ import { publicAchievementsQueryOptions } from "@/lib/achievements";
 import { publicCaseStudiesQueryOptions } from "@/lib/case-study/case-study-query";
 import { publicOrgQueryOptions } from "@/lib/org/org-query";
 import { clientPartnersQueryOptions } from "@/lib/partners/partners-query";
+import { buildStaticPageHead } from "@/lib/seo";
 import { publicServicesQueryOptions } from "@/lib/services/services-query";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/_landing/about")({
-  loader: async () => {
-    await Promise.all([
-      queryClient.ensureQueryData(
+  head: () => buildStaticPageHead("/about"),
+  loader: async ({ context }) => {
+    return Promise.all([
+      context.queryClient.ensureQueryData(
         publicAchievementsQueryOptions({ page: 1, limit: 6 }),
       ),
-      queryClient.ensureQueryData(clientPartnersQueryOptions()),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(clientPartnersQueryOptions()),
+      context.queryClient.ensureQueryData(
         publicServicesQueryOptions({
           page: 1,
           limit: 6,
@@ -23,10 +24,10 @@ export const Route = createFileRoute("/_landing/about")({
           sortOrder: "desc",
         }),
       ),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(
         publicCaseStudiesQueryOptions({ page: 1, limit: 6 }),
       ),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(
         publicOrgQueryOptions({
           page: 1,
           limit: 100,
@@ -35,8 +36,6 @@ export const Route = createFileRoute("/_landing/about")({
         }),
       ),
     ]);
-
-    return null;
   },
   component: AboutPage,
 });

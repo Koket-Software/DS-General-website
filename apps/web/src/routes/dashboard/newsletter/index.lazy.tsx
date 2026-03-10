@@ -9,7 +9,6 @@ import {
   type NewsletterListParams,
 } from "@/features/dashboard/newsletter/lib/newsletter-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/newsletter/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -25,13 +24,15 @@ export const Route = createLazyFileRoute("/dashboard/newsletter/")({
           ? search.sortOrder
           : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeNewsletterListParams(
       (search as Partial<NewsletterListParams>) ?? {},
     );
 
-    await prefetchResource(queryClient, newsletterKeys.list(params), () =>
-      fetchNewsletters(params),
+    await prefetchResource(
+      context.queryClient,
+      newsletterKeys.list(params),
+      () => fetchNewsletters(params),
     );
 
     return null;

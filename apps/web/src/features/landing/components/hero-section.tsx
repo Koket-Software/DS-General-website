@@ -10,7 +10,7 @@ export function HeroSection() {
     <section className="relative isolate overflow-hidden md:h-[calc(100svh-4.5rem)]">
       <div className="absolute inset-0 z-0 bg-muted/15" aria-hidden />
       <div
-        className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-white/8 via-white/4 to-transparent"
+        className="pointer-events-none absolute inset-0 z-10 lg:bg-gradient-to-b lg:from-white/94 lg:via-white/14 lg:to-white/4"
         aria-hidden
       />
 

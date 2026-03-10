@@ -9,6 +9,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "../..");
+const noopDevtoolsModule = path.resolve(
+  __dirname,
+  "./src/lib/devtools/noop.tsx",
+);
 
 const plugins: PluginOption[] = [
   tsconfigPaths({ ignoreConfigErrors: true }) as PluginOption,
@@ -103,17 +107,25 @@ function manualChunks(id: string) {
   return `vendor-${packageName.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
   const rootEnv = loadEnv(mode, rootDir, "");
   const shouldLoadProdEnv =
     mode === "production" || process.env.ENV_FILE?.endsWith(".env.prod");
   const prodEnv = shouldLoadProdEnv ? loadEnv("prod", rootDir, "") : {};
   const env = { ...rootEnv, ...prodEnv };
+  const isProdBuild = mode === "production";
 
   return {
     plugins,
     resolve: {
       alias: {
+        ...(isProdBuild
+          ? {
+              "@tanstack/react-devtools": noopDevtoolsModule,
+              "@tanstack/react-query-devtools": noopDevtoolsModule,
+              "@tanstack/react-router-devtools": noopDevtoolsModule,
+            }
+          : {}),
         "@": path.resolve(__dirname, "./src"),
         "@web": path.resolve(__dirname, "./src"),
         "@rich-text": path.resolve(
@@ -123,13 +135,13 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      // Expose VITE_ prefixed vars to the client
       "import.meta.env.VITE_SERVER_URL": JSON.stringify(env.VITE_SERVER_URL),
       "import.meta.env.VITE_FRONTEND_URL": JSON.stringify(
         env.VITE_FRONTEND_URL,
       ),
     },
     build: {
+      manifest: !isSsrBuild,
       rollupOptions: {
         output: {
           manualChunks,

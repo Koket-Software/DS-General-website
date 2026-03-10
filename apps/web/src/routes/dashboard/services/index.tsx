@@ -7,7 +7,6 @@ import {
   servicesListParamsSchema,
 } from "@/features/dashboard/services/lib/services-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/services/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -22,9 +21,9 @@ export const Route = createFileRoute("/dashboard/services/")({
           : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizeServicesListParams(deps);
-    await prefetchResource(queryClient, serviceKeys.list(params), () =>
+    await prefetchResource(context.queryClient, serviceKeys.list(params), () =>
       fetchServices(params),
     );
     return null;

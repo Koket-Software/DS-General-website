@@ -10,8 +10,8 @@ import {
   normalizePublicBlogsParams,
   publicBlogsParamsSchema,
 } from "@/lib/blogs/blogs-schema";
+import { buildStaticPageHead } from "@/lib/seo";
 import { publicTagsQueryOptions } from "@/lib/tags/tags-query";
-import { queryClient } from "@/main";
 
 const toFiniteNumber = (value: unknown) => {
   const parsed = Number(value);
@@ -19,6 +19,7 @@ const toFiniteNumber = (value: unknown) => {
 };
 
 export const Route = createFileRoute("/_landing/articles")({
+  head: () => buildStaticPageHead("/articles"),
   validateSearch: (search: Record<string, unknown>) =>
     publicBlogsParamsSchema.partial().parse({
       page: toFiniteNumber(search.page),
@@ -32,17 +33,15 @@ export const Route = createFileRoute("/_landing/articles")({
       tagId: toFiniteNumber(search.tagId),
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizePublicBlogsParams(deps);
 
-    await Promise.all([
-      queryClient.ensureQueryData(publicBlogsQueryOptions(params)),
-      queryClient.ensureQueryData(
+    return Promise.all([
+      context.queryClient.ensureQueryData(publicBlogsQueryOptions(params)),
+      context.queryClient.ensureQueryData(
         publicTagsQueryOptions({ page: 1, limit: 50 }),
       ),
     ]);
-
-    return null;
   },
   component: ArticlesRouteShell,
 });

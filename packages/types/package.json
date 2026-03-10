@@ -3,12 +3,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
     "./api": {
-      "types": "./dist/api/index.d.ts",
+      "types": "./src/api/index.ts",
       "default": "./src/api/index.ts"
+    },
+    "./seo": {
+      "types": "./src/seo.ts",
+      "default": "./src/seo.ts"
     }
   },
   "scripts": {

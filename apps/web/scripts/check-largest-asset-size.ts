@@ -3,7 +3,7 @@ import path from "node:path";
 
 import "./load-root-env";
 
-const DEFAULT_MAX_KB = 4500;
+const DEFAULT_MAX_KB = 420;
 
 type AssetStat = {
   fileName: string;
@@ -12,7 +12,7 @@ type AssetStat = {
 };
 
 function parseMaxKb(): number {
-  const raw = process.env.WEB_LARGEST_ASSET_MAX_KB;
+  const raw = process.env.WEB_LARGEST_JS_ASSET_MAX_KB;
 
   if (!raw) {
     return DEFAULT_MAX_KB;
@@ -21,7 +21,7 @@ function parseMaxKb(): number {
   const parsed = Number(raw);
   if (!Number.isFinite(parsed) || parsed <= 0) {
     throw new Error(
-      `Invalid WEB_LARGEST_ASSET_MAX_KB value: ${raw}. Provide a positive number.`,
+      `Invalid WEB_LARGEST_JS_ASSET_MAX_KB value: ${raw}. Provide a positive number.`,
     );
   }
 
@@ -31,10 +31,12 @@ function parseMaxKb(): number {
 async function main() {
   const maxKb = parseMaxKb();
   const assetsDir = path.resolve(import.meta.dir, "../dist/assets");
-  const files = await readdir(assetsDir);
+  const files = (await readdir(assetsDir)).filter((fileName) =>
+    fileName.endsWith(".js"),
+  );
 
   if (files.length === 0) {
-    throw new Error(`No files found in ${assetsDir}`);
+    throw new Error(`No JS files found in ${assetsDir}`);
   }
 
   const stats = await Promise.all(
@@ -55,19 +57,12 @@ async function main() {
   const largestKb = largestAsset.sizeBytes / 1024;
 
   process.stdout.write(
-    `[perf:budget] Largest asset ${largestAsset.fileName}: ${largestKb.toFixed(2)} KiB (limit: ${maxKb.toFixed(2)} KiB)\n`,
+    `[perf:budget] Largest JS asset ${largestAsset.fileName}: ${largestKb.toFixed(2)} KiB (limit: ${maxKb.toFixed(2)} KiB)\n`,
   );
-  process.stdout.write("[perf:budget] Top 5 assets by size:\n");
-
-  for (const asset of sorted.slice(0, 5)) {
-    process.stdout.write(
-      `- ${asset.fileName}: ${(asset.sizeBytes / 1024).toFixed(2)} KiB\n`,
-    );
-  }
 
   if (largestKb > maxKb) {
     throw new Error(
-      `[perf:budget] Largest asset exceeds limit by ${(largestKb - maxKb).toFixed(2)} KiB: ${largestAsset.filePath}`,
+      `[perf:budget] Largest JS asset exceeds limit by ${(largestKb - maxKb).toFixed(2)} KiB: ${largestAsset.filePath}`,
     );
   }
 }

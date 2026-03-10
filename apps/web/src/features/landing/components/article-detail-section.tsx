@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import svgPaths from "../../../../imports/svg-x78xrehz02";
 
+import { AppImage } from "@/components/common/AppImage";
 import { LexicalViewer } from "@/components/common/rich-text/LexicalViewer";
 import {
   usePublicBlogBySlugQuery,
@@ -40,7 +41,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
   if (blogQuery.isPending) {
     return (
       <section className="landing-container landing-section-compact">
-        <div className="h-96 bg-muted/50 animate-pulse" />
+        <div className="h-96 animate-pulse bg-muted/50" />
       </section>
     );
   }
@@ -48,12 +49,12 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
   if (blogQuery.isError || !blogQuery.data?.data) {
     return (
       <section className="landing-container landing-section text-center">
-        <p className="font-sans text-muted-foreground text-[18px] mb-6">
+        <p className="mb-6 font-sans text-[18px] text-muted-foreground">
           This article was not found.
         </p>
         <Link
           to="/articles"
-          className="font-sans font-medium text-primary text-[16px] no-underline hover:opacity-80"
+          className="font-sans text-[16px] font-medium text-primary no-underline hover:opacity-80"
         >
           &larr; Back to Articles
         </Link>
@@ -68,39 +69,43 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
 
   return (
     <section className="landing-container">
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 items-start lg:items-center pt-6 pb-6">
+      <div className="flex flex-col items-start gap-4 pb-6 pt-6 lg:flex-row lg:items-center lg:gap-0">
         <div className="flex items-center gap-4 lg:w-[60%]">
           <Link
             to="/articles"
-            className="flex items-center gap-4 text-primary font-sans text-[16px] no-underline hover:opacity-80 transition-opacity"
+            className="flex items-center gap-4 font-sans text-[16px] text-primary no-underline transition-opacity hover:opacity-80"
           >
             <ArrowLeft />
             <span>Articles</span>
           </Link>
-          <div className="flex-1 h-px bg-primary" />
+          <div className="h-px flex-1 bg-primary" />
         </div>
 
-        <div className="hidden lg:flex items-center gap-4 lg:w-[40%] lg:pl-6">
-          <span className="font-sans text-[16px] text-primary shrink-0">
+        <div className="hidden items-center gap-4 lg:flex lg:w-[40%] lg:pl-6">
+          <span className="shrink-0 font-sans text-[16px] text-primary">
             More Like This
           </span>
-          <div className="flex-1 h-px bg-primary" />
+          <div className="h-px flex-1 bg-primary" />
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 pb-16">
-        <div className="lg:w-[60%] flex flex-col gap-6">
-          <div className="w-full h-70 md:h-90.25 relative overflow-hidden bg-muted/40">
+      <div className="flex flex-col gap-8 pb-16 lg:flex-row">
+        <div className="flex flex-col gap-6 lg:w-[60%]">
+          <div className="relative h-70 w-full overflow-hidden bg-muted/40 md:h-90.25">
             {article.featuredImageUrl ? (
-              <img
+              <AppImage
                 src={article.featuredImageUrl}
                 alt={article.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
+                width={1600}
+                height={900}
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                priority
               />
             ) : null}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-0 font-sans text-muted-foreground">
               <span className="text-[16px]">
                 {article.publishDate
@@ -114,33 +119,37 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
                   : "5 min read"}
               </span>
             </div>
-            <div className="bg-muted px-3 py-2 rounded-xl">
+            <div className="rounded-xl bg-muted px-3 py-2">
               <span className="font-sans text-[16px] text-muted-foreground">
                 {article.tags[0]?.name ?? "Article"}
               </span>
             </div>
           </div>
 
-          <h1 className="font-sans font-bold text-foreground text-[28px] md:text-[36px] leading-[1.2]">
+          <h1 className="font-sans text-[28px] font-bold leading-[1.2] text-foreground md:text-[36px]">
             {article.title}
           </h1>
 
           <LexicalViewer content={article.content} />
 
-          <div className="h-px bg-primary/15 w-full" />
+          <div className="h-px w-full bg-primary/15" />
 
           <div className="flex items-center gap-4">
-            <div className="w-10.5 h-10.5 rounded-full bg-muted/60 overflow-hidden">
+            <div className="h-10.5 w-10.5 overflow-hidden rounded-full bg-muted/60">
               {article.author?.image ? (
-                <img
+                <AppImage
                   src={article.author.image}
                   alt={article.author.name}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
+                  width={96}
+                  height={96}
+                  sizes="42px"
+                  loading="lazy"
                 />
               ) : null}
             </div>
             <div className="flex flex-col gap-1">
-              <p className="font-sans font-bold text-foreground text-[16px] capitalize">
+              <p className="font-sans text-[16px] font-bold capitalize text-foreground">
                 {article.author?.name ?? "DS General PLC Insights Team"}
               </p>
               {article.author?.socials?.[0]?.fullUrl ? (
@@ -151,7 +160,7 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
                   className="flex items-center gap-1 no-underline"
                 >
                   <XLogo />
-                  <span className="font-sans text-[14px] text-primary underline lowercase">
+                  <span className="font-sans text-[14px] lowercase text-primary underline">
                     {article.author.socials[0].handle || "Author Social"}
                   </span>
                 </a>
@@ -161,11 +170,11 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
         </div>
 
         <div className="lg:w-[40%] lg:pl-6">
-          <div className="lg:hidden flex items-center gap-4 mb-6">
-            <span className="font-sans text-[16px] text-primary shrink-0">
+          <div className="mb-6 flex items-center gap-4 lg:hidden">
+            <span className="shrink-0 font-sans text-[16px] text-primary">
               More Like This
             </span>
-            <div className="flex-1 h-px bg-primary" />
+            <div className="h-px flex-1 bg-primary" />
           </div>
 
           <div className="flex flex-col gap-5">
@@ -174,24 +183,28 @@ export function ArticleDetailSection({ slug }: ArticleDetailSectionProps) {
                 key={item.id}
                 to="/articles/$slug"
                 params={{ slug: item.slug }}
-                className="flex items-start border border-border/60 group cursor-pointer no-underline w-full hover:shadow-sm transition-shadow"
+                className="group flex w-full cursor-pointer items-start border border-border/60 no-underline transition-shadow hover:shadow-sm"
               >
-                <div className="w-35 h-40 relative shrink-0 overflow-hidden bg-muted/40">
+                <div className="relative h-40 w-35 shrink-0 overflow-hidden bg-muted/40">
                   {item.featuredImageUrl ? (
-                    <img
+                    <AppImage
                       src={item.featuredImageUrl}
                       alt={item.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      width={560}
+                      height={640}
+                      sizes="140px"
+                      loading="lazy"
                     />
                   ) : null}
                 </div>
-                <div className="flex flex-col gap-2 p-4 flex-1">
+                <div className="flex flex-1 flex-col gap-2 p-4">
                   <p className="font-sans text-[14px] text-muted-foreground">
                     {item.publishDate
                       ? new Date(item.publishDate).toLocaleDateString()
                       : new Date(item.createdAt).toLocaleDateString()}
                   </p>
-                  <p className="font-sans font-semibold text-[16px] text-foreground line-clamp-2">
+                  <p className="line-clamp-2 font-sans text-[16px] font-semibold text-foreground">
                     {item.title}
                   </p>
                 </div>

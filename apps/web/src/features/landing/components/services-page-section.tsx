@@ -107,6 +107,10 @@ export function ServicesPageSection() {
                     src={service.featuredImage}
                     alt={service.title}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    width={1200}
+                    height={900}
+                    sizes="(min-width: 1280px) 22vw, (min-width: 640px) 44vw, 100vw"
+                    priority={index === 0}
                   />
                 ) : (
                   <div className="absolute inset-0 bg-linear-to-br from-primary/20 via-primary/8 to-transparent" />

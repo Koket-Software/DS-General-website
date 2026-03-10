@@ -8,7 +8,6 @@ import {
   partnersListParamsSchema,
 } from "@/features/dashboard/partners/lib/partners-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/partners/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -17,9 +16,9 @@ export const Route = createLazyFileRoute("/dashboard/partners/")({
       limit: search.limit ? Number(search.limit) : undefined,
       search: typeof search.search === "string" ? search.search : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizePartnersListParams(search);
-    await prefetchResource(queryClient, partnerKeys.list(params), () =>
+    await prefetchResource(context.queryClient, partnerKeys.list(params), () =>
       fetchPartners(params),
     );
     return null;

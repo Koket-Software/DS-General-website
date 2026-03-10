@@ -1,28 +1,21 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { AxiosError } from "axios";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
-import Loader from "./components/loader";
-import { routeTree } from "./routeTree.gen";
-
-import { ThemeProvider } from "@/context/theme-context";
+import { createAppQueryClient } from "@/lib/app-query-client";
+import { AppRouterProvider, createAppRouter } from "@/lib/app-router";
 import { installRateLimitHandler } from "@/lib/rate-limit-tracker";
 
 installRateLimitHandler();
 
-const router = createRouter({
-  routeTree,
-  defaultPreload: "intent",
-  defaultPendingComponent: () => <Loader />,
-  context: {},
-});
+const queryClient = createAppQueryClient();
+const router = createAppRouter({ queryClient });
 
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
+function App() {
+  return (
+    <StrictMode>
+      <AppRouterProvider router={router} />
+    </StrictMode>
+  );
 }
 
 const rootElement = document.getElementById("app");
@@ -31,39 +24,8 @@ if (!rootElement) {
   throw new Error("Root element not found");
 }
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
-      retry: (failureCount, error: unknown) => {
-        if (error instanceof AxiosError) {
-          if (
-            error?.response?.status === 401 ||
-            error?.response?.status === 403
-          ) {
-            return false;
-          }
-        }
-        return failureCount < 3;
-      },
-    },
-  },
-});
-
-function App() {
-  return (
-    <StrictMode>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </ThemeProvider>
-    </StrictMode>
-  );
-}
-
 if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(<App />);
+  ReactDOM.createRoot(rootElement).render(<App />);
+} else {
+  ReactDOM.hydrateRoot(rootElement, <App />);
 }

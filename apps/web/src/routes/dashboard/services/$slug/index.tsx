@@ -2,17 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { fetchServiceById } from "@/features/dashboard/services/lib/services-api";
 import { serviceKeys } from "@/features/dashboard/services/lib/services-query";
+import type { AppRouterContext } from "@/lib/app-router";
 import { prefetchResource } from "@/lib/prefetch";
 import { parseSearchId, resolvePrefetchedSlugId } from "@/lib/route-loader";
 import { fetchPublicServiceBySlug } from "@/lib/services/services-api";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/services/$slug/")({
   validateSearch: parseSearchId,
   loader: async ({
+    context,
     params,
     search = {},
   }: {
+    context: AppRouterContext;
     params: { slug: string };
     search?: Record<string, unknown>;
   }) => {
@@ -22,8 +24,10 @@ export const Route = createFileRoute("/dashboard/services/$slug/")({
       fetchBySlug: fetchPublicServiceBySlug,
       getIdFromSlugResponse: (response) => response?.data?.id,
       prefetchById: (resolvedId) =>
-        prefetchResource(queryClient, serviceKeys.detail(resolvedId), () =>
-          fetchServiceById(resolvedId, { includeImages: true }),
+        prefetchResource(
+          context.queryClient,
+          serviceKeys.detail(resolvedId),
+          () => fetchServiceById(resolvedId, { includeImages: true }),
         ),
       missingIdMessage:
         "Missing service identifier. Please navigate from the services list.",

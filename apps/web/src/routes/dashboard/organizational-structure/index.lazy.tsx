@@ -8,7 +8,6 @@ import {
   orgMembersListParamsSchema,
 } from "@/features/dashboard/organizational-structure/lib/org-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute(
   "/dashboard/organizational-structure/",
@@ -24,10 +23,12 @@ export const Route = createLazyFileRoute(
           ? search.sortOrder
           : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeOrgMembersListParams(search);
-    await prefetchResource(queryClient, orgMemberKeys.list(params), () =>
-      fetchOrgMembers(params),
+    await prefetchResource(
+      context.queryClient,
+      orgMemberKeys.list(params),
+      () => fetchOrgMembers(params),
     );
     return null;
   },

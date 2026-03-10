@@ -1,19 +1,49 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ServiceDetailPage } from "@/features/landing/pages/ServiceDetailPage";
+import { buildServiceDetailHead } from "@/lib/seo";
+import type {
+  PublicServiceDetailResponse,
+  PublicServicesListResponse,
+} from "@/lib/services/services-api";
 import {
   publicServiceBySlugQueryOptions,
   publicServicesQueryOptions,
 } from "@/lib/services/services-query";
-import { queryClient } from "@/main";
+
+interface ServiceRouteLoaderData {
+  service: PublicServiceDetailResponse;
+  relatedServices: PublicServicesListResponse;
+}
 
 export const Route = createFileRoute("/_landing/services/$slug")({
-  loader: async ({ params }) => {
+  head: ({ loaderData, params }) => {
+    const service = (loaderData as ServiceRouteLoaderData | undefined)?.service
+      ?.data;
+    const firstImage = service?.images?.[0]?.imageUrl;
+
+    if (!service) {
+      return buildServiceDetailHead({
+        slug: params.slug,
+        title: params.slug,
+      });
+    }
+
+    return buildServiceDetailHead({
+      slug: params.slug,
+      title: service.title,
+      excerpt: service.excerpt,
+      featuredImageUrl: firstImage,
+    });
+  },
+  loader: async ({ context, params }) => {
     const { slug } = params;
 
-    await Promise.all([
-      queryClient.ensureQueryData(publicServiceBySlugQueryOptions(slug)),
-      queryClient.ensureQueryData(
+    const [service, relatedServices] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        publicServiceBySlugQueryOptions(slug),
+      ),
+      context.queryClient.ensureQueryData(
         publicServicesQueryOptions({
           page: 1,
           limit: 8,
@@ -23,7 +53,7 @@ export const Route = createFileRoute("/_landing/services/$slug")({
       ),
     ]);
 
-    return null;
+    return { service, relatedServices } satisfies ServiceRouteLoaderData;
   },
   component: ServiceDetailRoutePage,
 });

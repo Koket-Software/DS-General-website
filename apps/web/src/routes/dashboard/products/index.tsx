@@ -7,7 +7,6 @@ import {
   productsListParamsSchema,
 } from "@/features/dashboard/products/lib/products-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/products/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -22,9 +21,9 @@ export const Route = createFileRoute("/dashboard/products/")({
           : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizeProductsListParams(deps);
-    await prefetchResource(queryClient, productKeys.list(params), () =>
+    await prefetchResource(context.queryClient, productKeys.list(params), () =>
       fetchProducts(params),
     );
     return null;

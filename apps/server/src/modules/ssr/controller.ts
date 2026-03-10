@@ -1,314 +1,282 @@
-import type { Context } from "hono";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 import {
-  createBlogMeta,
-  createCareerMeta,
-  createDefaultMeta,
-  createGenericPathMeta,
-  createHomeMeta,
-  createProjectMeta,
-  createSectorMeta,
-  createServiceMeta,
-  createStaticPageMeta,
-  generateHtmlShell,
-} from "./service";
-import type { PageMeta, SsrConfig } from "./types";
+  buildRobotsContent,
+  getStaticSeoRoute,
+  isNoindexRoute,
+  isPublicRenderableRoute,
+  joinUrl,
+  normalizeSeoPath,
+} from "@suba-company-template/types";
+import type { Context } from "hono";
+
 import { getServerBrandSeoConfig } from "../../shared/branding/brand-seo-config";
 import { logger } from "../../shared/logger";
 
-type BlogData = {
-  title: string;
-  excerpt: string | null;
-  author: string | null;
-  publishDate: string | null;
-  tags?: { name: string }[];
+type ClientAssetManifestEntry = {
+  file: string;
+  css?: string[];
+  imports?: string[];
+  isEntry?: boolean;
+  src?: string;
 };
 
-type ServiceData = {
-  title: string;
-  excerpt: string | null;
+type ClientAssetEntry = {
+  entryScript: string;
+  styles: string[];
+  preloads: string[];
 };
 
-type ProjectData = {
-  title: string;
-  excerpt: string | null;
-  tags?: { name: string }[];
+type WebRendererModule = {
+  renderSsrPage: (input: {
+    request: Request;
+    assets: ClientAssetEntry;
+  }) => Promise<Response>;
 };
 
-type ProductData = {
-  title: string;
-  excerpt: string | null;
-  tags?: { name: string }[];
+type CachedRenderer = {
+  assets: ClientAssetEntry;
+  renderer: WebRendererModule;
 };
 
-type CareerData = {
-  title: string;
-  excerpt: string | null;
-  department: string | null;
-  location: string | null;
-};
-
-type SectorData = {
-  title: string;
-  excerpt: string | null;
-  featuredImageUrl?: string | null;
-};
-
-export interface SsrControllerDeps {
-  blogRepository: {
-    findPublishedBySlug: (slug: string) => Promise<BlogData | null>;
-  };
-  serviceRepository: {
-    findPublicBySlug: (slug: string) => Promise<ServiceData | null>;
-  };
-  caseStudyRepository: {
-    findBySlug: (slug: string) => Promise<ProjectData | null>;
-  };
-  productRepository: {
-    findBySlug: (slug: string) => Promise<ProductData | null>;
-  };
-  vacancyRepository: {
-    findPublicBySlug: (slug: string) => Promise<CareerData | null>;
-  };
-  businessSectorRepository: {
-    findPublishedBySlug: (slug: string) => Promise<SectorData | null>;
-  };
-}
+let cachedRendererPromise: Promise<CachedRenderer> | null = null;
 
 export type SsrController = ReturnType<typeof createSsrController>;
 
-const normalizeLookupPath = (path: string): string => {
-  const [pathWithoutQuery] = path.split("?");
-  if (!pathWithoutQuery || pathWithoutQuery === "/") return "/";
-  if (pathWithoutQuery === "/demo") return "/";
-  if (pathWithoutQuery.startsWith("/demo/")) {
-    const normalized = pathWithoutQuery.replace(/^\/demo/, "");
-    return normalized || "/";
-  }
-  return pathWithoutQuery;
-};
+const resolveWebBuildPath = (...segments: string[]) =>
+  path.resolve(process.cwd(), "../web", ...segments);
 
-const staticPageRegistry = new Map<
-  string,
-  {
-    title: string;
-    description: string;
-    category: string;
-    pageTheme:
-      | "about"
-      | "articles"
-      | "gallery"
-      | "contact"
-      | "career"
-      | "legal";
-    highlights: string[];
-    section: string;
-  }
->([
-  [
-    "/about",
-    {
-      title: "About DS General PLC",
-      description:
-        "Learn how DS General PLC combines sourcing, construction, and operational delivery into one integrated execution model.",
-      category: "About",
-      pageTheme: "about",
-      highlights: [
-        "Mission-led growth",
-        "Integrated execution",
-        "Ethiopian market focus",
-      ],
-      section: "About",
-    },
-  ],
-  [
-    "/articles",
-    {
-      title: "Articles & Insights",
-      description:
-        "Read practical articles on supply chains, engineering operations, and project delivery from the DS General PLC team.",
-      category: "Articles",
-      pageTheme: "articles",
-      highlights: [
-        "Engineering stories",
-        "Operational insights",
-        "Field intelligence",
-      ],
-      section: "Articles",
-    },
-  ],
-  [
-    "/career",
-    {
-      title: "Careers",
-      description:
-        "Explore open roles at DS General PLC and join teams building dependable sourcing, supply, and construction operations.",
-      category: "Careers",
-      pageTheme: "career",
-      highlights: ["Open roles", "Operational excellence", "Build with us"],
-      section: "Careers",
-    },
-  ],
-  [
-    "/contact",
-    {
-      title: "Contact Us",
-      description:
-        "Talk with DS General PLC about procurement, project planning, sourcing partnerships, and construction delivery.",
-      category: "Contact",
-      pageTheme: "contact",
-      highlights: ["Quotes", "Procurement", "Project planning"],
-      section: "Contact",
-    },
-  ],
-  [
-    "/gallery",
-    {
-      title: "Gallery",
-      description:
-        "Browse visual highlights from DS General PLC projects, deliveries, and on-the-ground operational work.",
-      category: "Gallery",
-      pageTheme: "gallery",
-      highlights: ["Field moments", "Delivery snapshots", "Project highlights"],
-      section: "Gallery",
-    },
-  ],
-  [
-    "/privacy-policy",
-    {
-      title: "Privacy Policy",
-      description:
-        "Review how DS General PLC collects, uses, and safeguards information shared through the website.",
-      category: "Privacy Policy",
-      pageTheme: "legal",
-      highlights: [
-        "Responsible handling",
-        "Clear disclosure",
-        "Policy transparency",
-      ],
-      section: "Privacy Policy",
-    },
-  ],
-  [
-    "/terms-of-service",
-    {
-      title: "Terms of Service",
-      description:
-        "Read the website terms governing access to DS General PLC content, service information, and inquiries.",
-      category: "Terms of Service",
-      pageTheme: "legal",
-      highlights: ["Usage terms", "Service clarity", "Commercial context"],
-      section: "Terms of Service",
-    },
-  ],
-]);
+async function loadClientAssets(): Promise<ClientAssetEntry> {
+  const manifestPath = resolveWebBuildPath("dist/.vite/manifest.json");
+  const rawManifest = await readFile(manifestPath, "utf8");
+  const manifest = JSON.parse(rawManifest) as Record<
+    string,
+    ClientAssetManifestEntry
+  >;
 
-type Resolver = (
-  canonicalPath: string,
-  lookupPath: string,
-  deps: SsrControllerDeps,
-  config: SsrConfig,
-) => Promise<PageMeta | null>;
+  const entry =
+    manifest["index.html"] ||
+    manifest["src/main.tsx"] ||
+    Object.values(manifest).find((item) => item.isEntry);
 
-const dynamicResolvers: Resolver[] = [
-  async (canonicalPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/articles\/([^/]+)$/);
-    if (!match) return null;
-    const slug = match[1]!;
-    const blog = await deps.blogRepository.findPublishedBySlug(slug);
-    if (!blog) return null;
-    return createBlogMeta(slug, canonicalPath, blog, config);
-  },
-  async (canonicalPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/services\/([^/]+)$/);
-    if (!match) return null;
-    const slug = match[1]!;
-    const service = await deps.serviceRepository.findPublicBySlug(slug);
-    if (!service) return null;
-    return createServiceMeta(slug, canonicalPath, service, config);
-  },
-  async (canonicalPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/projects\/([^/]+)$/);
-    if (!match) return null;
-    const slug = match[1]!;
-    const project =
-      (await deps.caseStudyRepository.findBySlug(slug)) ||
-      (await deps.productRepository.findBySlug(slug));
-    if (!project) return null;
-    return createProjectMeta(slug, canonicalPath, project, config);
-  },
-  async (canonicalPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/career\/([^/]+)$/);
-    if (!match) return null;
-    const slug = match[1]!;
-    const career = await deps.vacancyRepository.findPublicBySlug(slug);
-    if (!career) return null;
-    return createCareerMeta(slug, canonicalPath, career, config);
-  },
-  async (canonicalPath, lookupPath, deps, config) => {
-    const match = lookupPath.match(/^\/sectors\/([^/]+)$/);
-    if (!match) return null;
-    const slug = match[1]!;
-    const sector =
-      await deps.businessSectorRepository.findPublishedBySlug(slug);
-    if (!sector) return null;
-    return createSectorMeta(canonicalPath, sector, config);
-  },
-];
-
-const resolveStaticMeta = (
-  canonicalPath: string,
-  lookupPath: string,
-  config: SsrConfig,
-): PageMeta | null => {
-  if (lookupPath === "/") {
-    return createHomeMeta(canonicalPath, config);
+  if (!entry) {
+    throw new Error(`Unable to resolve Vite entry from ${manifestPath}`);
   }
 
-  const staticMeta = staticPageRegistry.get(lookupPath);
-  if (!staticMeta) return null;
+  const styles = new Set<string>();
+  const preloads = new Set<string>();
 
-  return createStaticPageMeta(canonicalPath, staticMeta, config);
-};
+  const collectImports = (item?: ClientAssetManifestEntry) => {
+    if (!item) return;
 
-async function getMetaForPath(
-  requestedPath: string,
-  deps: SsrControllerDeps,
-  config: SsrConfig,
-): Promise<PageMeta> {
-  const lookupPath = normalizeLookupPath(requestedPath);
-  const canonicalPath = lookupPath;
+    item.css?.forEach((href) => styles.add(`/${href}`));
 
-  for (const resolver of dynamicResolvers) {
-    const resolved = await resolver(canonicalPath, lookupPath, deps, config);
-    if (resolved) return resolved;
-  }
+    item.imports?.forEach((importKey) => {
+      const imported = manifest[importKey];
+      if (!imported) return;
+      preloads.add(`/${imported.file}`);
+      collectImports(imported);
+    });
+  };
 
-  const staticMeta = resolveStaticMeta(canonicalPath, lookupPath, config);
-  if (staticMeta) return staticMeta;
+  collectImports(entry);
 
-  return createGenericPathMeta(canonicalPath, config);
+  return {
+    entryScript: `/${entry.file}`,
+    styles: [...styles],
+    preloads: [...preloads],
+  };
 }
 
-export const createSsrController = (deps: SsrControllerDeps) => {
+async function loadRenderer(): Promise<CachedRenderer> {
+  if (cachedRendererPromise) {
+    return cachedRendererPromise;
+  }
+
+  cachedRendererPromise = (async () => {
+    const assets = await loadClientAssets();
+    const rendererPath = resolveWebBuildPath("dist-ssr/server.js");
+    const renderer = (await import(
+      pathToFileURL(rendererPath).href
+    )) as WebRendererModule;
+
+    if (typeof renderer.renderSsrPage !== "function") {
+      throw new Error(`renderSsrPage export missing from ${rendererPath}`);
+    }
+
+    return {
+      assets,
+      renderer,
+    };
+  })();
+
+  return cachedRendererPromise;
+}
+
+function inferTitle(pathname: string, siteName: string) {
+  const staticRoute = getStaticSeoRoute(pathname);
+  if (staticRoute) {
+    return staticRoute.title;
+  }
+
+  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
+    return `Dashboard | ${siteName}`;
+  }
+
+  if (pathname === "/login") {
+    return `Admin Sign In | ${siteName}`;
+  }
+
+  if (pathname === "/register") {
+    return `Admin Registration | ${siteName}`;
+  }
+
+  if (pathname === "/forbidden") {
+    return `Forbidden | ${siteName}`;
+  }
+
+  if (pathname === "/rate-limit") {
+    return `Rate Limit | ${siteName}`;
+  }
+
+  return `${siteName} | Application`;
+}
+
+function buildNoIndexShellHtml(input: {
+  assets: ClientAssetEntry;
+  path: string;
+  title: string;
+  description: string;
+  siteName: string;
+  siteUrl: string;
+  themeColor: string;
+}) {
+  const canonicalUrl = joinUrl(input.siteUrl, input.path);
+  const robots = buildRobotsContent({ index: false, follow: false });
+
+  return `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${escapeHtml(input.title)}</title>
+    <meta name="description" content="${escapeHtml(input.description)}" />
+    <meta name="robots" content="${robots}" />
+    <meta name="theme-color" content="${escapeHtml(input.themeColor)}" />
+    <meta name="application-name" content="${escapeHtml(input.siteName)}" />
+    <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/site/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/site/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/site/favicon-16x16.png" />
+    <link rel="icon" type="image/x-icon" href="/site/favicon.ico" />
+    <link rel="manifest" href="/site/site.webmanifest" />
+    ${input.assets.styles
+      .map((href) => `<link rel="stylesheet" href="${escapeHtml(href)}" />`)
+      .join("\n    ")}
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="${escapeHtml(input.assets.entryScript)}"></script>
+  </body>
+</html>`;
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function buildPublicRequest(c: Context, publicPath: string) {
+  const protocol =
+    c.req.header("x-forwarded-proto") ??
+    new URL(c.req.url).protocol.replace(":", "");
+  const host = c.req.header("x-forwarded-host") ?? c.req.header("host");
+
+  if (!host) {
+    throw new Error("Unable to determine request host for SSR");
+  }
+
+  const url = `${protocol}://${host}${publicPath}`;
+
+  return new Request(url, {
+    method: "GET",
+    headers: c.req.raw.headers,
+  });
+}
+
+export const createSsrController = () => {
   const brand = getServerBrandSeoConfig();
 
   async function servePrerenderedHtml(c: Context): Promise<Response> {
-    const path = c.req.path.replace(/^\/_ssr/, "") || "/";
+    const requestedPath = c.req.path.replace(/^\/_ssr/, "") || "/";
+    const normalizedPath = normalizeSeoPath(requestedPath);
 
     try {
-      const meta = await getMetaForPath(path, deps, brand);
-      const html = generateHtmlShell(meta, brand);
+      const { assets, renderer } = await loadRenderer();
 
-      return c.html(html, 200, {
-        "Cache-Control":
-          "public, max-age=300, s-maxage=600, stale-while-revalidate=86400",
+      if (isNoindexRoute(normalizedPath)) {
+        const html = buildNoIndexShellHtml({
+          assets,
+          path: normalizedPath,
+          title: inferTitle(normalizedPath, brand.siteName),
+          description: "Protected operational page for DS General PLC.",
+          siteName: brand.siteName,
+          siteUrl: brand.siteUrl,
+          themeColor: brand.themeColor,
+        });
+
+        return c.html(html, 200, {
+          "Cache-Control": "private, no-store",
+          "X-Robots-Tag": "noindex, nofollow",
+        });
+      }
+
+      if (!isPublicRenderableRoute(normalizedPath)) {
+        const html = buildNoIndexShellHtml({
+          assets,
+          path: normalizedPath,
+          title: inferTitle(normalizedPath, brand.siteName),
+          description: brand.defaultDescription,
+          siteName: brand.siteName,
+          siteUrl: brand.siteUrl,
+          themeColor: brand.themeColor,
+        });
+
+        return c.html(html, 404, {
+          "Cache-Control": "public, max-age=60",
+          "X-Robots-Tag": "noindex, nofollow",
+        });
+      }
+
+      const request = buildPublicRequest(c, normalizedPath);
+      const response = await renderer.renderSsrPage({
+        request,
+        assets,
+      });
+
+      const headers = new Headers(response.headers);
+      headers.set(
+        "Cache-Control",
+        "public, max-age=300, s-maxage=600, stale-while-revalidate=86400",
+      );
+
+      return new Response(response.body, {
+        status: response.status,
+        headers,
       });
     } catch (error) {
-      logger.error("SSR error", error as Error, { path });
-      const fallbackMeta = createDefaultMeta(path, brand);
-      const html = generateHtmlShell(fallbackMeta, brand);
-      return c.html(html, 200);
+      logger.error("SSR render error", error as Error, {
+        path: normalizedPath,
+      });
+
+      return c.text("SSR renderer unavailable", 503);
     }
   }
 

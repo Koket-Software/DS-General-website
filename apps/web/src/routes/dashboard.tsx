@@ -1,14 +1,15 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import Cookies from "js-cookie";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/features/dashboard/layout/app-sidebar";
-import Header from "@/features/dashboard/layout/header";
 import { authClient } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { buildNoIndexHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/dashboard")({
-  component: DashboardLayout,
+  head: () =>
+    buildNoIndexHead({
+      path: "/dashboard",
+      title: "Dashboard | DS General PLC",
+      description: "Protected operational workspace for DS General PLC.",
+    }),
   beforeLoad: async () => {
     const session = await authClient.getSession();
     if (!session.data) {
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/dashboard")({
         to: "/login",
       });
     }
-    // Role is now directly on the session user object (Better Auth admin plugin)
+
     const role = (session.data.user.role as string) || "user";
     const allowed = role === "admin" || role === "blogger";
     if (!allowed) {
@@ -24,33 +25,7 @@ export const Route = createFileRoute("/dashboard")({
         to: "/forbidden",
       });
     }
+
     return { session, role };
   },
 });
-
-function DashboardLayout() {
-  const defaultOpen = Cookies.get("sidebar_state") !== "false";
-
-  return (
-    <SidebarProvider defaultOpen={defaultOpen} data-dashboard="true">
-      <AppSidebar />
-      <div
-        id="content"
-        className={cn(
-          "ml-auto w-full max-w-full",
-          "peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]",
-          "peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]",
-          "transition-[width] duration-200 ease-linear",
-          "flex min-h-svh flex-col",
-          "group-data-[scroll-locked=1]/body:h-full",
-          "group-data-[scroll-locked=1]/body:has-[main.fixed-main]:h-svh",
-        )}
-      >
-        <Header />
-        <main id="dashboard-main" className="flex-1 overflow-x-hidden">
-          <Outlet />
-        </main>
-      </div>
-    </SidebarProvider>
-  );
-}

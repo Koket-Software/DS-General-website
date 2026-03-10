@@ -5,17 +5,18 @@ import { publicAchievementsQueryOptions } from "@/lib/achievements";
 import { publicBlogsQueryOptions } from "@/lib/blogs/blogs-query";
 import { publicCaseStudiesQueryOptions } from "@/lib/case-study/case-study-query";
 import { faqListQueryOptions } from "@/lib/faq/faq-query";
+import { buildStaticPageHead } from "@/lib/seo";
 import { publicServicesQueryOptions } from "@/lib/services/services-query";
 import { testimonialListQueryOptions } from "@/lib/testimonial/testimonial-query";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/_landing/")({
-  loader: async () => {
-    await Promise.all([
-      queryClient.ensureQueryData(
+  head: () => buildStaticPageHead("/"),
+  loader: async ({ context }) => {
+    return Promise.all([
+      context.queryClient.ensureQueryData(
         publicAchievementsQueryOptions({ page: 1, limit: 6 }),
       ),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(
         publicServicesQueryOptions({
           page: 1,
           limit: 6,
@@ -23,14 +24,16 @@ export const Route = createFileRoute("/_landing/")({
           sortOrder: "desc",
         }),
       ),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(
         publicCaseStudiesQueryOptions({ page: 1, limit: 6 }),
       ),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(
         testimonialListQueryOptions({ page: 1, limit: 8 }),
       ),
-      queryClient.ensureQueryData(faqListQueryOptions({ page: 1, limit: 8 })),
-      queryClient.ensureQueryData(
+      context.queryClient.ensureQueryData(
+        faqListQueryOptions({ page: 1, limit: 8 }),
+      ),
+      context.queryClient.ensureQueryData(
         publicBlogsQueryOptions({
           page: 1,
           limit: 3,
@@ -39,8 +42,6 @@ export const Route = createFileRoute("/_landing/")({
         }),
       ),
     ]);
-
-    return null;
   },
   component: HomePage,
 });

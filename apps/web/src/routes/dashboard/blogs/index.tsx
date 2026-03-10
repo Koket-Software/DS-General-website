@@ -7,7 +7,6 @@ import {
   normalizeBlogsListParams,
 } from "@/features/dashboard/blogs/lib/blogs-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/blogs/")({
   validateSearch: (search: Record<string, unknown> = {}) =>
@@ -22,9 +21,9 @@ export const Route = createFileRoute("/dashboard/blogs/")({
           : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizeBlogsListParams(deps);
-    await prefetchResource(queryClient, blogKeys.list(params), () =>
+    await prefetchResource(context.queryClient, blogKeys.list(params), () =>
       fetchBlogs(params),
     );
     return null;

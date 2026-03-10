@@ -2,11 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { fetchTestimonialById } from "@/features/dashboard/testimonials/lib/testimonials-api";
 import { testimonialKeys } from "@/features/dashboard/testimonials/lib/testimonials-query";
+import type { AppRouterContext } from "@/lib/app-router";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/testimonials/$id/edit")({
-  loader: async ({ params }: { params: { id: string } }) => {
+  loader: async ({
+    context,
+    params,
+  }: {
+    context: AppRouterContext;
+    params: { id: string };
+  }) => {
     const id = Number(params.id);
 
     if (!Number.isFinite(id) || id <= 0) {
@@ -15,8 +21,10 @@ export const Route = createFileRoute("/dashboard/testimonials/$id/edit")({
       );
     }
 
-    await prefetchResource(queryClient, testimonialKeys.detail(id), () =>
-      fetchTestimonialById(id),
+    await prefetchResource(
+      context.queryClient,
+      testimonialKeys.detail(id),
+      () => fetchTestimonialById(id),
     );
 
     return { id };

@@ -1,16 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { CareerDetailPage } from "@/features/landing/pages/CareerDetailPage";
+import { buildCareerDetailHead } from "@/lib/seo";
+import type { PublicVacancyResponse } from "@/lib/vacancies/vacancies-api";
 import { publicVacancyBySlugQueryOptions } from "@/lib/vacancies/vacancies-query";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/_landing/career/$slug")({
-  loader: async ({ params }) => {
+  head: ({ loaderData, params }) => {
+    const vacancy = (loaderData as PublicVacancyResponse | undefined)?.data;
+
+    if (!vacancy) {
+      return buildCareerDetailHead({
+        slug: params.slug,
+        title: params.slug,
+      });
+    }
+
+    return buildCareerDetailHead({
+      slug: params.slug,
+      title: vacancy.title,
+      excerpt: vacancy.excerpt,
+      featuredImageUrl: vacancy.featuredImageUrl,
+      department: vacancy.department,
+      location: vacancy.location,
+      publishedAt: vacancy.publishedAt,
+      employmentType: vacancy.employmentType,
+    });
+  },
+  loader: async ({ context, params }) => {
     const { slug } = params;
 
-    await queryClient.ensureQueryData(publicVacancyBySlugQueryOptions(slug));
-
-    return null;
+    return context.queryClient.ensureQueryData(
+      publicVacancyBySlugQueryOptions(slug),
+    );
   },
   component: CareerRoutePage,
 });

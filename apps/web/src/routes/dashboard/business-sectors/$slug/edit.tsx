@@ -5,8 +5,8 @@ import {
   fetchBusinessSectorBySlug,
 } from "@/features/dashboard/business-sectors/lib/business-sectors-api";
 import { businessSectorKeys } from "@/features/dashboard/business-sectors/lib/business-sectors-query";
+import type { AppRouterContext } from "@/lib/app-router";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/business-sectors/$slug/edit")({
   validateSearch: (search: Record<string, unknown> = {}) => {
@@ -16,9 +16,11 @@ export const Route = createFileRoute("/dashboard/business-sectors/$slug/edit")({
     return { id };
   },
   loader: async ({
+    context,
     params,
     search = {},
   }: {
+    context: AppRouterContext;
     params: { slug: string };
     search?: { id?: number };
   }) => {
@@ -30,8 +32,10 @@ export const Route = createFileRoute("/dashboard/business-sectors/$slug/edit")({
       id = detail.data.id;
     }
 
-    await prefetchResource(queryClient, businessSectorKeys.detail(id), () =>
-      fetchBusinessSectorById(id),
+    await prefetchResource(
+      context.queryClient,
+      businessSectorKeys.detail(id),
+      () => fetchBusinessSectorById(id),
     );
 
     return { id };

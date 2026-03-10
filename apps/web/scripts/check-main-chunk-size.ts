@@ -3,7 +3,7 @@ import path from "node:path";
 
 import "./load-root-env";
 
-const DEFAULT_MAX_KB = 3760;
+const DEFAULT_MAX_KB = 420;
 
 function parseMaxKb(): number {
   const raw = process.env.WEB_MAIN_CHUNK_MAX_KB;
@@ -52,12 +52,12 @@ async function main() {
   const sizeKb = mainChunk.sizeBytes / 1024;
 
   process.stdout.write(
-    `[perf:budget] Main chunk ${mainChunk.fileName}: ${sizeKb.toFixed(2)} KiB (limit: ${maxKb.toFixed(2)} KiB)\n`,
+    `[perf:budget] Public entry chunk ${mainChunk.fileName}: ${sizeKb.toFixed(2)} KiB (limit: ${maxKb.toFixed(2)} KiB)\n`,
   );
 
   if (sizeKb > maxKb) {
     throw new Error(
-      `[perf:budget] Main chunk exceeds limit by ${(sizeKb - maxKb).toFixed(2)} KiB: ${mainChunk.filePath}`,
+      `[perf:budget] Public entry chunk exceeds limit by ${(sizeKb - maxKb).toFixed(2)} KiB: ${mainChunk.filePath}`,
     );
   }
 }

@@ -2,8 +2,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
+import { AppImage } from "@/components/common/AppImage";
 import { LexicalViewer } from "@/components/common/rich-text/LexicalViewer";
-import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FieldLabel } from "@/components/ui/field";
@@ -194,10 +194,14 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
 
           <div className="relative mb-8 w-full overflow-hidden aspect-video md:aspect-16/8 bg-muted/40">
             {vacancy.featuredImageUrl ? (
-              <ImageWithFallback
+              <AppImage
                 src={vacancy.featuredImageUrl}
                 alt={vacancy.title}
                 className="h-full w-full object-cover"
+                width={1600}
+                height={900}
+                sizes="(min-width: 1024px) 66vw, 100vw"
+                priority
               />
             ) : null}
             <div className="absolute inset-0 bg-linear-to-t from-foreground/70 via-foreground/20 to-transparent" />

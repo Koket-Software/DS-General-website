@@ -5,12 +5,13 @@ import {
 } from "@tanstack/react-router";
 
 import { ServicesPage } from "@/features/landing/pages/ServicesPage";
+import { buildStaticPageHead } from "@/lib/seo";
 import { publicServicesQueryOptions } from "@/lib/services/services-query";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/_landing/services")({
-  loader: async () => {
-    await queryClient.ensureQueryData(
+  head: () => buildStaticPageHead("/services"),
+  loader: async ({ context }) => {
+    return context.queryClient.ensureQueryData(
       publicServicesQueryOptions({
         page: 1,
         limit: 12,
@@ -18,8 +19,6 @@ export const Route = createFileRoute("/_landing/services")({
         sortOrder: "desc",
       }),
     );
-
-    return null;
   },
   component: ServicesRouteShell,
 });

@@ -7,7 +7,6 @@ import {
   vacanciesListParamsSchema,
 } from "@/features/dashboard/vacancies/lib/vacancies-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createFileRoute("/dashboard/vacancies/")({
   validateSearch: (search: Record<string, unknown> = {}) =>
@@ -23,9 +22,9 @@ export const Route = createFileRoute("/dashboard/vacancies/")({
       status: typeof search.status === "string" ? search.status : undefined,
     }),
   loaderDeps: ({ search }) => search,
-  loader: async ({ deps }) => {
+  loader: async ({ context, deps }) => {
     const params = normalizeVacanciesListParams(deps);
-    await prefetchResource(queryClient, vacancyKeys.list(params), () =>
+    await prefetchResource(context.queryClient, vacancyKeys.list(params), () =>
       fetchVacancies(params),
     );
     return null;

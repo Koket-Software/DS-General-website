@@ -4,27 +4,41 @@ import { resolve } from "node:path";
 
 import "./load-root-env";
 
-import { generateFullSitemap } from "../src/utils/generate-sitemap";
+import {
+  generateFullSitemap,
+  generateRobotsTxt,
+} from "../src/utils/generate-sitemap";
 
 async function main() {
-  const baseUrl = process.env.VITE_SITE_URL || "https://yourdomain.com";
+  const envBaseUrl =
+    process.env.VITE_SITE_URL || process.env.VITE_FRONTEND_URL || "";
+  const baseUrl = /localhost|127\.0\.1/.test(envBaseUrl)
+    ? "https://dsgeneralplc.com"
+    : envBaseUrl || "https://dsgeneralplc.com";
+  const publicDir = resolve(process.cwd(), "public");
+  const sitemapPath = resolve(publicDir, "sitemap.xml");
+  const robotsPath = resolve(publicDir, "robots.txt");
 
-  console.log("🗺️  Generating sitemap...");
+  console.log("Generating sitemap and robots.txt...");
 
   try {
-    const sitemap = await generateFullSitemap(baseUrl, {
-      prettyPrint: true,
-    });
+    const [sitemap, robots] = await Promise.all([
+      generateFullSitemap(baseUrl, {
+        prettyPrint: true,
+        includeDynamicRoutes: true,
+      }),
+      Promise.resolve(generateRobotsTxt(baseUrl)),
+    ]);
 
-    const outputPath = resolve(process.cwd(), "public", "sitemap.xml");
+    writeFileSync(sitemapPath, sitemap, "utf-8");
+    writeFileSync(robotsPath, `${robots}\n`, "utf-8");
 
-    writeFileSync(outputPath, sitemap, "utf-8");
-
-    console.log(`✅ Sitemap generated successfully at: ${outputPath}`);
-    console.log(`📍 Base URL: ${baseUrl}`);
-    console.log(`📝 Total URLs: ${sitemap.split("<url>").length - 1}`);
+    console.log(`Sitemap generated at: ${sitemapPath}`);
+    console.log(`Robots generated at: ${robotsPath}`);
+    console.log(`Base URL: ${baseUrl}`);
+    console.log(`Total URLs: ${sitemap.split("<url>").length - 1}`);
   } catch (error) {
-    console.error("❌ Error generating sitemap:", error);
+    console.error("Error generating SEO artifacts:", error);
     process.exit(1);
   }
 }

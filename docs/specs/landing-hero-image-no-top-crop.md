@@ -95,3 +95,15 @@ Tasks:
       hero image).
 - [x] Keep desktop layered hero behavior unchanged.
 - [x] Run `bun run --cwd apps/web check-types`.
+
+### Phase 6: Large-Screen Overlay Scope + Intensity
+
+Prepare tests:
+
+- Web TypeScript check (`bun run --cwd apps/web check-types`).
+
+Tasks:
+
+- [x] Apply the white fade overlay only on `lg+` breakpoints.
+- [x] Increase overlay intensity slightly on `lg+`.
+- [x] Run `bun run --cwd apps/web check-types`.

@@ -8,7 +8,6 @@ import {
   usersListParamsSchema,
 } from "@/features/dashboard/user-management/lib/users-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/user-management/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -28,9 +27,9 @@ export const Route = createLazyFileRoute("/dashboard/user-management/")({
           ? search.role
           : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeUsersListParams(search);
-    await prefetchResource(queryClient, userKeys.list(params), () =>
+    await prefetchResource(context.queryClient, userKeys.list(params), () =>
       fetchUsers(params),
     );
     return null;

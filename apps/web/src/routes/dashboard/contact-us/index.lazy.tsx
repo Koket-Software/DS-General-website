@@ -9,7 +9,6 @@ import {
   type ContactListParams,
 } from "@/features/dashboard/contact-us/lib/contact-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/contact-us/")({
   validateSearch: (search: Record<string, unknown>) => {
@@ -36,11 +35,11 @@ export const Route = createLazyFileRoute("/dashboard/contact-us/")({
       serviceId: parseOptionalNumber(search.serviceId),
     });
   },
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeContactListParams(
       (search as Partial<ContactListParams>) ?? {},
     );
-    await prefetchResource(queryClient, contactKeys.list(params), () =>
+    await prefetchResource(context.queryClient, contactKeys.list(params), () =>
       fetchContacts(params),
     );
     return null;

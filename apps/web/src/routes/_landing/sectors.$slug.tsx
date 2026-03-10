@@ -1,19 +1,48 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { BusinessSectorPage } from "@/features/landing/pages/SourcingLogisticsPage";
+import type {
+  PublicBusinessSectorDetailResponse,
+  PublicBusinessSectorsListResponse,
+} from "@/lib/business-sectors/business-sectors-api";
 import {
   publicBusinessSectorDetailQueryOptions,
   publicBusinessSectorsQueryOptions,
 } from "@/lib/business-sectors/business-sectors-query";
-import { queryClient } from "@/main";
+import { buildSectorDetailHead } from "@/lib/seo";
+
+interface SectorRouteLoaderData {
+  sector: PublicBusinessSectorDetailResponse;
+  sectors: PublicBusinessSectorsListResponse;
+}
 
 export const Route = createFileRoute("/_landing/sectors/$slug")({
-  loader: async ({ params }) => {
+  head: ({ loaderData, params }) => {
+    const sector = (loaderData as SectorRouteLoaderData | undefined)?.sector
+      ?.data;
+
+    if (!sector) {
+      return buildSectorDetailHead({
+        slug: params.slug,
+        title: params.slug,
+      });
+    }
+
+    return buildSectorDetailHead({
+      slug: params.slug,
+      title: sector.title,
+      description: sector.excerpt,
+      featuredImageUrl: sector.featuredImageUrl,
+    });
+  },
+  loader: async ({ context, params }) => {
     const { slug } = params;
 
-    await Promise.all([
-      queryClient.ensureQueryData(publicBusinessSectorDetailQueryOptions(slug)),
-      queryClient.ensureQueryData(
+    const [sector, sectors] = await Promise.all([
+      context.queryClient.ensureQueryData(
+        publicBusinessSectorDetailQueryOptions(slug),
+      ),
+      context.queryClient.ensureQueryData(
         publicBusinessSectorsQueryOptions({
           page: 1,
           limit: 50,
@@ -23,7 +52,7 @@ export const Route = createFileRoute("/_landing/sectors/$slug")({
       ),
     ]);
 
-    return null;
+    return { sector, sectors } satisfies SectorRouteLoaderData;
   },
   component: SectorRoutePage,
 });

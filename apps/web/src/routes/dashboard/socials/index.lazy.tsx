@@ -8,7 +8,6 @@ import {
   socialsListParamsSchema,
 } from "@/features/dashboard/socials/lib/socials-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/socials/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -22,9 +21,9 @@ export const Route = createLazyFileRoute("/dashboard/socials/")({
           ? search.sortOrder
           : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeSocialsListParams(search);
-    await prefetchResource(queryClient, socialKeys.list(params), () =>
+    await prefetchResource(context.queryClient, socialKeys.list(params), () =>
       fetchSocials(params),
     );
     return null;

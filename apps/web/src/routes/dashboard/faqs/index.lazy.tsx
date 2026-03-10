@@ -8,7 +8,6 @@ import {
   normalizeFaqsListParams,
 } from "@/features/dashboard/faqs/lib/faqs-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/faqs/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -22,9 +21,9 @@ export const Route = createLazyFileRoute("/dashboard/faqs/")({
           ? search.sortOrder
           : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeFaqsListParams(search);
-    await prefetchResource(queryClient, faqKeys.list(params), () =>
+    await prefetchResource(context.queryClient, faqKeys.list(params), () =>
       fetchFaqs(params),
     );
     return null;

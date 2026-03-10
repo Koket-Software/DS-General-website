@@ -8,7 +8,6 @@ import {
   normalizeClientProjectsListParams,
 } from "@/features/dashboard/client-projects/lib/client-projects-schema";
 import { prefetchResource } from "@/lib/prefetch";
-import { queryClient } from "@/main";
 
 export const Route = createLazyFileRoute("/dashboard/client-projects/")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -22,10 +21,12 @@ export const Route = createLazyFileRoute("/dashboard/client-projects/")({
           ? search.sortOrder
           : undefined,
     }),
-  loader: async ({ search }: { search: Record<string, unknown> }) => {
+  loader: async ({ context, search }) => {
     const params = normalizeClientProjectsListParams(search);
-    await prefetchResource(queryClient, clientProjectKeys.list(params), () =>
-      fetchClientProjects(params),
+    await prefetchResource(
+      context.queryClient,
+      clientProjectKeys.list(params),
+      () => fetchClientProjects(params),
     );
     return null;
   },

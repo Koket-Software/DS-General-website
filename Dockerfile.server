@@ -17,6 +17,10 @@ COPY packages ./packages
 # Install dependencies for the entire monorepo
 RUN bun install --frozen-lockfile || bun install
 
+# Build the web client + SSR bundle used by the server renderer
+WORKDIR /app/apps/web
+RUN bun run build
+
 # Build the server bundle
 WORKDIR /app/apps/server
 RUN bun run build
