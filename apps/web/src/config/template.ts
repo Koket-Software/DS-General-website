@@ -16,7 +16,7 @@ export const COMPANY = {
   name: "DS General PLC",
 
   /** Short tagline for the company */
-  tagline: "Integrated Business & Industrial Solutions",
+  tagline: "We're Building the Future",
 
   /** Full description for SEO and marketing */
   description:
@@ -29,10 +29,10 @@ export const COMPANY = {
   email: "info@dsgeneralplc.com",
 
   /** Primary contact phone number */
-  phone: "+251 11 000 0000",
+  phone: "+251975888833",
 
   /** Physical address (optional) */
-  address: "Addis Ababa, Ethiopia",
+  address: "Gazebo Roundabout, NK Building 5th floor, Addis Ababa",
 } as const;
 
 // =============================================================================

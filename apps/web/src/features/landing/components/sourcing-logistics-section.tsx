@@ -6,6 +6,7 @@ import svgPaths from "../../../../imports/svg-3j9pd5gois";
 
 import { AppImage } from "@/components/common/AppImage";
 import { Button } from "@/components/ui/button";
+import { COMPANY } from "@/config/template";
 import {
   InstagramIcon,
   LinkedinIcon,
@@ -334,7 +335,7 @@ export function SourcingLogisticsSection({
                 </p>
                 <div className="flex items-start gap-2 text-[14px] text-muted-foreground">
                   <PhoneIcon />
-                  <p>{sector.phoneNumber ?? "+251 90 000 0000"}</p>
+                  <p>{sector.phoneNumber ?? COMPANY.phone}</p>
                 </div>
               </div>
 
@@ -344,7 +345,7 @@ export function SourcingLogisticsSection({
                 </p>
                 <div className="flex items-start gap-2 text-[14px] text-muted-foreground">
                   <MailIcon />
-                  <p>{sector.emailAddress ?? "contact@dsgeneralplc.com"}</p>
+                  <p>{sector.emailAddress ?? COMPANY.email}</p>
                 </div>
               </div>
 
@@ -354,7 +355,7 @@ export function SourcingLogisticsSection({
                 </p>
                 <div className="flex items-start gap-2 text-[14px] text-muted-foreground">
                   <MapPinIcon />
-                  <p>{sector.address ?? "Addis Abeba, Ethiopia"}</p>
+                  <p>{sector.address ?? COMPANY.address}</p>
                 </div>
               </div>
             </div>

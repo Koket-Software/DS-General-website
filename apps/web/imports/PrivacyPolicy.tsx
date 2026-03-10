@@ -214,7 +214,7 @@ function Frame21() {
     <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0">
       <Frame />
       <p className="font-['Inter:Light',sans-serif] font-light leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[16px]">
-        Reliable Trade Solutions Across Borders
+        We're Building the Future
       </p>
     </div>
   );
@@ -719,15 +719,15 @@ function Frame5() {
         <ul className="list-disc">
           <li className="mb-0 ms-[24px]">
             <span className="leading-[normal]">
-              Email: contact@dsgeneralplc.com
+              Email: info@dsgeneralplc.com
             </span>
           </li>
           <li className="mb-0 ms-[24px]">
-            <span className="leading-[normal]">Phone: +251 90 000 0000</span>
+            <span className="leading-[normal]">Phone: +251975888833</span>
           </li>
           <li className="ms-[24px]">
             <span className="leading-[normal]">
-              Address: [Insert Office Location, Addis Ababa, Ethiopia]
+              Address: Gazebo Roundabout, NK Building 5th floor, Addis Ababa
             </span>
           </li>
         </ul>

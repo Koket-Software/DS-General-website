@@ -81,7 +81,7 @@ export function Footer() {
               <Logo size="lg" />
             </div>
             <p className="font-sans font-light text-foreground text-[16px]">
-              Reliable Trade Solutions Across Borders
+              We're Building the Future
             </p>
           </div>
           <div className="flex gap-2">
@@ -222,7 +222,7 @@ export function Footer() {
             to="/terms-of-service"
             className="hover:opacity-80 transition-opacity no-underline text-primary"
           >
-            Term of Service
+            Terms of Service
           </Link>
           <Link
             to="/privacy-policy"

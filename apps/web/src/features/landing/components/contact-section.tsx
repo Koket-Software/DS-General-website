@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from "react";
 
 import { YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
-import imgMap from "../../../../assets/1996b890973697a0ece35083743bf5f2cd592a73.webp";
 import svgPaths from "../../../../imports/svg-b3plelej3t";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { COMPANY } from "@/config/template";
 import { useCreatePublicContactMutation } from "@/lib/contacts/contacts-query";
 import { createPublicContactSchema } from "@/lib/contacts/contacts-schema";
 import { usePublicServices } from "@/lib/services/services-query";
@@ -171,7 +171,7 @@ export function ContactSection() {
               <div className="flex items-center gap-2">
                 <PhoneIcon />
                 <p className="font-sans text-muted-foreground text-[14px]">
-                  + 251 90 000 0000 | + 251 90 000 0000
+                  {COMPANY.phone}
                 </p>
               </div>
             </div>
@@ -183,7 +183,7 @@ export function ContactSection() {
               <div className="flex items-center gap-2">
                 <EnvelopeIcon />
                 <p className="font-sans text-muted-foreground text-[14px]">
-                  contact@dsgeneralplc.com
+                  {COMPANY.email}
                 </p>
               </div>
             </div>
@@ -195,7 +195,7 @@ export function ContactSection() {
               <div className="flex items-center gap-2">
                 <MapPinIcon />
                 <p className="font-sans text-muted-foreground text-[14px]">
-                  Addis Abeba, Ethiopia
+                  {COMPANY.address}
                 </p>
               </div>
             </div>
@@ -373,11 +373,14 @@ export function ContactSection() {
         </div>
       </div>
 
-      <div className="w-full h-87.5 md:h-120.25 overflow-hidden mb-8">
-        <img
-          src={imgMap}
-          alt="DS General PLC location - Addis Ababa, Ethiopia"
-          className="w-full h-full object-cover"
+      <div className="mt-6 w-full h-87.5 overflow-hidden mb-8 md:mt-8 md:h-120.25">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1041.422689480989!2d38.76572456206398!3d9.001086329766366!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b850ca3ccf71f%3A0xe047678413d0ab11!2sNK!5e0!3m2!1sen!2sus!4v1773125878517!5m2!1sen!2sus"
+          title={`DS General PLC location - ${COMPANY.address}`}
+          className="h-full w-full border-0"
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
         />
       </div>
     </section>

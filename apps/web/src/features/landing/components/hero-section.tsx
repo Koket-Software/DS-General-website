@@ -7,10 +7,16 @@ import { AppImage } from "@/components/common/AppImage";
 
 export function HeroSection() {
   return (
-    <section>
+    <section className="relative isolate overflow-hidden md:h-[calc(100svh-4.5rem)]">
+      <div className="absolute inset-0 z-0 bg-muted/15" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-white/8 via-white/4 to-transparent"
+        aria-hidden
+      />
+
       {/* Content area */}
-      <div className="landing-container landing-section-compact">
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
+      <div className="landing-container relative z-20 flex items-start pt-8 md:h-full md:pt-12 lg:pt-16">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-8 w-full">
           <h1 className="font-semibold text-foreground text-[32px] md:text-[48px] leading-tight max-w-175.25">
             Integrated Construction &amp; Global Supply Chain Solutions
           </h1>
@@ -44,12 +50,11 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Hero image */}
-      <div className="w-full h-75 md:h-125 lg:h-159.5 relative overflow-hidden">
+      <div className="relative z-0 mt-6 select-none md:pointer-events-none md:absolute md:inset-x-0 md:bottom-0 md:mt-0">
         <AppImage
           src={imgHero}
           alt="DS General PLC construction containers"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="block h-auto w-full object-contain object-bottom"
           priority
           width={1920}
           height={1080}

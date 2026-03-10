@@ -58,10 +58,7 @@ export const HomeTemplate = ({
             <div
               style={{ display: "flex", flexDirection: "column", gap: "22px" }}
             >
-              <SectionChip
-                label="Integrated Business & Industrial Solutions"
-                brand={brand}
-              />
+              <SectionChip label="We're Building the Future" brand={brand} />
               <DisplayTitle title={data.title} maxLength={84} />
               {data.description ? (
                 <Lead description={data.description} maxLength={190} />

@@ -176,7 +176,7 @@ function Frame40() {
     <div className="content-stretch flex flex-col gap-3 items-start relative shrink-0">
       <Frame />
       <p className="font-['Inter:Light',sans-serif] font-light leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[16px]">
-        Reliable Trade Solutions Across Borders
+        We're Building the Future
       </p>
     </div>
   );
@@ -598,7 +598,7 @@ function Frame8() {
     <div className="content-stretch flex gap-2 h-8.5 items-center relative shrink-0 w-full">
       <Phone />
       <p className="font-['Inter:Regular',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[#616161] text-[14px]">
-        + 251 90 000 0000 | + 251 90 000 0000
+        +251975888833
       </p>
     </div>
   );
@@ -653,7 +653,7 @@ function Frame10() {
     <div className="content-stretch flex gap-2 h-8.5 items-center relative shrink-0 w-full">
       <EnvelopeSimple />
       <p className="font-['Inter:Regular',sans-serif] font-normal leading-[normal] not-italic relative shrink-0 text-[#616161] text-[14px]">
-        contact@dsgeneralplc.com
+        info@dsgeneralplc.com
       </p>
     </div>
   );
@@ -708,7 +708,7 @@ function Frame9() {
     <div className="content-stretch flex gap-2 h-8.5 items-center relative shrink-0 w-full">
       <MapPin />
       <p className="flex-[1_0_0] font-['Inter:Regular',sans-serif] font-normal leading-[normal] min-h-px min-w-px not-italic relative text-[#616161] text-[14px] whitespace-pre-wrap">
-        Addis Abeba, Ethiopia
+        Gazebo Roundabout, NK Building 5th floor, Addis Ababa
       </p>
     </div>
   );

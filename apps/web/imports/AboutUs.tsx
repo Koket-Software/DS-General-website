@@ -183,7 +183,7 @@ function Frame38() {
     <div className="content-stretch flex flex-col gap-3 items-start relative shrink-0">
       <Frame />
       <p className="font-['Inter:Light',sans-serif] font-light leading-[normal] not-italic relative shrink-0 text-[#1d1d1d] text-[16px]">
-        Reliable Trade Solutions Across Borders
+        We're Building the Future
       </p>
     </div>
   );
