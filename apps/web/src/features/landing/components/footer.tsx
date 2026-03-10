@@ -255,12 +255,12 @@ export function Footer() {
               </p>
             ) : null}
           </form>
-          <div className="relative z-10 py-2">
+          <div className="relative z-10">
+            <p className="relative z-10 font-sans font-normal text-foreground text-[14px] mb-10">
+              Get the latest news and updates subscribe to our newsletter
+            </p>
             <ThemeSwitch />
           </div>
-          <p className="relative z-10 font-sans font-normal text-foreground text-[14px] mb-10 py-3 lg:py-6">
-            Get the latest news and updates subscribe to our newsletter
-          </p>
         </div>
       </div>
 
