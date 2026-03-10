@@ -1,5 +1,9 @@
 import { SourcingLogisticsSection } from "../components/sourcing-logistics-section";
 
-export function SourcingLogisticsPage() {
-  return <SourcingLogisticsSection />;
+interface BusinessSectorPageProps {
+  slug: string;
+}
+
+export function BusinessSectorPage({ slug }: BusinessSectorPageProps) {
+  return <SourcingLogisticsSection slug={slug} />;
 }

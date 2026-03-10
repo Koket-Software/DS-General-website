@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "./icons";
 import imgHero from "../../../assets/ds/home/DS_Hero.webp";
 
+import { AppImage } from "@/components/common/AppImage";
+
 export function HeroSection() {
   return (
     <section>
@@ -21,7 +23,8 @@ export function HeroSection() {
             </p>
             <div className="flex flex-wrap gap-8 items-center">
               <Link
-                to="/sectors/sourcing-logistics"
+                to="/sectors/$slug"
+                params={{ slug: "sourcing-logistics" }}
                 className="bg-primary flex items-center justify-center px-6 py-3 font-medium text-[16px] hover:bg-primary/90 text-primary-foreground "
               >
                 View Our Services
@@ -43,10 +46,14 @@ export function HeroSection() {
 
       {/* Hero image */}
       <div className="w-full h-75 md:h-125 lg:h-159.5 relative overflow-hidden">
-        <img
+        <AppImage
           src={imgHero}
           alt="DS General PLC construction containers"
           className="absolute inset-0 w-full h-full object-cover"
+          priority
+          width={1920}
+          height={1080}
+          sizes="100vw"
         />
       </div>
     </section>

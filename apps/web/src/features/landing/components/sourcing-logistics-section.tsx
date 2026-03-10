@@ -1,18 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
+import type { ReactElement } from "react";
 
-import { InstagramIcon, LinkedinIcon } from "./icons";
 import svgPaths from "../../../../imports/svg-3j9pd5gois";
 
+import { AppImage } from "@/components/common/AppImage";
 import { Button } from "@/components/ui/button";
+import {
+  InstagramIcon,
+  LinkedinIcon,
+  ArrowUpRight,
+  CaretLeft,
+  CaretRight,
+} from "@/features/landing/components/icons";
 import { usePublicBusinessSectorBySlug } from "@/lib/business-sectors/business-sectors-query";
 
-function ArrowUpRight() {
-  return (
-    <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-      <path d={svgPaths.p12e71f00} fill="var(--primary)" />
-    </svg>
-  );
+interface SourcingLogisticsSectionProps {
+  slug: string;
 }
 
 function PhoneIcon() {
@@ -23,7 +27,7 @@ function PhoneIcon() {
   );
 }
 
-function EnvelopeIcon() {
+function MailIcon() {
   return (
     <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
       <path d={svgPaths.p43bc400} fill="var(--muted-foreground)" />
@@ -47,27 +51,10 @@ function XSocialIcon() {
   );
 }
 
-function CaretLeft() {
-  return (
-    <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-      <path
-        d={svgPaths.p204a5580}
-        fill="oklch(from var(--foreground) l c h / 0.4)"
-      />
-    </svg>
-  );
-}
-
-function CaretRight() {
-  return (
-    <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-      <path d={svgPaths.p2c0b8700} fill="var(--foreground)" />
-    </svg>
-  );
-}
-
-export function SourcingLogisticsSection() {
-  const sectorQuery = usePublicBusinessSectorBySlug("sourcing-logistics");
+export function SourcingLogisticsSection({
+  slug,
+}: SourcingLogisticsSectionProps) {
+  const sectorQuery = usePublicBusinessSectorBySlug(slug);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -104,13 +91,13 @@ export function SourcingLogisticsSection() {
       behavior: "smooth",
     });
 
-    setTimeout(updateScroll, 350);
+    window.setTimeout(updateScroll, 350);
   };
 
   if (sectorQuery.isError) {
     return (
       <section className="landing-container landing-section text-center">
-        <p className="font-sans text-muted-foreground text-[16px]">
+        <p className="font-sans text-[16px] text-muted-foreground">
           Failed to load sector content.
         </p>
       </section>
@@ -120,44 +107,72 @@ export function SourcingLogisticsSection() {
   if (sectorQuery.isPending || !sector) {
     return (
       <section className="landing-container landing-section-compact">
-        <div className="h-80 bg-muted/50 animate-pulse mb-8" />
-        <div className="h-60 bg-muted/50 animate-pulse" />
+        <div className="mb-8 h-80 animate-pulse bg-muted/50" />
+        <div className="h-60 animate-pulse bg-muted/50" />
       </section>
     );
   }
 
+  const socialLinks = [
+    {
+      label: "X",
+      href: sector.facebookUrl ?? undefined,
+      icon: <XSocialIcon />,
+    },
+    {
+      label: "Instagram",
+      href: sector.instagramUrl ?? undefined,
+      icon: <InstagramIcon />,
+    },
+    {
+      label: "LinkedIn",
+      href: sector.linkedinUrl ?? undefined,
+      icon: <LinkedinIcon />,
+    },
+  ].filter(
+    (item): item is { label: string; href: string; icon: ReactElement } =>
+      Boolean(item.href),
+  );
+
   return (
     <>
       <section className="landing-container pt-6 md:pt-8">
-        <div className="flex flex-col md:flex-row w-full min-h-70 md:h-80.25">
-          <div className="bg-primary flex flex-col gap-8 md:gap-10.25 justify-center p-8 md:p-10.25 md:flex-1">
-            <div className="flex flex-col gap-3">
-              <h1 className="font-sans font-medium text-primary-foreground text-[28px] md:text-[36px] leading-[1.2]">
-                {sector.title}
-              </h1>
-              <p className="font-sans text-primary-foreground/70 text-[14px] leading-normal md:text-[16px] max-w-127.5">
-                {sector.excerpt ?? "Sourcing and logistics services."}
-              </p>
-            </div>
-            <Link
-              to="/contact"
-              className="flex items-center p-1 border border-border w-fit no-underline group"
-            >
-              <span className="font-sans font-medium text-primary-foreground text-[14px] md:text-[16px] px-4">
-                Let's Talk
-              </span>
-              <div className="bg-background p-2 flex items-center justify-center">
-                <ArrowUpRight />
+        <div className="grid overflow-hidden md:grid-cols-2">
+          <div className="bg-primary px-6 py-7 md:px-10 md:py-10">
+            <div className="flex h-full flex-col justify-between gap-8">
+              <div className="space-y-3">
+                <h1 className="font-sans text-[32px] font-medium leading-[1.15] text-primary-foreground md:text-[42px]">
+                  {sector.title}
+                </h1>
+                <p className="max-w-[38rem] font-sans text-[14px] leading-[1.55] text-primary-foreground/80 md:text-[16px]">
+                  {sector.excerpt ?? "Sourcing and logistics services."}
+                </p>
               </div>
-            </Link>
+
+              <Link
+                to="/contact"
+                className="group inline-flex w-fit items-center border border-primary-foreground/40 p-1 no-underline"
+              >
+                <span className="px-4 py-1.5 font-sans text-[14px] font-medium text-primary-foreground md:text-[15px]">
+                  Let&apos;s Talk
+                </span>
+                <span className="flex items-center justify-center bg-background p-2">
+                  <ArrowUpRight color="var(--primary)" />
+                </span>
+              </Link>
+            </div>
           </div>
 
-          <div className="h-60 md:h-auto md:flex-1 relative overflow-hidden bg-muted/40">
+          <div className="relative h-52 overflow-hidden bg-muted/40 md:h-auto">
             {sector.featuredImageUrl ? (
-              <img
+              <AppImage
                 src={sector.featuredImageUrl}
                 alt={sector.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
+                priority
+                width={1200}
+                height={900}
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             ) : null}
           </div>
@@ -165,32 +180,57 @@ export function SourcingLogisticsSection() {
       </section>
 
       <section className="landing-container landing-section-compact">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px] shrink-0">
+        <div className="space-y-6 md:space-y-8">
+          <h2 className="font-sans text-[36px] font-medium text-foreground">
             Sector Stats
           </h2>
-          <div className="flex flex-wrap items-center gap-8 md:gap-0 md:justify-between flex-1 md:max-w-233.75">
-            {stats.map((stat, index) => (
-              <div key={stat.id} className="flex items-center gap-8 md:gap-0">
-                <div className="flex flex-col items-center text-center">
-                  <span className="font-sans font-extrabold text-foreground text-[24px]">
-                    {stat.statValue}
-                  </span>
-                  <span className="font-sans font-medium text-foreground text-[14px] md:text-[16px]">
-                    {stat.statKey}
-                  </span>
-                </div>
-                {index < stats.length - 1 && (
-                  <div className="hidden md:block w-px h-12.25 bg-foreground/40 mx-8 lg:mx-12" />
-                )}
+
+          {stats.length === 0 ? (
+            <p className="font-sans text-[15px] text-muted-foreground">
+              No stats available yet.
+            </p>
+          ) : (
+            <>
+              <div className="divide-y divide-border/80 border-y border-border/80 md:hidden">
+                {stats.map((stat) => (
+                  <div key={stat.id} className="py-4 text-center">
+                    <p className="font-sans text-[28px] font-extrabold leading-none text-foreground">
+                      {stat.statValue}
+                    </p>
+                    <p className="mt-2 font-sans text-[13px] text-muted-foreground">
+                      {stat.statKey}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+              <div className="hidden md:flex md:items-stretch md:justify-between md:gap-0">
+                {stats.map((stat, index) => (
+                  <div
+                    key={stat.id}
+                    className="flex flex-1 items-center justify-center gap-10 px-4"
+                  >
+                    <div className="text-center">
+                      <p className="font-sans text-[40px] font-extrabold leading-none text-foreground">
+                        {stat.statValue}
+                      </p>
+                      <p className="mt-2 font-sans text-[16px] text-foreground">
+                        {stat.statKey}
+                      </p>
+                    </div>
+                    {index < stats.length - 1 ? (
+                      <div className="h-14 w-px bg-border/90" />
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
       <section className="landing-container pb-12">
-        <div className="flex flex-col gap-6">
+        <div className="space-y-5">
           <div
             ref={scrollRef}
             onScroll={updateScroll}
@@ -200,29 +240,38 @@ export function SourcingLogisticsSection() {
             {gallery.map((image, index) => (
               <div
                 key={image.id}
-                className="h-70 md:h-90.25 w-65 md:w-79 shrink-0 relative overflow-hidden bg-muted/40"
+                className="relative h-[14.5rem] w-[16.4rem] shrink-0 overflow-hidden bg-muted/40 md:h-[22.5rem] md:w-[19.75rem]"
               >
-                <img
+                <AppImage
                   src={image.imageUrl}
-                  alt={`Sourcing gallery ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={`${sector.title} gallery ${index + 1}`}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  width={632}
+                  height={720}
+                  sizes="(max-width: 768px) 262px, 316px"
                 />
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-3 bg-muted/80 rounded-[20px] px-4 py-2 w-fit">
+
+          <div className="inline-flex items-center gap-2 rounded-full bg-muted/80 px-3 py-1.5">
             <Button
               variant="ghost"
               type="button"
+              aria-label="Scroll gallery left"
               onClick={() => scroll("left")}
-              className={`transition-opacity ${canScrollLeft ? "opacity-100" : "opacity-40"}`}
+              className={`h-8 w-8 p-0 transition-opacity ${
+                canScrollLeft ? "opacity-100" : "opacity-40"
+              }`}
             >
               <CaretLeft />
             </Button>
             <Button
               variant="ghost"
               type="button"
+              aria-label="Scroll gallery right"
               onClick={() => scroll("right")}
+              className="h-8 w-8 p-0"
             >
               <CaretRight />
             </Button>
@@ -231,129 +280,106 @@ export function SourcingLogisticsSection() {
       </section>
 
       <section className="landing-container landing-section-compact">
-        <div className="flex flex-col gap-7 max-w-244">
-          <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px]">
+        <div className="max-w-[64rem] space-y-6">
+          <h2 className="font-sans text-[42px] font-medium text-foreground">
             Our History
           </h2>
-          <p className="font-sans text-muted-foreground text-[16px] leading-[1.6] whitespace-pre-wrap">
+          <p className="whitespace-pre-wrap font-sans text-[16px] leading-[1.6] text-muted-foreground">
             {sector.history}
           </p>
         </div>
       </section>
 
       <section className="landing-container landing-section-compact">
-        <div className="flex flex-col gap-6">
-          <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px]">
+        <div className="space-y-6">
+          <h2 className="font-sans text-[42px] font-medium text-foreground">
             What We Do
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {services.map((service) => (
-              <div
-                key={service.id}
-                className="border border-border/60 flex flex-col gap-4 justify-end p-6 md:p-8 min-h-60 md:min-h-69.5"
-              >
-                <h3 className="font-sans font-semibold text-foreground text-[18px] md:text-[20px]">
-                  {service.title}
-                </h3>
-                <p className="font-sans text-foreground/70 text-[14px] md:text-[16px] leading-normal">
-                  {service.description ?? "No description available."}
-                </p>
-              </div>
-            ))}
-          </div>
+
+          {services.length === 0 ? (
+            <p className="font-sans text-[15px] text-muted-foreground">
+              No service cards available yet.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {services.map((service) => (
+                <div
+                  key={service.id}
+                  className="flex min-h-56 flex-col justify-end border border-border/70 p-5 md:min-h-64 md:p-6"
+                >
+                  <h3 className="font-sans text-[32px] font-semibold leading-[1.1] text-foreground md:text-[34px]">
+                    {service.title}
+                  </h3>
+                  <p className="mt-3 font-sans text-[14px] leading-[1.5] text-muted-foreground">
+                    {service.description ?? "No description available."}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <section className="landing-container landing-section-compact">
-        <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-10">
-          <div className="flex flex-col gap-10">
-            <h2 className="font-sans font-medium text-foreground text-[28px] md:text-[36px]">
-              Get in touch with us
-            </h2>
-            <div className="flex flex-wrap gap-6">
-              <div className="flex flex-col gap-1 w-39">
-                <p className="font-sans font-semibold text-foreground text-[14px]">
+        <div className="space-y-8">
+          <h2 className="font-sans text-[42px] font-medium text-foreground">
+            Get in touch with us
+          </h2>
+
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="space-y-1">
+                <p className="font-sans text-[13px] font-semibold text-foreground">
                   Phone Number
                 </p>
-                <div className="flex gap-2 items-start">
+                <div className="flex items-start gap-2 text-[14px] text-muted-foreground">
                   <PhoneIcon />
-                  <div className="font-sans text-muted-foreground text-[14px]">
-                    <p>{sector.phoneNumber ?? "+251 90 000 0000"}</p>
-                  </div>
+                  <p>{sector.phoneNumber ?? "+251 90 000 0000"}</p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1 w-57.5">
-                <p className="font-sans font-semibold text-foreground text-[14px]">
+              <div className="space-y-1">
+                <p className="font-sans text-[13px] font-semibold text-foreground">
                   Email Address
                 </p>
-                <div className="flex gap-2 items-center">
-                  <EnvelopeIcon />
-                  <span className="font-sans text-muted-foreground text-[14px]">
-                    {sector.emailAddress ?? "contact@dsgeneralplc.com"}
-                  </span>
+                <div className="flex items-start gap-2 text-[14px] text-muted-foreground">
+                  <MailIcon />
+                  <p>{sector.emailAddress ?? "contact@dsgeneralplc.com"}</p>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1 w-43.5">
-                <p className="font-sans font-semibold text-foreground text-[14px]">
+              <div className="space-y-1">
+                <p className="font-sans text-[13px] font-semibold text-foreground">
                   Address
                 </p>
-                <div className="flex gap-2 items-center">
+                <div className="flex items-start gap-2 text-[14px] text-muted-foreground">
                   <MapPinIcon />
-                  <span className="font-sans text-muted-foreground text-[14px]">
-                    {sector.address ?? "Addis Abeba, Ethiopia"}
-                  </span>
+                  <p>{sector.address ?? "Addis Abeba, Ethiopia"}</p>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-3">
-            <p className="font-sans font-medium text-foreground text-[16px]">
-              Follow Us
-            </p>
-            <div className="flex gap-2 items-center flex-wrap">
-              {sector.facebookUrl ? (
-                <a
-                  href={sector.facebookUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                >
-                  <XSocialIcon />
-                  <span className="font-sans text-muted-foreground text-[14px]">
-                    Facebook
-                  </span>
-                </a>
-              ) : null}
-              {sector.instagramUrl ? (
-                <a
-                  href={sector.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                >
-                  <InstagramIcon />
-                  <span className="font-sans text-muted-foreground text-[14px]">
-                    Instagram
-                  </span>
-                </a>
-              ) : null}
-              {sector.linkedinUrl ? (
-                <a
-                  href={sector.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-muted/60 flex gap-2 items-center px-4 py-1.5 rounded-[17.5px] h-8.75 no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                >
-                  <LinkedinIcon />
-                  <span className="font-sans text-muted-foreground text-[14px]">
-                    Linkedin
-                  </span>
-                </a>
-              ) : null}
-            </div>
+            {socialLinks.length > 0 ? (
+              <div className="space-y-2">
+                <p className="font-sans text-[16px] font-medium text-foreground">
+                  Follow Us
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex h-9 items-center gap-2 rounded-full bg-muted/60 px-3.5 text-[13px] text-muted-foreground no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                    >
+                      {social.icon}
+                      <span>{social.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>

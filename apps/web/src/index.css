@@ -261,6 +261,33 @@ body {
     padding-block: 2.5rem;
   }
 
+  /* Landing-only square edge treatment for boxy design consistency */
+  .landing-boxy {
+    --radius: 0px;
+    --radius-sm: 0px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
+    --radius-xl: 0px;
+  }
+
+  .landing-boxy
+    :where(
+      [class*="rounded"],
+      [data-slot="button"],
+      [data-slot="card"],
+      [data-slot="tabs-list"],
+      [data-slot="tabs-trigger"],
+      [data-slot="input"],
+      [data-slot="textarea"],
+      [data-slot="select-trigger"],
+      [data-slot="dialog-content"],
+      [data-slot="popover-content"],
+      [data-slot="dropdown-menu-content"],
+      [data-slot="tooltip-content"]
+    ) {
+    border-radius: 0 !important;
+  }
+
   @media (min-width: 48rem) {
     .landing-container {
       max-width: calc(

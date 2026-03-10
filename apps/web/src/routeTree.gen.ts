@@ -32,7 +32,7 @@ import { Route as DashboardServicesCreateRouteImport } from './routes/dashboard/
 import { Route as DashboardGalleryCategoriesRouteImport } from './routes/dashboard/gallery/categories'
 import { Route as DashboardBusinessSectorsCreateRouteImport } from './routes/dashboard/business-sectors/create'
 import { Route as LandingServicesSlugRouteImport } from './routes/_landing/services.$slug'
-import { Route as LandingSectorsSourcingLogisticsRouteImport } from './routes/_landing/sectors.sourcing-logistics'
+import { Route as LandingSectorsSlugRouteImport } from './routes/_landing/sectors.$slug'
 import { Route as LandingCareerSlugRouteImport } from './routes/_landing/career.$slug'
 import { Route as LandingArticlesSlugRouteImport } from './routes/_landing/articles.$slug'
 import { Route as DashboardVacanciesSlugIndexRouteImport } from './routes/dashboard/vacancies/$slug/index'
@@ -452,12 +452,11 @@ const LandingServicesSlugRoute = LandingServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => LandingRoute,
 } as any)
-const LandingSectorsSourcingLogisticsRoute =
-  LandingSectorsSourcingLogisticsRouteImport.update({
-    id: '/sectors/sourcing-logistics',
-    path: '/sectors/sourcing-logistics',
-    getParentRoute: () => LandingRoute,
-  } as any)
+const LandingSectorsSlugRoute = LandingSectorsSlugRouteImport.update({
+  id: '/sectors/$slug',
+  path: '/sectors/$slug',
+  getParentRoute: () => LandingRoute,
+} as any)
 const LandingCareerSlugRoute = LandingCareerSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -705,7 +704,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/articles/$slug': typeof LandingArticlesSlugRoute
   '/career/$slug': typeof LandingCareerSlugRoute
-  '/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
+  '/sectors/$slug': typeof LandingSectorsSlugRoute
   '/services/$slug': typeof LandingServicesSlugRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
@@ -779,7 +778,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/articles/$slug': typeof LandingArticlesSlugRoute
   '/career/$slug': typeof LandingCareerSlugRoute
-  '/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
+  '/sectors/$slug': typeof LandingSectorsSlugRoute
   '/services/$slug': typeof LandingServicesSlugRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
@@ -856,7 +855,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/_landing/articles/$slug': typeof LandingArticlesSlugRoute
   '/_landing/career/$slug': typeof LandingCareerSlugRoute
-  '/_landing/sectors/sourcing-logistics': typeof LandingSectorsSourcingLogisticsRoute
+  '/_landing/sectors/$slug': typeof LandingSectorsSlugRoute
   '/_landing/services/$slug': typeof LandingServicesSlugRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
   '/dashboard/gallery/categories': typeof DashboardGalleryCategoriesRoute
@@ -933,7 +932,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/articles/$slug'
     | '/career/$slug'
-    | '/sectors/sourcing-logistics'
+    | '/sectors/$slug'
     | '/services/$slug'
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
@@ -1007,7 +1006,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/articles/$slug'
     | '/career/$slug'
-    | '/sectors/sourcing-logistics'
+    | '/sectors/$slug'
     | '/services/$slug'
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
@@ -1083,7 +1082,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/_landing/articles/$slug'
     | '/_landing/career/$slug'
-    | '/_landing/sectors/sourcing-logistics'
+    | '/_landing/sectors/$slug'
     | '/_landing/services/$slug'
     | '/dashboard/business-sectors/create'
     | '/dashboard/gallery/categories'
@@ -1475,11 +1474,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingServicesSlugRouteImport
       parentRoute: typeof LandingRoute
     }
-    '/_landing/sectors/sourcing-logistics': {
-      id: '/_landing/sectors/sourcing-logistics'
-      path: '/sectors/sourcing-logistics'
-      fullPath: '/sectors/sourcing-logistics'
-      preLoaderRoute: typeof LandingSectorsSourcingLogisticsRouteImport
+    '/_landing/sectors/$slug': {
+      id: '/_landing/sectors/$slug'
+      path: '/sectors/$slug'
+      fullPath: '/sectors/$slug'
+      preLoaderRoute: typeof LandingSectorsSlugRouteImport
       parentRoute: typeof LandingRoute
     }
     '/_landing/career/$slug': {
@@ -1707,7 +1706,7 @@ interface LandingRouteChildren {
   LandingPrivacyPolicyRoute: typeof LandingPrivacyPolicyRoute
   LandingTermsOfServiceRoute: typeof LandingTermsOfServiceRoute
   LandingIndexRoute: typeof LandingIndexRoute
-  LandingSectorsSourcingLogisticsRoute: typeof LandingSectorsSourcingLogisticsRoute
+  LandingSectorsSlugRoute: typeof LandingSectorsSlugRoute
   LandingServicesSlugRoute: typeof LandingServicesSlugRoute
 }
 
@@ -1720,7 +1719,7 @@ const LandingRouteChildren: LandingRouteChildren = {
   LandingPrivacyPolicyRoute: LandingPrivacyPolicyRoute,
   LandingTermsOfServiceRoute: LandingTermsOfServiceRoute,
   LandingIndexRoute: LandingIndexRoute,
-  LandingSectorsSourcingLogisticsRoute: LandingSectorsSourcingLogisticsRoute,
+  LandingSectorsSlugRoute: LandingSectorsSlugRoute,
   LandingServicesSlugRoute: LandingServicesSlugRoute,
 }
 

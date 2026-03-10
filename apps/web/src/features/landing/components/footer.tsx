@@ -104,6 +104,9 @@ export function Footer() {
                       src={social.iconUrl}
                       alt={social.title}
                       className="h-5 w-5 object-contain"
+                      width={20}
+                      height={20}
+                      loading="lazy"
                     />
                   ) : (
                     socialIcon(social.title)
@@ -137,41 +140,20 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <p className="font-sans font-semibold text-foreground text-[16px]">
-            Business Sectors
-          </p>
-          <div className="flex flex-col gap-4 font-sans font-normal text-foreground text-[14px]">
-            {[
-              {
-                label: "Sourcing & Logistics",
-                path: "/sectors/sourcing-logistics",
-              },
-              { label: "General Contracting", path: "/about" },
-              { label: "Material Imports", path: "/about" },
-            ].map((item) => (
-              <Link
-                key={item.label}
-                to={item.path}
-                className="hover:text-primary transition-colors no-underline text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
         <div className="flex-1">
           <form onSubmit={handleSubscribe} className="space-y-3">
             <div className="bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
               <Input
                 type="email"
+                aria-label="Newsletter email address"
                 value={email}
                 onChange={(event) => {
                   setEmail(event.target.value);
                   setSubmitSuccess(null);
                 }}
                 placeholder="Email Address"
+                name="newsletterEmail"
+                autoComplete="email"
                 className="flex-1 border-0 bg-transparent font-sans text-[16px] font-normal text-foreground shadow-none focus-visible:ring-0"
               />
               <Button
@@ -200,12 +182,15 @@ export function Footer() {
             {showNameInput ? (
               <Input
                 type="text"
+                aria-label="Newsletter full name"
                 value={fullName}
                 onChange={(event) => {
                   setFullName(event.target.value);
                   setSubmitSuccess(null);
                 }}
                 placeholder="Full Name (optional)"
+                name="newsletterName"
+                autoComplete="name"
                 className="h-10 border-primary/10 bg-background font-sans text-[14px]"
               />
             ) : null}

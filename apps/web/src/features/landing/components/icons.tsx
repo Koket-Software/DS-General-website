@@ -18,10 +18,10 @@ export function CaretDown() {
   );
 }
 
-export function ArrowUpRight() {
+export function ArrowUpRight({ color = "white" }: { color?: string }) {
   return (
     <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-      <path d={svgPaths.p12e71f00} fill="white" />
+      <path d={svgPaths.p12e71f00} fill={color} />
     </svg>
   );
 }
