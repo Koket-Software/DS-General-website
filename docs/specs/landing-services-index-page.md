@@ -39,9 +39,9 @@
 ### Phase 1: Route + Page Composition
 
 - [x] Create this spec before code changes.
-- [ ] Add landing route file for `/_landing/services` with loader prefetch for services list.
-- [ ] Add route shell behavior so `/services` renders listing and `/services/$slug` continues to render detail.
-- [ ] Add `ServicesPage` wrapper and dedicated listing section component.
+- [x] Add landing route file for `/_landing/services` with loader prefetch for services list.
+- [x] Add route shell behavior so `/services` renders listing and `/services/$slug` continues to render detail.
+- [x] Add `ServicesPage` wrapper and dedicated listing section component.
 
 Tests for Phase 1:
 
@@ -50,12 +50,12 @@ Tests for Phase 1:
 
 ### Phase 2: Editorial Grid UI + Navigation Consistency
 
-- [ ] Implement responsive image-first cards with title/excerpt and CTA affordance.
-- [ ] Implement loading, error, and empty states consistent with landing patterns.
-- [ ] Prefetch service detail query on card hover/focus.
-- [ ] Add `Services` link to landing Navbar desktop/mobile lists.
-- [ ] Add `Services` link to landing Footer company links.
-- [ ] Change service detail back navigation to point to `/services`.
+- [x] Implement responsive image-first cards with title/excerpt and CTA affordance.
+- [x] Implement loading, error, and empty states consistent with landing patterns.
+- [x] Prefetch service detail query on card hover/focus.
+- [x] Add `Services` link to landing Navbar desktop/mobile lists.
+- [x] Add `Services` link to landing Footer company links.
+- [x] Change service detail back navigation to point to `/services`.
 
 Tests for Phase 2:
 
@@ -66,20 +66,20 @@ Tests for Phase 2:
 
 ### Phase 3: Routing Artifacts + Validation
 
-- [ ] Regenerate/accept TanStack route tree updates.
-- [ ] Add `/services` entry to sitemap default routes.
-- [ ] Run static checks.
+- [x] Regenerate/accept TanStack route tree updates.
+- [x] Add `/services` entry to sitemap default routes.
+- [x] Run static checks.
 
 Tests for Phase 3:
 
-- [ ] `bun --filter web check-types`
-- [ ] `bun lint`
+- [x] `bun --filter web check-types`
+- [x] `bun lint`
 
 ## Task Checklist
 
 - [x] Write spec file.
-- [ ] Implement route + page.
-- [ ] Implement editorial grid + nav/footer/back-link updates.
-- [ ] Update sitemap default routes.
-- [ ] Regenerate route artifacts.
-- [ ] Run and pass validation commands.
+- [x] Implement route + page.
+- [x] Implement editorial grid + nav/footer/back-link updates.
+- [x] Update sitemap default routes.
+- [x] Regenerate route artifacts.
+- [x] Run and pass validation commands.

@@ -3,7 +3,11 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 
-import { YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
+import { resolveSocialIcon } from "./icons";
+import {
+  getLandingSocials,
+  shouldUseResolvedLandingSocialIcon,
+} from "./socials";
 import svgPaths from "../../../../imports/svg-yczk9mkqx7";
 
 import { Button } from "@/components/ui/button";
@@ -31,15 +35,6 @@ function CaretRight() {
       <path d={svgPaths.p2c0b8700} fill="var(--primary)" />
     </svg>
   );
-}
-
-function socialIcon(title: string) {
-  const normalized = title.toLowerCase();
-
-  if (normalized.includes("youtube")) return <YoutubeIcon />;
-  if (normalized.includes("instagram")) return <InstagramIcon />;
-  if (normalized.includes("linkedin")) return <LinkedinIcon />;
-  return <XIcon />;
 }
 
 export function ArticleCard({ article }: { article: PublicBlog }) {
@@ -99,7 +94,7 @@ export function ArticlesSection() {
   });
 
   const articles = articlesQuery.data?.data ?? [];
-  const socials = socialsQuery.data?.data ?? [];
+  const socials = getLandingSocials(socialsQuery.data?.data ?? []);
   const featuredArticle = articles[0];
   const otherArticles = articles.slice(1);
 
@@ -208,14 +203,15 @@ export function ArticlesSection() {
                   aria-label={social.title}
                   className="bg-primary/5 flex h-10.5 w-10.5 items-center justify-center p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
-                  {social.iconUrl ? (
+                  {social.iconUrl &&
+                  !shouldUseResolvedLandingSocialIcon(social.title) ? (
                     <img
                       src={social.iconUrl}
                       alt={social.title}
                       className="h-5 w-5 object-contain"
                     />
                   ) : (
-                    socialIcon(social.title)
+                    resolveSocialIcon(social.title)
                   )}
                 </a>
               ))

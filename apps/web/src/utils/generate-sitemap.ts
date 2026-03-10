@@ -68,6 +68,12 @@ export function getDefaultRoutes(): SitemapUrl[] {
       priority: 0.9,
     },
     {
+      loc: "/services",
+      lastmod: today,
+      changefreq: "weekly",
+      priority: 0.9,
+    },
+    {
       loc: "/articles",
       lastmod: today,
       changefreq: "weekly",

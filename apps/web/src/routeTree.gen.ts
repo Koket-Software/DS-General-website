@@ -16,6 +16,7 @@ import { Route as LandingRouteImport } from './routes/_landing'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
 import { Route as LandingTermsOfServiceRouteImport } from './routes/_landing/terms-of-service'
+import { Route as LandingServicesRouteImport } from './routes/_landing/services'
 import { Route as LandingPrivacyPolicyRouteImport } from './routes/_landing/privacy-policy'
 import { Route as LandingGalleryRouteImport } from './routes/_landing/gallery'
 import { Route as LandingContactRouteImport } from './routes/_landing/contact'
@@ -169,6 +170,11 @@ const LandingIndexRoute = LandingIndexRouteImport.update({
 const LandingTermsOfServiceRoute = LandingTermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
+  getParentRoute: () => LandingRoute,
+} as any)
+const LandingServicesRoute = LandingServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
   getParentRoute: () => LandingRoute,
 } as any)
 const LandingPrivacyPolicyRoute = LandingPrivacyPolicyRouteImport.update({
@@ -448,9 +454,9 @@ const DashboardBusinessSectorsCreateRoute =
     ),
   )
 const LandingServicesSlugRoute = LandingServicesSlugRouteImport.update({
-  id: '/services/$slug',
-  path: '/services/$slug',
-  getParentRoute: () => LandingRoute,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => LandingServicesRoute,
 } as any)
 const LandingSectorsSlugRoute = LandingSectorsSlugRouteImport.update({
   id: '/sectors/$slug',
@@ -699,6 +705,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof LandingContactRoute
   '/gallery': typeof LandingGalleryRoute
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/services': typeof LandingServicesRouteWithChildren
   '/terms-of-service': typeof LandingTermsOfServiceRoute
   '/': typeof LandingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -773,6 +780,7 @@ export interface FileRoutesByTo {
   '/contact': typeof LandingContactRoute
   '/gallery': typeof LandingGalleryRoute
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/services': typeof LandingServicesRouteWithChildren
   '/terms-of-service': typeof LandingTermsOfServiceRoute
   '/': typeof LandingIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -850,6 +858,7 @@ export interface FileRoutesById {
   '/_landing/contact': typeof LandingContactRoute
   '/_landing/gallery': typeof LandingGalleryRoute
   '/_landing/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/_landing/services': typeof LandingServicesRouteWithChildren
   '/_landing/terms-of-service': typeof LandingTermsOfServiceRoute
   '/_landing/': typeof LandingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -927,6 +936,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/privacy-policy'
+    | '/services'
     | '/terms-of-service'
     | '/'
     | '/dashboard/'
@@ -1001,6 +1011,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/privacy-policy'
+    | '/services'
     | '/terms-of-service'
     | '/'
     | '/dashboard'
@@ -1077,6 +1088,7 @@ export interface FileRouteTypes {
     | '/_landing/contact'
     | '/_landing/gallery'
     | '/_landing/privacy-policy'
+    | '/_landing/services'
     | '/_landing/terms-of-service'
     | '/_landing/'
     | '/dashboard/'
@@ -1213,6 +1225,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-of-service'
       fullPath: '/terms-of-service'
       preLoaderRoute: typeof LandingTermsOfServiceRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/services': {
+      id: '/_landing/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof LandingServicesRouteImport
       parentRoute: typeof LandingRoute
     }
     '/_landing/privacy-policy': {
@@ -1469,10 +1488,10 @@ declare module '@tanstack/react-router' {
     }
     '/_landing/services/$slug': {
       id: '/_landing/services/$slug'
-      path: '/services/$slug'
+      path: '/$slug'
       fullPath: '/services/$slug'
       preLoaderRoute: typeof LandingServicesSlugRouteImport
-      parentRoute: typeof LandingRoute
+      parentRoute: typeof LandingServicesRoute
     }
     '/_landing/sectors/$slug': {
       id: '/_landing/sectors/$slug'
@@ -1697,6 +1716,18 @@ const LandingCareerRouteWithChildren = LandingCareerRoute._addFileChildren(
   LandingCareerRouteChildren,
 )
 
+interface LandingServicesRouteChildren {
+  LandingServicesSlugRoute: typeof LandingServicesSlugRoute
+}
+
+const LandingServicesRouteChildren: LandingServicesRouteChildren = {
+  LandingServicesSlugRoute: LandingServicesSlugRoute,
+}
+
+const LandingServicesRouteWithChildren = LandingServicesRoute._addFileChildren(
+  LandingServicesRouteChildren,
+)
+
 interface LandingRouteChildren {
   LandingAboutRoute: typeof LandingAboutRoute
   LandingArticlesRoute: typeof LandingArticlesRouteWithChildren
@@ -1704,10 +1735,10 @@ interface LandingRouteChildren {
   LandingContactRoute: typeof LandingContactRoute
   LandingGalleryRoute: typeof LandingGalleryRoute
   LandingPrivacyPolicyRoute: typeof LandingPrivacyPolicyRoute
+  LandingServicesRoute: typeof LandingServicesRouteWithChildren
   LandingTermsOfServiceRoute: typeof LandingTermsOfServiceRoute
   LandingIndexRoute: typeof LandingIndexRoute
   LandingSectorsSlugRoute: typeof LandingSectorsSlugRoute
-  LandingServicesSlugRoute: typeof LandingServicesSlugRoute
 }
 
 const LandingRouteChildren: LandingRouteChildren = {
@@ -1717,10 +1748,10 @@ const LandingRouteChildren: LandingRouteChildren = {
   LandingContactRoute: LandingContactRoute,
   LandingGalleryRoute: LandingGalleryRoute,
   LandingPrivacyPolicyRoute: LandingPrivacyPolicyRoute,
+  LandingServicesRoute: LandingServicesRouteWithChildren,
   LandingTermsOfServiceRoute: LandingTermsOfServiceRoute,
   LandingIndexRoute: LandingIndexRoute,
   LandingSectorsSlugRoute: LandingSectorsSlugRoute,
-  LandingServicesSlugRoute: LandingServicesSlugRoute,
 }
 
 const LandingRouteWithChildren =

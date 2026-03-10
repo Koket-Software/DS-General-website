@@ -29,8 +29,7 @@ export function HeroSection() {
             </p>
             <div className="flex flex-wrap gap-8 items-center">
               <Link
-                to="/sectors/$slug"
-                params={{ slug: "sourcing-logistics" }}
+                to="/services"
                 className="bg-primary flex items-center justify-center px-6 py-3 font-medium text-[16px] hover:bg-primary/90 text-primary-foreground "
               >
                 View Our Services

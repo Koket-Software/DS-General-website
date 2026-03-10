@@ -1,10 +1,19 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 
-import { Logo, YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
+import { Logo, resolveSocialIcon } from "./icons";
+import {
+  getLandingSocials,
+  shouldUseResolvedLandingSocialIcon,
+} from "./socials";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  publicBusinessSectorDetailQueryOptions,
+  usePublicBusinessSectors,
+} from "@/lib/business-sectors/business-sectors-query";
 import {
   createPublicNewsletterSchema,
   normalizeCreatePublicNewsletterInput,
@@ -12,18 +21,16 @@ import {
 import { useCreatePublicNewsletterMutation } from "@/lib/newsletters/newsletters-query";
 import { usePublicSocialsQuery } from "@/lib/socials/socials-query";
 
-function socialIcon(title: string) {
-  const normalized = title.toLowerCase();
-
-  if (normalized.includes("youtube")) return <YoutubeIcon />;
-  if (normalized.includes("instagram")) return <InstagramIcon />;
-  if (normalized.includes("linkedin")) return <LinkedinIcon />;
-  return <XIcon />;
-}
-
 export function Footer() {
+  const queryClient = useQueryClient();
   const socialsQuery = usePublicSocialsQuery({ page: 1, limit: 20 });
-  const socials = socialsQuery.data?.data ?? [];
+  const sectorsQuery = usePublicBusinessSectors({
+    page: 1,
+    limit: 50,
+    sortBy: "publishDate",
+    sortOrder: "desc",
+  });
+  const socials = getLandingSocials(socialsQuery.data?.data ?? []);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [showNameInput, setShowNameInput] = useState(false);
@@ -72,6 +79,12 @@ export function Footer() {
     );
   };
 
+  const prefetchSectorDetail = (slug: string) => {
+    void queryClient.prefetchQuery(
+      publicBusinessSectorDetailQueryOptions(slug),
+    );
+  };
+
   return (
     <footer className="bg-background landing-container pt-6">
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
@@ -99,7 +112,8 @@ export function Footer() {
                   aria-label={social.title}
                   className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
-                  {social.iconUrl ? (
+                  {social.iconUrl &&
+                  !shouldUseResolvedLandingSocialIcon(social.title) ? (
                     <img
                       src={social.iconUrl}
                       alt={social.title}
@@ -109,7 +123,7 @@ export function Footer() {
                       loading="lazy"
                     />
                   ) : (
-                    socialIcon(social.title)
+                    resolveSocialIcon(social.title)
                   )}
                 </a>
               ))
@@ -124,6 +138,7 @@ export function Footer() {
           <div className="flex flex-col gap-4 font-sans font-normal text-foreground text-[14px]">
             {[
               { label: "About", path: "/about" },
+              { label: "Services", path: "/services" },
               { label: "Gallery", path: "/gallery" },
               { label: "Articles", path: "/articles" },
               { label: "Contact Us", path: "/contact" },
@@ -137,6 +152,32 @@ export function Footer() {
                 {item.label}
               </Link>
             ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          <p className="font-sans font-semibold text-foreground text-[16px]">
+            Business Sectors
+          </p>
+          <div className="flex flex-col gap-4 font-sans font-normal text-foreground text-[14px]">
+            {sectorsQuery.isPending ? (
+              <p className="text-muted-foreground">Loading sectors...</p>
+            ) : sectorsQuery.isError ? (
+              <p className="text-muted-foreground">Sectors unavailable</p>
+            ) : (
+              (sectorsQuery.data?.data ?? []).map((sector) => (
+                <Link
+                  key={sector.id}
+                  to="/sectors/$slug"
+                  params={{ slug: sector.slug }}
+                  onMouseEnter={() => prefetchSectorDetail(sector.slug)}
+                  onFocus={() => prefetchSectorDetail(sector.slug)}
+                  className="no-underline text-foreground transition-colors hover:text-primary"
+                >
+                  {sector.title}
+                </Link>
+              ))
+            )}
           </div>
         </div>
 

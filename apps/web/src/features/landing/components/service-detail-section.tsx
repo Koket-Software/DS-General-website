@@ -97,7 +97,7 @@ export function ServiceDetailSection({ slug }: ServiceDetailSectionProps) {
     <section className="landing-container landing-section-compact">
       <div className="flex items-center gap-4 pb-6 md:pb-8">
         <Link
-          to="/"
+          to="/services"
           className="inline-flex items-center gap-2 font-sans text-[15px] text-primary no-underline hover:opacity-80"
         >
           <ArrowLeft size={16} />

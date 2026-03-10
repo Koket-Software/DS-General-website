@@ -925,16 +925,16 @@ export const socialSeeds: InferInsertModel<typeof socials>[] = [
       "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg",
   },
   {
-    title: "X",
-    baseUrl: "https://x.com/",
+    title: "WhatsApp",
+    baseUrl: "https://wa.me/251975888833",
     iconUrl:
-      "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg",
+      "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg",
   },
   {
-    title: "Dribbble",
-    baseUrl: "https://dribbble.com/",
+    title: "Telegram",
+    baseUrl: "https://t.me/dsgeneralplc",
     iconUrl:
-      "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/dribbble.svg",
+      "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg",
   },
 ];
 
@@ -991,15 +991,15 @@ export const userSocialHandleSeeds = [
   },
   {
     userId: "dsg-admin",
-    socialTitle: "X",
-    handle: "ds_general_plc",
-    fullUrl: "https://x.com/ds_general_plc",
+    socialTitle: "WhatsApp",
+    handle: "251975888833",
+    fullUrl: "https://wa.me/251975888833",
   },
   {
     userId: "dsg-editor",
-    socialTitle: "Dribbble",
-    handle: "ds-general-plc",
-    fullUrl: "https://dribbble.com/ds-general-plc",
+    socialTitle: "Telegram",
+    handle: "dsgeneralplc",
+    fullUrl: "https://t.me/dsgeneralplc",
   },
 ];
 

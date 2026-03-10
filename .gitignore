@@ -66,3 +66,6 @@ node_modules/**
 
 .bun-cache/**
 **/.bun-cache/*
+
+docs
+docs/**

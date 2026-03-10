@@ -20,6 +20,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "Home", path: "/" },
   { label: "About", path: "/about" },
+  { label: "Services", path: "/services" },
   { label: "Gallery", path: "/gallery" },
   { label: "Articles", path: "/articles" },
   { label: "Business Sectors", hasDropdown: true },

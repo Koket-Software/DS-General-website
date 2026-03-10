@@ -1,6 +1,10 @@
 import { useState, type FormEvent } from "react";
 
-import { YoutubeIcon, XIcon, InstagramIcon, LinkedinIcon } from "./icons";
+import { resolveSocialIcon } from "./icons";
+import {
+  getLandingSocials,
+  shouldUseResolvedLandingSocialIcon,
+} from "./socials";
 import svgPaths from "../../../../imports/svg-b3plelej3t";
 
 import { Button } from "@/components/ui/button";
@@ -52,24 +56,6 @@ function MapPinIcon() {
       <path d={svgPaths.p2605d880} fill="var(--muted-foreground)" />
     </svg>
   );
-}
-
-function socialIcon(title: string) {
-  const normalized = title.toLowerCase();
-
-  if (normalized.includes("youtube")) {
-    return <YoutubeIcon />;
-  }
-
-  if (normalized.includes("instagram")) {
-    return <InstagramIcon />;
-  }
-
-  if (normalized.includes("linkedin")) {
-    return <LinkedinIcon />;
-  }
-
-  return <XIcon />;
 }
 
 type ContactFormValues = {
@@ -147,7 +133,7 @@ export function ContactSection() {
     createContactMutation.mutate(parsed.data);
   };
 
-  const socials = socialsQuery.data?.data ?? [];
+  const socials = getLandingSocials(socialsQuery.data?.data ?? []);
   const services = servicesQuery.data?.data ?? [];
 
   return (
@@ -220,14 +206,15 @@ export function ContactSection() {
                     className="bg-primary/5 flex items-center justify-center p-1.5 w-10.5 h-10.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     aria-label={social.title}
                   >
-                    {social.iconUrl ? (
+                    {social.iconUrl &&
+                    !shouldUseResolvedLandingSocialIcon(social.title) ? (
                       <img
                         src={social.iconUrl}
                         alt={social.title}
                         className="h-5 w-5 object-contain"
                       />
                     ) : (
-                      socialIcon(social.title)
+                      resolveSocialIcon(social.title)
                     )}
                   </a>
                 ))
