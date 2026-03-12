@@ -171,13 +171,19 @@ export function MediaPreviewDialog({
                   src={currentItem.src}
                 />
               ) : (
-                <AppImage
-                  src={currentItem.src}
-                  alt={currentItem.alt || currentItem.title || "Media preview"}
-                  width={1920}
-                  height={1080}
-                  className="mx-auto max-h-[calc(100dvh-23rem)] w-full max-w-[min(100%,64rem)] rounded-xl border border-primary/15 bg-background object-contain shadow-[0_20px_50px_color-mix(in_oklch,var(--primary)_16%,transparent)] lg:max-h-[calc(100dvh-26rem)]"
-                />
+                <div className="custom-scrollbar mx-auto w-full max-w-[min(100%,64rem)] overflow-x-auto overflow-y-hidden rounded-xl border border-primary/15 bg-background/80 shadow-[0_20px_50px_color-mix(in_oklch,var(--primary)_16%,transparent)] dark:bg-background/70">
+                  <div className="flex w-fit min-w-full justify-center p-2 sm:p-3">
+                    <AppImage
+                      src={currentItem.src}
+                      alt={
+                        currentItem.alt || currentItem.title || "Media preview"
+                      }
+                      width={1920}
+                      height={1080}
+                      className="block h-auto max-h-[calc(100dvh-24rem)] w-auto max-w-none object-contain lg:max-h-[calc(100dvh-27rem)]"
+                    />
+                  </div>
+                </div>
               )}
             </div>
 
