@@ -25,7 +25,7 @@ export interface UploadOptions {
 }
 
 const DEFAULT_MAX_SIZE =
-  Number(process.env.UPLOAD_MAX_BYTES) || 5 * 1024 * 1024; // 5MB fallback
+  Number(process.env.UPLOAD_MAX_BYTES) || 200 * 1024 * 1024; // 200MB fallback
 const DEFAULT_MIME_TYPES = [...IMAGE_MIME_TYPES];
 
 const parseByteEnv = (value: string | undefined) => {
@@ -36,7 +36,7 @@ const parseByteEnv = (value: string | undefined) => {
 const getGalleryUploadMaxBytes = () =>
   parseByteEnv(process.env.GALLERY_UPLOAD_MAX_BYTES) ??
   parseByteEnv(process.env.UPLOAD_MAX_BYTES) ??
-  80 * 1024 * 1024;
+  200 * 1024 * 1024;
 
 const ensureSafeSubdir = (subdir: string) => {
   if (subdir.includes("..") || subdir.startsWith(sep)) {
