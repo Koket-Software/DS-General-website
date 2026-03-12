@@ -117,7 +117,7 @@ export function MediaPreviewDialog({
         showCloseButton
         className={cn(
           "h-[min(86vh,52rem)] max-h-[92vh] w-[calc(100vw-1rem)] md:w-[calc(100vw-2rem)] max-w-[calc(var(--landing-content-max)+(var(--landing-gutter-mobile)*2))] md:max-w-[calc(var(--landing-content-max)+(var(--landing-gutter-desktop)*2))] overflow-x-hidden overflow-y-auto overscroll-contain border border-primary/15",
-          "bg-[radial-gradient(circle_at_14%_12%,color-mix(in_oklch,var(--primary)_16%,white),white_42%),linear-gradient(180deg,color-mix(in_oklch,var(--primary)_5%,white),white)] p-0 text-foreground shadow-[0_30px_90px_color-mix(in_oklch,var(--primary)_18%,transparent)]",
+          "bg-[radial-gradient(circle_at_14%_12%,color-mix(in_oklch,var(--primary)_14%,var(--background)),var(--background)_42%),linear-gradient(180deg,color-mix(in_oklch,var(--primary)_4%,var(--background)),var(--background))] p-0 text-foreground shadow-[0_30px_90px_color-mix(in_oklch,var(--primary)_18%,transparent)] dark:bg-[radial-gradient(circle_at_14%_12%,color-mix(in_oklch,var(--primary)_16%,var(--background)),color-mix(in_oklch,var(--background)_92%,black)_46%),linear-gradient(180deg,color-mix(in_oklch,var(--primary)_9%,var(--background)),color-mix(in_oklch,var(--background)_94%,black))]",
           className,
         )}
       >
@@ -126,8 +126,8 @@ export function MediaPreviewDialog({
           <DialogDescription>{description ?? title}</DialogDescription>
         </DialogHeader>
 
-        <div className="grid h-full grid-rows-[auto_minmax(0,1fr)_auto]">
-          <header className="border-b border-primary/10 bg-white/55 px-4 py-3 backdrop-blur-sm sm:px-6 sm:py-4">
+        <div className="mx-auto grid h-full w-full max-w-[min(100%,72rem)] grid-rows-[auto_minmax(0,1fr)_auto]">
+          <header className="border-b border-primary/10 bg-background/80 px-4 py-3 backdrop-blur-sm sm:px-6 sm:py-4 dark:bg-background/70">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 space-y-1">
                 <p className="text-[0.65rem] font-medium tracking-[0.22em] text-primary/70 uppercase">
@@ -151,19 +151,19 @@ export function MediaPreviewDialog({
             </div>
           </header>
 
-          <div className="relative min-h-0 flex-1 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--primary)_4%,white),white)]">
+          <div className="relative min-h-0 flex-1 bg-[linear-gradient(180deg,color-mix(in_oklch,var(--primary)_4%,var(--background)),var(--background))] dark:bg-[linear-gradient(180deg,color-mix(in_oklch,var(--primary)_10%,var(--background)),color-mix(in_oklch,var(--background)_94%,black))]">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,color-mix(in_oklch,var(--primary)_8%,transparent),transparent_60%)]" />
 
             <div className="relative flex h-full items-center justify-center p-4 sm:p-8 lg:px-12">
               {!currentItem ? (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-primary/20 bg-primary/5 text-muted-foreground">
+                <div className="flex h-full w-full max-w-[min(100%,64rem)] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-primary/20 bg-primary/5 text-muted-foreground dark:bg-primary/10">
                   <ImageIcon className="size-10" />
                   <p className="text-sm">No media assets available.</p>
                 </div>
               ) : currentItem.type === "video" ? (
                 <video
                   key={currentItem.src}
-                  className="max-h-[calc(100dvh-23rem)] w-full max-w-[min(100%,64rem)] rounded-xl border border-primary/15 bg-black object-contain shadow-[0_20px_50px_color-mix(in_oklch,var(--primary)_16%,transparent)] lg:max-h-[calc(100dvh-26rem)]"
+                  className="mx-auto max-h-[calc(100dvh-23rem)] w-full max-w-[min(100%,64rem)] rounded-xl border border-primary/15 bg-black/95 object-contain shadow-[0_20px_50px_color-mix(in_oklch,var(--primary)_16%,transparent)] lg:max-h-[calc(100dvh-26rem)]"
                   controls
                   playsInline
                   preload="metadata"
@@ -176,7 +176,7 @@ export function MediaPreviewDialog({
                   alt={currentItem.alt || currentItem.title || "Media preview"}
                   width={1920}
                   height={1080}
-                  className="max-h-[calc(100dvh-23rem)] w-full max-w-[min(100%,64rem)] rounded-xl border border-primary/15 bg-white object-contain shadow-[0_20px_50px_color-mix(in_oklch,var(--primary)_16%,transparent)] lg:max-h-[calc(100dvh-26rem)]"
+                  className="mx-auto max-h-[calc(100dvh-23rem)] w-full max-w-[min(100%,64rem)] rounded-xl border border-primary/15 bg-background object-contain shadow-[0_20px_50px_color-mix(in_oklch,var(--primary)_16%,transparent)] lg:max-h-[calc(100dvh-26rem)]"
                 />
               )}
             </div>
@@ -188,7 +188,7 @@ export function MediaPreviewDialog({
                   variant="ghost"
                   size="icon"
                   onClick={goToPrevious}
-                  className="absolute top-1/2 left-3 h-10 w-10 -translate-y-1/2 touch-manipulation rounded-full border border-primary/20 bg-white/85 text-primary shadow-sm hover:bg-white"
+                  className="absolute top-1/2 left-3 h-10 w-10 -translate-y-1/2 touch-manipulation rounded-full border border-primary/20 bg-background/85 text-primary shadow-sm hover:bg-background dark:bg-background/70 dark:hover:bg-background/85"
                   aria-label="Show previous media"
                 >
                   <ChevronLeft className="size-5" />
@@ -199,7 +199,7 @@ export function MediaPreviewDialog({
                   variant="ghost"
                   size="icon"
                   onClick={goToNext}
-                  className="absolute top-1/2 right-3 h-10 w-10 -translate-y-1/2 touch-manipulation rounded-full border border-primary/20 bg-white/85 text-primary shadow-sm hover:bg-white"
+                  className="absolute top-1/2 right-3 h-10 w-10 -translate-y-1/2 touch-manipulation rounded-full border border-primary/20 bg-background/85 text-primary shadow-sm hover:bg-background dark:bg-background/70 dark:hover:bg-background/85"
                   aria-label="Show next media"
                 >
                   <ChevronRight className="size-5" />
@@ -209,7 +209,7 @@ export function MediaPreviewDialog({
           </div>
 
           {safeItems.length > 0 && (
-            <footer className="relative z-10 min-h-[5.25rem] border-t border-primary/10 bg-white/65 px-3 py-3 backdrop-blur-sm sm:min-h-[6rem] sm:px-5 lg:min-h-[7.25rem]">
+            <footer className="relative z-10 min-h-[5.25rem] border-t border-primary/10 bg-background/75 px-3 py-3 backdrop-blur-sm sm:min-h-[6rem] sm:px-5 lg:min-h-[7.25rem] dark:bg-background/65">
               <div className="custom-scrollbar flex snap-x items-center gap-2 overflow-x-auto pb-1 lg:justify-center">
                 {safeItems.map((item, index) => {
                   const thumbSrc =
@@ -247,7 +247,7 @@ export function MediaPreviewDialog({
 
                       {item.type === "video" && (
                         <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-primary/20">
-                          <span className="rounded-full border border-primary/30 bg-white/90 p-1.5">
+                          <span className="rounded-full border border-primary/30 bg-background/90 p-1.5 dark:bg-background/80">
                             <Film className="size-3 text-primary" />
                           </span>
                         </span>
