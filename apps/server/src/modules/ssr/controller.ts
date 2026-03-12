@@ -213,8 +213,10 @@ export const createSsrController = () => {
   const brand = getServerBrandSeoConfig();
 
   async function servePrerenderedHtml(c: Context): Promise<Response> {
-    const requestedPath = c.req.path.replace(/^\/_ssr/, "") || "/";
+    const requestUrl = new URL(c.req.url);
+    const requestedPath = requestUrl.pathname.replace(/^\/_ssr/, "") || "/";
     const normalizedPath = normalizeSeoPath(requestedPath);
+    const publicPathWithSearch = `${normalizedPath}${requestUrl.search || ""}`;
 
     try {
       const { assets, renderer } = await loadRenderer();
@@ -253,7 +255,7 @@ export const createSsrController = () => {
         });
       }
 
-      const request = buildPublicRequest(c, normalizedPath);
+      const request = buildPublicRequest(c, publicPathWithSearch);
       const response = await renderer.renderSsrPage({
         request,
         assets,
