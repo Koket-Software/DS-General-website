@@ -32,6 +32,7 @@ export function GallerySection() {
     title: string;
     description?: string;
     items: PreviewMediaItem[];
+    initialIndex: number;
   } | null>(null);
 
   const page = search.page ?? 1;
@@ -137,7 +138,7 @@ export function GallerySection() {
     item: (typeof items)[number],
     selectedAssetIndex = 0,
   ) => {
-    const previewItems = item.imageUrls.map((src, index) => ({
+    const previewItems = item.imageUrls.filter(Boolean).map((src, index) => ({
       id: `${item.id}-${index}`,
       type: inferMediaType(src),
       src,
@@ -151,17 +152,16 @@ export function GallerySection() {
       return;
     }
 
-    const sortedItems = [...previewItems];
     const safeSelectedIndex = Math.min(
       Math.max(selectedAssetIndex, 0),
-      sortedItems.length - 1,
+      previewItems.length - 1,
     );
-    const [selectedItem] = sortedItems.splice(safeSelectedIndex, 1);
 
     setActivePreview({
       title: item.title,
       description: item.description ?? undefined,
-      items: selectedItem ? [selectedItem, ...sortedItems] : previewItems,
+      items: previewItems,
+      initialIndex: safeSelectedIndex,
     });
   };
 
@@ -247,11 +247,11 @@ export function GallerySection() {
                       alt={item.title}
                       width={960}
                       height={720}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-105"
                       src={item.coverImageUrl ?? item.imageUrls[0]}
                     />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    <div className="pointer-events-none absolute right-0 bottom-0 left-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 motion-reduce:transition-none group-hover:opacity-100" />
+                    <div className="pointer-events-none absolute right-0 bottom-0 left-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-[opacity,transform] duration-300 motion-reduce:translate-y-0 motion-reduce:transition-none group-hover:translate-y-0 group-hover:opacity-100">
                       <p className="truncate text-sm font-medium">
                         {item.title}
                       </p>
@@ -273,6 +273,7 @@ export function GallerySection() {
           }
         }}
         items={activePreview?.items ?? []}
+        initialIndex={activePreview?.initialIndex ?? 0}
         title={activePreview?.title ?? "Gallery Media"}
         description={activePreview?.description}
       />

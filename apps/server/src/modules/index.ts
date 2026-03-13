@@ -152,6 +152,7 @@ const registrations: ModuleRegistration[] = [
   },
   {
     name: "og-image",
+    adminPath: "/api/v1/og",
     clientPath: "/api/og",
     init: initOgImageModule,
   },
@@ -164,7 +165,11 @@ const registrations: ModuleRegistration[] = [
 
 const apiPrefix = "/api/v1";
 
-const buildPath = (path: string): string => {
+export const buildPath = (path: string): string => {
+  if (path === "/api/og" || path.startsWith("/api/og/")) {
+    return path;
+  }
+
   // Don't transform paths that don't start with /api (like /_ssr)
   if (!path.startsWith("/api")) {
     return path;

@@ -98,7 +98,7 @@ export function createCanvasStyle(brand: BrandSeoConfig): React.CSSProperties {
       `radial-gradient(circle at 10% 12%, ${hexToRgba(brand.brandAccent, 0.32)} 0%, rgba(255,255,255,0) 26%)`,
       `radial-gradient(circle at 87% 14%, ${hexToRgba(brand.brandPrimary, 0.36)} 0%, rgba(255,255,255,0) 31%)`,
       `radial-gradient(circle at 78% 88%, ${hexToRgba(brand.brandAccent, 0.2)} 0%, rgba(255,255,255,0) 30%)`,
-      `linear-gradient(148deg, #050916 0%, ${hexToRgba(brand.brandSecondary, 0.98)} 34%, ${hexToRgba(brand.brandPrimary, 0.9)} 100%)`,
+      `linear-gradient(148deg, ${hexToRgba(brand.brandSecondary, 1)} 0%, ${hexToRgba(brand.brandSecondary, 0.98)} 34%, ${hexToRgba(brand.brandPrimary, 0.9)} 100%)`,
     ].join(", "),
     fontFamily: '"Manrope", sans-serif',
   };
@@ -246,7 +246,7 @@ export function SectionChip({
           width: "10px",
           height: "10px",
           borderRadius: "999px",
-          background: brand.brandAccent,
+          background: hexToRgba(brand.brandAccent, 1),
           boxShadow: `0 0 20px ${hexToRgba(brand.brandAccent, 0.55)}`,
         }}
       />
@@ -397,7 +397,14 @@ export function HighlightChips({
   if (items.length === 0) return null;
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "12px",
+        maxWidth: "100%",
+      }}
+    >
       {items.map((item) => (
         <div
           key={item}
@@ -411,6 +418,10 @@ export function HighlightChips({
             color: "#f8fafc",
             fontSize: "17px",
             fontWeight: 600,
+            maxWidth: "100%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {truncate(item, 28)}
@@ -617,6 +628,8 @@ export function VisualPanel({
         <img
           src={imageUrl}
           alt=""
+          width={348}
+          height={420}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <div

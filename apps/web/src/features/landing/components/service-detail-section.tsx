@@ -113,13 +113,13 @@ export function ServiceDetailSection({ slug }: ServiceDetailSectionProps) {
             onClick={() =>
               setActivePreviewId(String(previewItems[0]?.id ?? ""))
             }
-            className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+            className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
             aria-label={`Open media preview for ${service.title}`}
           >
             <AppImage
               src={primaryImage}
               alt={service.title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-[1.02]"
               priority
             />
           </button>
@@ -192,13 +192,13 @@ export function ServiceDetailSection({ slug }: ServiceDetailSectionProps) {
                 onClick={() =>
                   setActivePreviewId(`${service.id}-${image.position}-${index}`)
                 }
-                className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+                className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
                 aria-label={`Open media ${index + 1} for ${service.title}`}
               >
                 <AppImage
                   src={image.imageUrl}
                   alt={`${service.title} image ${index + 1}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-[1.02]"
                 />
               </button>
             ))}

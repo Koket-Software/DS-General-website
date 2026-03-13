@@ -74,5 +74,8 @@ export const initOgImageModule = (deps: ModuleDeps = { db }) => {
 
   const clientRouter = createOgImageRoutes(controller);
 
-  return { clientRouter };
+  return {
+    clientRouter,
+    router: clientRouter,
+  };
 };

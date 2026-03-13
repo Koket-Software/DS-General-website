@@ -62,7 +62,11 @@ export const buildBrandSeoConfig = (
   overrides: Partial<BrandSeoConfig> = {},
 ): BrandSeoConfig => {
   const sanitizedOverrides = Object.fromEntries(
-    Object.entries(overrides).filter(([, value]) => value !== undefined),
+    Object.entries(overrides).filter(([, value]) => {
+      if (value === undefined) return false;
+      if (typeof value === "string" && value.trim().length === 0) return false;
+      return true;
+    }),
   ) as Partial<BrandSeoConfig>;
 
   const merged: BrandSeoConfig = {

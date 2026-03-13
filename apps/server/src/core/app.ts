@@ -70,6 +70,9 @@ export const createApp = () => {
     ) {
       return next();
     }
+    if (path === "/api/og" || path.startsWith("/api/og/")) {
+      return next();
+    }
     if (path.startsWith("/api/v1")) {
       return next();
     }

@@ -99,7 +99,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
   const getDefaultResponse = async (c: Context): Promise<Response> => {
     if (usesDynamicDefaultEndpoint) {
       const defaultImage = await generateDefaultOgImage({ brand });
-      return returnImageResponse(defaultImage);
+      return await returnImageResponse(defaultImage);
     }
 
     const fallbackUrl = /^https?:\/\//i.test(brandDefaultPath)
@@ -163,7 +163,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         };
 
         const imageResponse = await generateOgImage(data, { brand });
-        return returnImageResponse(imageResponse);
+        return await returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating blog OG image", error as Error);
         return getDefaultResponse(c);
@@ -193,7 +193,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         };
 
         const imageResponse = await generateOgImage(data, { brand });
-        return returnImageResponse(imageResponse);
+        return await returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating service OG image", error as Error);
         return getDefaultResponse(c);
@@ -225,7 +225,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         };
 
         const imageResponse = await generateOgImage(data, { brand });
-        return returnImageResponse(imageResponse);
+        return await returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating project OG image", error as Error);
         return getDefaultResponse(c);
@@ -260,7 +260,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         };
 
         const imageResponse = await generateOgImage(data, { brand });
-        return returnImageResponse(imageResponse);
+        return await returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating career OG image", error as Error);
         return getDefaultResponse(c);
@@ -291,7 +291,7 @@ export const createOgImageController = (deps: OgImageControllerDeps) => {
         };
 
         const imageResponse = await generateOgImage(data, { brand });
-        return returnImageResponse(imageResponse);
+        return await returnImageResponse(imageResponse);
       } catch (error) {
         logger.error("Error generating page OG image", error as Error);
         return getDefaultResponse(c);

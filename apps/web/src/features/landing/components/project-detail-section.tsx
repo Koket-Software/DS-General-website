@@ -138,13 +138,13 @@ export function ProjectDetailSection({ slug }: ProjectDetailSectionProps) {
             onClick={() =>
               setActivePreviewId(String(previewItems[0]?.id ?? ""))
             }
-            className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+            className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
             aria-label={`Open media preview for ${project.title}`}
           >
             <AppImage
               src={primaryImage}
               alt={project.title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-[1.02]"
               priority
             />
           </button>
@@ -294,13 +294,13 @@ export function ProjectDetailSection({ slug }: ProjectDetailSectionProps) {
                 onClick={() =>
                   setActivePreviewId(`${project.id}-${image.position}-${index}`)
                 }
-                className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
+                className="group relative aspect-square overflow-hidden border border-border/60 bg-muted/40 text-left touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2"
                 aria-label={`Open media ${index + 1} for ${project.title}`}
               >
                 <AppImage
                   src={image.imageUrl}
                   alt={image.caption || `${project.title} image ${index + 1}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-[1.02]"
                 />
               </button>
             ))}

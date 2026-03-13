@@ -36,13 +36,15 @@ export const getServerBrandSeoConfig = (): BrandSeoConfig => {
     ),
     locale: getEnvValue("SITE_LOCALE", "VITE_SITE_LOCALE"),
     twitterHandle: getEnvValue("TWITTER_HANDLE", "VITE_TWITTER_HANDLE"),
-    themeColor: getEnvValue("THEME_COLOR", "VITE_THEME_COLOR"),
+    themeColor: getEnvValue("THEME_COLOR", "VITE_THEME_COLOR") || "#4962E1",
     ogDefaultPath:
       getEnvValue("OG_DEFAULT_PATH", "VITE_OG_DEFAULT_PATH") ||
       DEFAULT_BRAND_OG_IMAGE_PATH,
-    brandPrimary: getEnvValue("BRAND_PRIMARY", "VITE_BRAND_PRIMARY"),
-    brandSecondary: getEnvValue("BRAND_SECONDARY", "VITE_BRAND_SECONDARY"),
-    brandAccent: getEnvValue("BRAND_ACCENT", "VITE_BRAND_ACCENT"),
+    brandPrimary:
+      getEnvValue("BRAND_PRIMARY", "VITE_BRAND_PRIMARY") || "#4962E1",
+    brandSecondary:
+      getEnvValue("BRAND_SECONDARY", "VITE_BRAND_SECONDARY") || "#1D1D1D",
+    brandAccent: getEnvValue("BRAND_ACCENT", "VITE_BRAND_ACCENT") || "#F6F7FD",
     logoPath: getEnvValue("SITE_LOGO_PATH", "VITE_SITE_LOGO_PATH"),
     keywords: parseKeywords(getEnvValue("SITE_KEYWORDS", "VITE_SITE_KEYWORDS")),
   });

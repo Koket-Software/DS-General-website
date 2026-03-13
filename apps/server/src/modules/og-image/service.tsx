@@ -20,14 +20,50 @@ import { DEFAULT_OG_OPTIONS } from "./types";
 import { logger } from "../../shared/logger";
 
 const PLAYFAIR_FONT_URL =
-  "https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDXbtXK-F2qC0s.woff";
+  "https://cdn.jsdelivr.net/npm/@fontsource/playfair-display/files/playfair-display-latin-700-normal.woff";
 const MANROPE_FONT_URL =
-  "https://fonts.gstatic.com/s/manrope/v15/xn7gYHE41ni1AdIRggexSvfedN4.woff2";
+  "https://cdn.jsdelivr.net/npm/@fontsource/manrope/files/manrope-latin-500-normal.woff";
 
 let playfairFontCache: ArrayBuffer | null = null;
 let manropeFontCache: ArrayBuffer | null = null;
 
+const decodeSignature = (bytes: Uint8Array): string =>
+  String.fromCharCode(
+    bytes[0] ?? 0,
+    bytes[1] ?? 0,
+    bytes[2] ?? 0,
+    bytes[3] ?? 0,
+  );
+
+const getFontSignature = (buffer: ArrayBuffer): string => {
+  const bytes = new Uint8Array(buffer, 0, 4);
+  const ascii = decodeSignature(bytes);
+
+  if (ascii === "OTTO" || ascii === "wOFF" || ascii === "wOF2") {
+    return ascii;
+  }
+
+  if (
+    bytes[0] === 0x00 &&
+    bytes[1] === 0x01 &&
+    bytes[2] === 0x00 &&
+    bytes[3] === 0x00
+  ) {
+    return "ttf";
+  }
+
+  if (ascii === "true") {
+    return "ttf";
+  }
+
+  return "unknown";
+};
+
+const isSupportedFontSignature = (signature: string): boolean =>
+  signature === "ttf" || signature === "OTTO" || signature === "wOFF";
+
 async function fetchFont(
+  label: string,
   url: string,
   cache: ArrayBuffer | null,
 ): Promise<ArrayBuffer | null> {
@@ -40,9 +76,23 @@ async function fetchFont(
     if (!response.ok) {
       throw new Error(`Failed to fetch font: ${response.status}`);
     }
-    return await response.arrayBuffer();
+
+    const buffer = await response.arrayBuffer();
+    const signature = getFontSignature(buffer);
+
+    if (!isSupportedFontSignature(signature)) {
+      logger.warn("OG font skipped: unsupported format for @vercel/og", {
+        label,
+        signature,
+        url,
+      });
+      return null;
+    }
+
+    return buffer;
   } catch (error) {
     logger.warn("OG font fetch failed; rendering with fallback fonts", {
+      label,
       url,
       message: (error as Error).message,
     });
@@ -52,8 +102,8 @@ async function fetchFont(
 
 async function getFonts() {
   const [playfair, manrope] = await Promise.all([
-    fetchFont(PLAYFAIR_FONT_URL, playfairFontCache),
-    fetchFont(MANROPE_FONT_URL, manropeFontCache),
+    fetchFont("Playfair Display", PLAYFAIR_FONT_URL, playfairFontCache),
+    fetchFont("Manrope", MANROPE_FONT_URL, manropeFontCache),
   ]);
 
   if (playfair && !playfairFontCache) {
