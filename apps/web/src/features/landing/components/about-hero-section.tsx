@@ -19,12 +19,12 @@ export function AboutHeroSection() {
           </div>
           <div className="w-px h-12 bg-primary/40" />
           <div className="flex flex-col items-center text-foreground">
-            <p className="font-sans font-extrabold text-[24px]">100+</p>
+            <p className="font-sans font-extrabold text-[24px]">30+</p>
             <p className="font-sans font-medium text-[16px]">Happy Clients</p>
           </div>
           <div className="w-px h-12 bg-primary/40" />
           <div className="flex flex-col items-center text-foreground">
-            <p className="font-sans font-extrabold text-[24px]">4.8/5</p>
+            <p className="font-sans font-extrabold text-[24px]">4.9/5</p>
             <p className="font-sans font-medium text-[16px] text-center">
               Material Sourcing Quality Score
             </p>
