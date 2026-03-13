@@ -5,6 +5,7 @@ import type { ReactElement } from "react";
 import svgPaths from "../../../../imports/svg-3j9pd5gois";
 
 import { AppImage } from "@/components/common/AppImage";
+import { LexicalViewer } from "@/components/common/rich-text/LexicalViewer";
 import { Button } from "@/components/ui/button";
 import { COMPANY } from "@/config/template";
 import {
@@ -19,6 +20,9 @@ import { usePublicBusinessSectorBySlug } from "@/lib/business-sectors/business-s
 interface SourcingLogisticsSectionProps {
   slug: string;
 }
+
+const containsHtml = (value?: string | null) =>
+  Boolean(value && /<[^>]+>/.test(value));
 
 function PhoneIcon() {
   return (
@@ -285,9 +289,13 @@ export function SourcingLogisticsSection({
           <h2 className="font-sans text-[42px] font-medium text-foreground">
             Our History
           </h2>
-          <p className="whitespace-pre-wrap font-sans text-[16px] leading-[1.6] text-muted-foreground">
-            {sector.history}
-          </p>
+          {containsHtml(sector.history) ? (
+            <LexicalViewer content={sector.history} />
+          ) : (
+            <p className="whitespace-pre-wrap font-sans text-[16px] leading-[1.6] text-muted-foreground">
+              {sector.history}
+            </p>
+          )}
         </div>
       </section>
 
