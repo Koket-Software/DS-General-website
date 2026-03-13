@@ -1,7 +1,7 @@
-import { Outlet, useLocation } from "@tanstack/react-router";
+import { Outlet, useLocation, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Transition } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { Footer } from "../components/footer";
 import { Navbar } from "../components/navbar";
@@ -18,7 +18,16 @@ function ScrollToTop() {
 
 function LandingRouteTransition() {
   const { pathname } = useLocation();
+  const isLoading = useRouterState({ select: (s) => s.isLoading });
   const reduceMotion = useReducedMotion();
+
+  // Hold the previous pathname while the next route's loader is pending.
+  // This prevents AnimatePresence from swapping the key (and running exit
+  // + enter animations) before the incoming <Outlet /> has content.
+  const resolvedPathname = useRef(pathname);
+  if (!isLoading) {
+    resolvedPathname.current = pathname;
+  }
 
   const initial = reduceMotion
     ? { opacity: 1 }
@@ -34,7 +43,7 @@ function LandingRouteTransition() {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
-        key={pathname}
+        key={resolvedPathname.current}
         initial={initial}
         animate={animate}
         exit={exit}
