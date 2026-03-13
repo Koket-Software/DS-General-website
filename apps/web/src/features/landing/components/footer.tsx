@@ -141,6 +141,7 @@ export function Footer() {
             {[
               { label: "About", path: "/about" },
               { label: "Services", path: "/services" },
+              { label: "Projects", path: "/projects" },
               { label: "Gallery", path: "/gallery" },
               { label: "Articles", path: "/articles" },
               { label: "Contact Us", path: "/contact" },

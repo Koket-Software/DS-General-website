@@ -18,6 +18,7 @@ import {
   getCareerOgImageUrl,
   getDefaultOgImageUrl,
   getPageOgImageUrl,
+  getProjectOgImageUrl,
   getServiceOgImageUrl,
   SITE_METADATA,
 } from "@/lib/og-utils";
@@ -316,6 +317,46 @@ export function buildServiceDetailHead(input: {
         {
           name: "Services",
           url: joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.services()),
+        },
+        {
+          name: input.title,
+          url: canonicalUrl,
+        },
+      ]),
+    ],
+    preloadImage: input.featuredImageUrl || undefined,
+  });
+}
+
+export function buildProjectDetailHead(input: {
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  featuredImageUrl?: string | null;
+}) {
+  const path = PUBLIC_ROUTE_PATHS.project(input.slug);
+  const canonicalUrl = joinUrl(SITE_METADATA.siteUrl, path);
+  const description = input.excerpt || SITE_METADATA.defaultDescription;
+
+  return buildHead({
+    path,
+    title: `${input.title} | ${SITE_METADATA.siteName} Projects`,
+    description,
+    ogImage: input.featuredImageUrl || getProjectOgImageUrl(input.slug),
+    jsonLd: [
+      buildWebPageJsonLd({
+        title: input.title,
+        description,
+        url: canonicalUrl,
+      }),
+      buildBreadcrumbJsonLd([
+        {
+          name: "Home",
+          url: joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.home()),
+        },
+        {
+          name: "Client Projects",
+          url: joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.projects()),
         },
         {
           name: input.title,

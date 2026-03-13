@@ -38,9 +38,15 @@ describe("shared SEO registry", () => {
     expect(getStaticSeoRoute(PUBLIC_ROUTE_PATHS.articles())?.title).toBe(
       "Articles & Insights",
     );
+    expect(getStaticSeoRoute(PUBLIC_ROUTE_PATHS.projects())?.title).toBe(
+      "Client Projects",
+    );
     expect(isPublicRenderableRoute(PUBLIC_ROUTE_PATHS.article("freight"))).toBe(
       true,
     );
+    expect(
+      isPublicRenderableRoute(PUBLIC_ROUTE_PATHS.project("axum-upgrade")),
+    ).toBe(true);
     expect(isNoindexRoute("/dashboard/services/create")).toBe(true);
     expect(isPublicRenderableRoute("/dashboard/services/create")).toBe(false);
   });

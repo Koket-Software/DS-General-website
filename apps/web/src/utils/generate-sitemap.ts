@@ -7,6 +7,7 @@ import {
 
 import { fetchPublicBlogs } from "@/lib/blogs/blogs-api";
 import { fetchPublicBusinessSectors } from "@/lib/business-sectors/business-sectors-api";
+import { fetchPublicCaseStudies } from "@/lib/case-study/case-study-api";
 import { fetchPublicServices } from "@/lib/services/services-api";
 import { fetchPublicVacancies } from "@/lib/vacancies/vacancies-api";
 
@@ -121,9 +122,19 @@ async function getDynamicRoutes(
       sortBy: "publishDate",
       sortOrder: "desc",
     }),
+    fetchPublicCaseStudies({
+      page: 1,
+      limit: 100,
+    }),
   ]);
 
-  const [blogsResult, vacanciesResult, servicesResult, sectorsResult] = settled;
+  const [
+    blogsResult,
+    vacanciesResult,
+    servicesResult,
+    sectorsResult,
+    caseStudiesResult,
+  ] = settled;
 
   const routes: SitemapUrl[] = [];
 
@@ -179,6 +190,17 @@ async function getDynamicRoutes(
           buildDate,
         changefreq: "monthly" as const,
         priority: 0.65,
+      })),
+    );
+  }
+
+  if (caseStudiesResult.status === "fulfilled") {
+    routes.push(
+      ...caseStudiesResult.value.data.map((project) => ({
+        loc: joinUrl(baseUrl, PUBLIC_ROUTE_PATHS.project(project.slug)),
+        lastmod: toDateString(project.createdAt) ?? buildDate,
+        changefreq: "weekly" as const,
+        priority: 0.75,
       })),
     );
   }

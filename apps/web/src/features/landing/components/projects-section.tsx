@@ -1,19 +1,38 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+
 import { SectionHeader } from "./section-header";
 
-import { usePublicCaseStudiesQuery } from "@/lib/case-study/case-study-query";
+import {
+  publicCaseStudyDetailQueryOptions,
+  usePublicCaseStudiesQuery,
+} from "@/lib/case-study/case-study-query";
 import { formatPublicDate } from "@/lib/public-date";
 
 interface ProjectCardProps {
+  slug: string;
   image: string | null;
   date: string;
   title: string;
+  onPrefetch: (slug: string) => void;
   wide?: boolean;
 }
 
-function ProjectCard({ image, date, title, wide }: ProjectCardProps) {
+function ProjectCard({
+  slug,
+  image,
+  date,
+  title,
+  onPrefetch,
+  wide,
+}: ProjectCardProps) {
   return (
-    <div
-      className={`border border-border/60 flex flex-col overflow-hidden ${wide ? "flex-[1.4]" : "flex-1"}`}
+    <Link
+      to="/projects/$slug"
+      params={{ slug }}
+      onMouseEnter={() => onPrefetch(slug)}
+      onFocus={() => onPrefetch(slug)}
+      className={`border border-border/60 flex flex-col overflow-hidden no-underline ${wide ? "flex-[1.4]" : "flex-1"}`}
     >
       <div className="h-50 relative bg-muted/40">
         {image ? (
@@ -32,23 +51,36 @@ function ProjectCard({ image, date, title, wide }: ProjectCardProps) {
           {title}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
 export function ProjectsSection() {
+  const queryClient = useQueryClient();
   const projectsQuery = usePublicCaseStudiesQuery({ page: 1, limit: 6 });
   const projects = projectsQuery.data?.data ?? [];
 
   const firstRow = projects.slice(0, 3);
   const secondRow = projects.slice(3, 6);
 
+  const prefetchProjectDetail = (slug: string) => {
+    void queryClient.prefetchQuery(publicCaseStudyDetailQueryOptions(slug));
+  };
+
   return (
     <section className="landing-container landing-section">
-      <SectionHeader
-        label="/Featured Project"
-        title="Explore the works we have done with our trusted partners"
-      />
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <SectionHeader
+          label="/Featured Project"
+          title="Explore the works we have done with our trusted partners"
+        />
+        <Link
+          to="/projects"
+          className="inline-flex w-fit items-center border border-border/60 px-4 py-2 font-sans text-[14px] font-medium text-foreground no-underline transition-colors hover:border-primary/50 hover:text-primary"
+        >
+          View All
+        </Link>
+      </div>
 
       {projectsQuery.isError ? (
         <div className="mt-10 text-sm text-muted-foreground">
@@ -71,9 +103,11 @@ export function ProjectsSection() {
                 {firstRow.map((project, index) => (
                   <ProjectCard
                     key={project.id}
+                    slug={project.slug}
                     image={project.featuredImage}
                     date={formatPublicDate(project.createdAt)}
                     title={project.title}
+                    onPrefetch={prefetchProjectDetail}
                     wide={index === 0}
                   />
                 ))}
@@ -82,9 +116,11 @@ export function ProjectsSection() {
                 {secondRow.map((project, index) => (
                   <ProjectCard
                     key={project.id}
+                    slug={project.slug}
                     image={project.featuredImage}
                     date={formatPublicDate(project.createdAt)}
                     title={project.title}
+                    onPrefetch={prefetchProjectDetail}
                     wide={index === 2}
                   />
                 ))}

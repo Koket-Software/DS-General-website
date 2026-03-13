@@ -131,6 +131,8 @@ export const PUBLIC_ROUTE_PATHS = {
   careerDetail: (slug: string) => `/career/${slug}`,
   services: () => "/services",
   service: (slug: string) => `/services/${slug}`,
+  projects: () => "/projects",
+  project: (slug: string) => `/projects/${slug}`,
   sector: (slug: string) => `/sectors/${slug}`,
   contact: () => "/contact",
   gallery: () => "/gallery",
@@ -225,6 +227,17 @@ export const PUBLIC_STATIC_SEO_ROUTES: PublicStaticSeoRoute[] = [
     sitemap: { changefreq: "weekly", priority: 0.85 },
   },
   {
+    path: PUBLIC_ROUTE_PATHS.projects(),
+    title: "Client Projects",
+    description:
+      "Explore DS General PLC client projects, delivery outcomes, and implementation stories across sectors.",
+    section: "Client Projects",
+    category: "Projects",
+    pageTheme: "generic",
+    highlights: ["Case studies", "Delivery outcomes", "Execution stories"],
+    sitemap: { changefreq: "weekly", priority: 0.85 },
+  },
+  {
     path: PUBLIC_ROUTE_PATHS.privacyPolicy(),
     title: "Privacy Policy",
     description:
@@ -264,6 +277,7 @@ export const PUBLIC_DYNAMIC_ROUTE_PREFIXES = [
   "/articles/",
   "/career/",
   "/services/",
+  "/projects/",
   "/sectors/",
 ];
 

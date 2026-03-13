@@ -8,6 +8,7 @@ import {
 
 import type { PublicBlogsResponse } from "@/lib/blogs/blogs-api";
 import type { PublicBusinessSectorsListResponse } from "@/lib/business-sectors/business-sectors-api";
+import type { PublicCaseStudiesListResponse } from "@/lib/case-study/case-study-api";
 import type { PublicServicesListResponse } from "@/lib/services/services-api";
 import type { PublicVacanciesResponse } from "@/lib/vacancies/vacancies-api";
 
@@ -16,12 +17,14 @@ const {
   fetchPublicVacancies,
   fetchPublicServices,
   fetchPublicBusinessSectors,
+  fetchPublicCaseStudies,
 } = vi.hoisted(() => ({
   fetchPublicBlogs: vi.fn<() => Promise<PublicBlogsResponse>>(),
   fetchPublicVacancies: vi.fn<() => Promise<PublicVacanciesResponse>>(),
   fetchPublicServices: vi.fn<() => Promise<PublicServicesListResponse>>(),
   fetchPublicBusinessSectors:
     vi.fn<() => Promise<PublicBusinessSectorsListResponse>>(),
+  fetchPublicCaseStudies: vi.fn<() => Promise<PublicCaseStudiesListResponse>>(),
 }));
 
 vi.mock("@/lib/blogs/blogs-api", () => ({
@@ -38,6 +41,10 @@ vi.mock("@/lib/services/services-api", () => ({
 
 vi.mock("@/lib/business-sectors/business-sectors-api", () => ({
   fetchPublicBusinessSectors,
+}));
+
+vi.mock("@/lib/case-study/case-study-api", () => ({
+  fetchPublicCaseStudies,
 }));
 
 afterEach(() => {
@@ -111,6 +118,15 @@ describe("generate-sitemap", () => {
         },
       ],
     } as PublicBusinessSectorsListResponse);
+    fetchPublicCaseStudies.mockResolvedValue({
+      success: true,
+      data: [
+        {
+          slug: "axum-supply-modernization",
+          createdAt: "2026-03-02T00:00:00.000Z",
+        },
+      ],
+    } as PublicCaseStudiesListResponse);
 
     const xml = await generateFullSitemap("https://dsgeneralplc.com/", {
       prettyPrint: false,
@@ -123,6 +139,9 @@ describe("generate-sitemap", () => {
     expect(xml).toContain("https://dsgeneralplc.com/career/site-engineer");
     expect(xml).toContain("https://dsgeneralplc.com/services/procurement");
     expect(xml).toContain("https://dsgeneralplc.com/sectors/construction");
+    expect(xml).toContain(
+      "https://dsgeneralplc.com/projects/axum-supply-modernization",
+    );
     expect(xml).not.toContain("/blogs/");
   });
 });

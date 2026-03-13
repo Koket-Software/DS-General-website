@@ -21,6 +21,7 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as LandingIndexRouteImport } from './routes/_landing/index'
 import { Route as LandingTermsOfServiceRouteImport } from './routes/_landing/terms-of-service'
 import { Route as LandingServicesRouteImport } from './routes/_landing/services'
+import { Route as LandingProjectsRouteImport } from './routes/_landing/projects'
 import { Route as LandingPrivacyPolicyRouteImport } from './routes/_landing/privacy-policy'
 import { Route as LandingGalleryRouteImport } from './routes/_landing/gallery'
 import { Route as LandingContactRouteImport } from './routes/_landing/contact'
@@ -38,6 +39,7 @@ import { Route as DashboardGalleryCategoriesRouteImport } from './routes/dashboa
 import { Route as DashboardBusinessSectorsCreateRouteImport } from './routes/dashboard/business-sectors/create'
 import { Route as LandingServicesSlugRouteImport } from './routes/_landing/services.$slug'
 import { Route as LandingSectorsSlugRouteImport } from './routes/_landing/sectors.$slug'
+import { Route as LandingProjectsSlugRouteImport } from './routes/_landing/projects.$slug'
 import { Route as LandingCareerSlugRouteImport } from './routes/_landing/career.$slug'
 import { Route as LandingArticlesSlugRouteImport } from './routes/_landing/articles.$slug'
 import { Route as DashboardVacanciesSlugIndexRouteImport } from './routes/dashboard/vacancies/$slug/index'
@@ -182,6 +184,13 @@ const LandingServicesRoute = LandingServicesRouteImport.update({
   getParentRoute: () => LandingRoute,
 } as any).lazy(() =>
   import('./routes/_landing/services.lazy').then((d) => d.Route),
+)
+const LandingProjectsRoute = LandingProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => LandingRoute,
+} as any).lazy(() =>
+  import('./routes/_landing/projects.lazy').then((d) => d.Route),
 )
 const LandingPrivacyPolicyRoute = LandingPrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
@@ -485,6 +494,13 @@ const LandingSectorsSlugRoute = LandingSectorsSlugRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_landing/sectors.$slug.lazy').then((d) => d.Route),
 )
+const LandingProjectsSlugRoute = LandingProjectsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => LandingProjectsRoute,
+} as any).lazy(() =>
+  import('./routes/_landing/projects.$slug.lazy').then((d) => d.Route),
+)
 const LandingCareerSlugRoute = LandingCareerSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -731,12 +747,14 @@ export interface FileRoutesByFullPath {
   '/contact': typeof LandingContactRoute
   '/gallery': typeof LandingGalleryRoute
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/projects': typeof LandingProjectsRouteWithChildren
   '/services': typeof LandingServicesRouteWithChildren
   '/terms-of-service': typeof LandingTermsOfServiceRoute
   '/': typeof LandingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/articles/$slug': typeof LandingArticlesSlugRoute
   '/career/$slug': typeof LandingCareerSlugRoute
+  '/projects/$slug': typeof LandingProjectsSlugRoute
   '/sectors/$slug': typeof LandingSectorsSlugRoute
   '/services/$slug': typeof LandingServicesSlugRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
@@ -806,12 +824,14 @@ export interface FileRoutesByTo {
   '/contact': typeof LandingContactRoute
   '/gallery': typeof LandingGalleryRoute
   '/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/projects': typeof LandingProjectsRouteWithChildren
   '/services': typeof LandingServicesRouteWithChildren
   '/terms-of-service': typeof LandingTermsOfServiceRoute
   '/': typeof LandingIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/articles/$slug': typeof LandingArticlesSlugRoute
   '/career/$slug': typeof LandingCareerSlugRoute
+  '/projects/$slug': typeof LandingProjectsSlugRoute
   '/sectors/$slug': typeof LandingSectorsSlugRoute
   '/services/$slug': typeof LandingServicesSlugRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
@@ -884,12 +904,14 @@ export interface FileRoutesById {
   '/_landing/contact': typeof LandingContactRoute
   '/_landing/gallery': typeof LandingGalleryRoute
   '/_landing/privacy-policy': typeof LandingPrivacyPolicyRoute
+  '/_landing/projects': typeof LandingProjectsRouteWithChildren
   '/_landing/services': typeof LandingServicesRouteWithChildren
   '/_landing/terms-of-service': typeof LandingTermsOfServiceRoute
   '/_landing/': typeof LandingIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/_landing/articles/$slug': typeof LandingArticlesSlugRoute
   '/_landing/career/$slug': typeof LandingCareerSlugRoute
+  '/_landing/projects/$slug': typeof LandingProjectsSlugRoute
   '/_landing/sectors/$slug': typeof LandingSectorsSlugRoute
   '/_landing/services/$slug': typeof LandingServicesSlugRoute
   '/dashboard/business-sectors/create': typeof DashboardBusinessSectorsCreateRoute
@@ -962,12 +984,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/privacy-policy'
+    | '/projects'
     | '/services'
     | '/terms-of-service'
     | '/'
     | '/dashboard/'
     | '/articles/$slug'
     | '/career/$slug'
+    | '/projects/$slug'
     | '/sectors/$slug'
     | '/services/$slug'
     | '/dashboard/business-sectors/create'
@@ -1037,12 +1061,14 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/privacy-policy'
+    | '/projects'
     | '/services'
     | '/terms-of-service'
     | '/'
     | '/dashboard'
     | '/articles/$slug'
     | '/career/$slug'
+    | '/projects/$slug'
     | '/sectors/$slug'
     | '/services/$slug'
     | '/dashboard/business-sectors/create'
@@ -1114,12 +1140,14 @@ export interface FileRouteTypes {
     | '/_landing/contact'
     | '/_landing/gallery'
     | '/_landing/privacy-policy'
+    | '/_landing/projects'
     | '/_landing/services'
     | '/_landing/terms-of-service'
     | '/_landing/'
     | '/dashboard/'
     | '/_landing/articles/$slug'
     | '/_landing/career/$slug'
+    | '/_landing/projects/$slug'
     | '/_landing/sectors/$slug'
     | '/_landing/services/$slug'
     | '/dashboard/business-sectors/create'
@@ -1258,6 +1286,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof LandingServicesRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/_landing/projects': {
+      id: '/_landing/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof LandingProjectsRouteImport
       parentRoute: typeof LandingRoute
     }
     '/_landing/privacy-policy': {
@@ -1526,6 +1561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingSectorsSlugRouteImport
       parentRoute: typeof LandingRoute
     }
+    '/_landing/projects/$slug': {
+      id: '/_landing/projects/$slug'
+      path: '/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof LandingProjectsSlugRouteImport
+      parentRoute: typeof LandingProjectsRoute
+    }
     '/_landing/career/$slug': {
       id: '/_landing/career/$slug'
       path: '/$slug'
@@ -1742,6 +1784,18 @@ const LandingCareerRouteWithChildren = LandingCareerRoute._addFileChildren(
   LandingCareerRouteChildren,
 )
 
+interface LandingProjectsRouteChildren {
+  LandingProjectsSlugRoute: typeof LandingProjectsSlugRoute
+}
+
+const LandingProjectsRouteChildren: LandingProjectsRouteChildren = {
+  LandingProjectsSlugRoute: LandingProjectsSlugRoute,
+}
+
+const LandingProjectsRouteWithChildren = LandingProjectsRoute._addFileChildren(
+  LandingProjectsRouteChildren,
+)
+
 interface LandingServicesRouteChildren {
   LandingServicesSlugRoute: typeof LandingServicesSlugRoute
 }
@@ -1761,6 +1815,7 @@ interface LandingRouteChildren {
   LandingContactRoute: typeof LandingContactRoute
   LandingGalleryRoute: typeof LandingGalleryRoute
   LandingPrivacyPolicyRoute: typeof LandingPrivacyPolicyRoute
+  LandingProjectsRoute: typeof LandingProjectsRouteWithChildren
   LandingServicesRoute: typeof LandingServicesRouteWithChildren
   LandingTermsOfServiceRoute: typeof LandingTermsOfServiceRoute
   LandingIndexRoute: typeof LandingIndexRoute
@@ -1774,6 +1829,7 @@ const LandingRouteChildren: LandingRouteChildren = {
   LandingContactRoute: LandingContactRoute,
   LandingGalleryRoute: LandingGalleryRoute,
   LandingPrivacyPolicyRoute: LandingPrivacyPolicyRoute,
+  LandingProjectsRoute: LandingProjectsRouteWithChildren,
   LandingServicesRoute: LandingServicesRouteWithChildren,
   LandingTermsOfServiceRoute: LandingTermsOfServiceRoute,
   LandingIndexRoute: LandingIndexRoute,
