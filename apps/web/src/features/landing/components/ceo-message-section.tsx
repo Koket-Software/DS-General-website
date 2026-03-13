@@ -1,30 +1,15 @@
 import imgSignature from "../../../../assets/fc0a07d840c76d3dcf154dd65bcaf3aef1c0d793.png";
 
+import imgCeo from "@/assets/ds/about/dejene_Leta.webp";
+
 export function CEOMessageSection() {
   return (
     <section className="landing-container landing-section">
       <div className="flex flex-col lg:flex-row gap-10 items-center">
         {/* Decorative pattern background */}
         <div className=" w-100 h-109.25 relative shrink-0 overflow-hidden">
-          <svg className="w-full h-full" viewBox="0 0 400 437" fill="none">
-            {/* Generate a grid of star/cross shapes */}
-            {Array.from({ length: 5 }).map((_, row) =>
-              Array.from({ length: 4 }).map((_, col) => {
-                const cx = 54.5 + col * 109;
-                const cy = 54.5 + row * 109;
-                return (
-                  <circle
-                    key={`${row}-${col}`}
-                    cx={cx}
-                    cy={cy}
-                    r="54.5"
-                    fill="var(--primary)"
-                    fillOpacity="0.05"
-                  />
-                );
-              }),
-            )}
-          </svg>
+          {/* Decorative pattern background */}
+          <img src={imgCeo} alt="CEO Image" />
         </div>
 
         {/* CEO message content */}
