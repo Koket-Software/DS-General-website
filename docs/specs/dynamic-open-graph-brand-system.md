@@ -94,6 +94,18 @@ Tests for this phase:
 
 - [x] Run targeted workspace type checks for `apps/server` and `apps/web`.
 
+### Phase 4: Visual simplification pass (light-only)
+
+- [x] Refactor OG templates to a single-card composition (remove two-panel layout).
+- [x] Enforce light-mode visuals only across all dynamic OG routes.
+- [x] Reduce tags/chips density and keep metadata concise and elegant.
+- [x] Keep route-aware labels and category context while simplifying structure.
+
+Tests for this phase:
+
+- [x] Run targeted server OG tests for rendering/meta behavior.
+- [x] Run server type checks after template refactor.
+
 ## Task List
 
 - [x] Write spec
@@ -103,3 +115,4 @@ Tests for this phase:
 - [x] Align web OG utilities
 - [x] Run validation
 - [x] Mark completed tasks in this spec
+- [x] Simplify OG templates for light-mode single-panel design

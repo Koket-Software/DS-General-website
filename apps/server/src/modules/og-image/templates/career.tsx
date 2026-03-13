@@ -19,7 +19,7 @@ export const CareerTemplate = ({
       data={{ ...data, pageTheme: "career" }}
       brand={brand}
       defaultCategory="Careers"
-      railTitle="Hiring Signal"
+      railTitle="Careers"
     />
   );
 };

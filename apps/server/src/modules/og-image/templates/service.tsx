@@ -19,7 +19,7 @@ export const ServiceTemplate = ({
       data={{ ...data, pageTheme: "generic" }}
       brand={brand}
       defaultCategory="Service"
-      railTitle="Capability Overview"
+      railTitle="Service"
     />
   );
 };

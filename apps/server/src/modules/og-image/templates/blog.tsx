@@ -19,7 +19,7 @@ export const BlogTemplate = ({
       data={{ ...data, pageTheme: "articles" }}
       brand={brand}
       defaultCategory="Article"
-      railTitle="Editorial Feature"
+      railTitle="Article"
     />
   );
 };

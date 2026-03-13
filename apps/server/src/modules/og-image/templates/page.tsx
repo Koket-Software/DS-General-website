@@ -2,21 +2,7 @@
 import type { BrandSeoConfig } from "@suba-company-template/types";
 import type React from "react";
 
-import {
-  BackgroundDecor,
-  BrandLine,
-  BrandStamp,
-  DisplayTitle,
-  Frame,
-  HighlightChips,
-  InfoCard,
-  Lead,
-  SectionChip,
-  VisualPanel,
-  createCanvasStyle,
-  getPageHighlights,
-  getThemeLabel,
-} from "./base";
+import { SimpleTemplate, getThemeLabel } from "./base";
 import type { OgImageData } from "../types";
 
 interface PageTemplateProps {
@@ -29,95 +15,17 @@ export const PageTemplate = ({
   brand,
 }: PageTemplateProps): React.ReactElement => {
   const theme = data.pageTheme || "generic";
-  const highlights = getPageHighlights(data);
+  const themeLabel = getThemeLabel(theme);
 
   return (
-    <div style={createCanvasStyle(brand)}>
-      <BackgroundDecor brand={brand} />
-      <Frame>
-        <BrandLine brand={brand} rightLabel={getThemeLabel(theme)} />
-
-        <div
-          style={{
-            display: "flex",
-            gap: "28px",
-            flex: 1,
-            marginTop: "32px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              gap: "24px",
-              flex: 1.15,
-              padding: "34px",
-              borderRadius: "34px",
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(7, 11, 22, 0.44)",
-            }}
-          >
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-            >
-              <SectionChip
-                label={data.category || getThemeLabel(theme)}
-                brand={brand}
-              />
-              <DisplayTitle title={data.title} />
-              {data.description ? (
-                <Lead description={data.description} />
-              ) : null}
-            </div>
-
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "18px" }}
-            >
-              <HighlightChips items={highlights} brand={brand} />
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "14px",
-                  color: "rgba(248,250,252,0.72)",
-                  fontSize: "17px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "58px",
-                    height: "1px",
-                    background: "rgba(248,250,252,0.26)",
-                  }}
-                />
-                Dynamic brand card generated for the public page surface.
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "18px",
-              width: "356px",
-            }}
-          >
-            <VisualPanel
-              brand={brand}
-              imageUrl={data.imageUrl}
-              label={getThemeLabel(theme)}
-            />
-            <BrandStamp brand={brand} label="Site Identity" />
-            <InfoCard
-              brand={brand}
-              title="Page Intent"
-              body={data.category || getThemeLabel(theme)}
-            />
-          </div>
-        </div>
-      </Frame>
-    </div>
+    <SimpleTemplate
+      brand={brand}
+      title={data.title}
+      description={data.description}
+      category={data.category || themeLabel}
+      routeLabel={themeLabel}
+      meta={[themeLabel, "Dynamic OG"]}
+      imageUrl={data.imageUrl}
+    />
   );
 };

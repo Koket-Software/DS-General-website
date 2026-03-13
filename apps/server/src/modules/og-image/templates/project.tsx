@@ -19,7 +19,7 @@ export const ProjectTemplate = ({
       data={{ ...data, pageTheme: "generic" }}
       brand={brand}
       defaultCategory="Project"
-      railTitle="Case Study Snapshot"
+      railTitle="Project"
     />
   );
 };
