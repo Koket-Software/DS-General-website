@@ -71,13 +71,7 @@ export function TestimonialForm({
   const formId = "testimonial-form";
 
   const companyLogoUpload = useUploadField({
-    accept: [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/svg+xml",
-    ],
+    accept: ["image/jpeg", "image/png", "image/gif", "image/webp"],
     maxSize: 5 * 1024 * 1024,
     multiple: false,
     initialUrls: testimonial?.companyLogoUrl
@@ -427,7 +421,7 @@ export function TestimonialForm({
               id="testimonial-company-logo"
               name="companyLogo"
               type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+              accept="image/jpeg,image/png,image/gif,image/webp"
               onChange={(event) => {
                 if (!event.target.files) return;
                 const { errors } = companyLogoUpload.handleFiles(

@@ -65,13 +65,7 @@ export function PartnerForm({
     handleFiles,
     reset: resetUploads,
   } = useUploadField({
-    accept: [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/svg+xml",
-    ],
+    accept: ["image/jpeg", "image/png", "image/gif", "image/webp"],
     maxSize: 5 * 1024 * 1024,
     multiple: false,
     initialUrls: existingLogo ? [existingLogo] : [],
@@ -308,7 +302,7 @@ export function PartnerForm({
               id="partner-logo"
               name="logo"
               type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+              accept="image/jpeg,image/png,image/gif,image/webp"
               onChange={(event) => {
                 if (!event.target.files) return;
                 const { errors } = handleFiles(event.target.files);

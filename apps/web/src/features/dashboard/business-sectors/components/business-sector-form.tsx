@@ -144,13 +144,7 @@ export function BusinessSectorForm({
     handleFiles: handleFeaturedFiles,
     reset: resetFeatured,
   } = useUploadField({
-    accept: [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/svg+xml",
-    ],
+    accept: ["image/jpeg", "image/png", "image/gif", "image/webp"],
     maxSize: 10 * 1024 * 1024,
     multiple: false,
     initialUrls: featuredImageUrl ? [featuredImageUrl] : [],
@@ -347,7 +341,7 @@ export function BusinessSectorForm({
           <FieldLabel>Featured Image</FieldLabel>
           <Input
             type="file"
-            accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+            accept="image/jpeg,image/png,image/gif,image/webp"
             onChange={(event) => {
               if (!event.target.files) return;
               const { errors } = handleFeaturedFiles(event.target.files);

@@ -5,6 +5,7 @@
 # Default: Allow all robots
 User-agent: *
 Allow: /
+Disallow: /uploads/
 Crawl-delay: 1
 
 # ==============================================
@@ -129,4 +130,3 @@ Allow: /
 # SITEMAP LOCATION
 # ==============================================
 Sitemap: https://dsgeneralplc.com/sitemap.xml
-

@@ -112,7 +112,7 @@ export function SectorGalleryManager({
 
                 <Input
                   type="file"
-                  accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     if (!file) return;

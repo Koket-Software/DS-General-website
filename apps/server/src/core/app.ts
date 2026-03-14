@@ -18,6 +18,7 @@ import {
   requestLoggerMiddleware,
 } from "./middleware";
 import { errorHandler } from "./middleware/error-handler";
+import { getUploadSecurityPolicy } from "./upload-security";
 import { logger } from "../shared/logger";
 
 export const createApp = () => {
@@ -85,6 +86,20 @@ export const createApp = () => {
 
   app.on(["POST", "GET"], `${AUTH_BASE_PATH}/*`, handleAuthRequest);
   app.on(["POST", "GET"], `${LEGACY_AUTH_BASE_PATH}/*`, handleAuthRequest);
+
+  app.use("/uploads/*", async (c, next) => {
+    const policy = getUploadSecurityPolicy(c.req.path);
+
+    if (policy.blocked) {
+      throw new NotFoundError();
+    }
+
+    Object.entries(policy.headers).forEach(([key, value]) => {
+      c.header(key, value, { append: false });
+    });
+
+    await next();
+  });
 
   // Serve static files (uploads)
   app.use("/uploads/*", serveStatic({ root: "./" }));

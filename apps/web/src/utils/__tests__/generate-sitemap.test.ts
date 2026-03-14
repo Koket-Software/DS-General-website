@@ -78,6 +78,7 @@ describe("generate-sitemap", () => {
       [
         "User-agent: *",
         "Allow: /",
+        "Disallow: /uploads/",
         "",
         "Sitemap: https://dsgeneralplc.com/sitemap.xml",
       ].join("\n"),

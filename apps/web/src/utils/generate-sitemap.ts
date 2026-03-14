@@ -251,6 +251,7 @@ export function generateRobotsTxt(baseUrl: string): string {
   return [
     "User-agent: *",
     "Allow: /",
+    "Disallow: /uploads/",
     "",
     `Sitemap: ${joinUrl(normalizedBaseUrl, "/sitemap.xml")}`,
   ].join("\n");

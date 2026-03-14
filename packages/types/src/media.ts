@@ -3,7 +3,6 @@ export const IMAGE_MIME_TYPES = [
   "image/png",
   "image/gif",
   "image/webp",
-  "image/svg+xml",
 ] as const;
 
 export type ImageMimeType = (typeof IMAGE_MIME_TYPES)[number];

@@ -121,13 +121,7 @@ export function VacancyForm({
     handleFiles,
     reset: resetUploads,
   } = useUploadField({
-    accept: [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "image/svg+xml",
-    ],
+    accept: ["image/jpeg", "image/png", "image/gif", "image/webp"],
     maxSize: 10 * 1024 * 1024,
     multiple: false,
     initialUrls: existingImageUrl ? [existingImageUrl] : [],
