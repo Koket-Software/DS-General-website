@@ -165,7 +165,7 @@ export function LexicalEditor({
     if (readOnly) return;
 
     editorState.read(() => {
-      const html = $generateHtmlFromNodes(editor);
+      const html = $generateHtmlFromNodes(editor, null);
       const sanitized = DOMPurify.sanitize(html, SANITIZE_CONFIG);
       if (valueFormat === "html") {
         lastSerializedRef.current = sanitized;
