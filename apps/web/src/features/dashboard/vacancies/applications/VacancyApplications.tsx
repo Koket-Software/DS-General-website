@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { ResourceTable } from "../../components/ResourceTable";
 import {
+  useVacancyApplicationByIdQuery,
   useDeleteVacancyApplicationMutation,
   useUpdateVacancyApplicationMutation,
   useVacancyApplicationsQuery,
@@ -211,6 +212,7 @@ export function VacancyApplications({ vacancyId, slug, search }: Props) {
       />
 
       <ApplicationDialog
+        vacancyId={vacancyId}
         application={selected}
         onClose={() => setSelected(null)}
         onUpdate={(payload) => {
@@ -234,6 +236,7 @@ export function VacancyApplications({ vacancyId, slug, search }: Props) {
 }
 
 type DialogProps = {
+  vacancyId: number;
   application: VacancyApplication | null;
   onClose: () => void;
   onUpdate: (payload: {
@@ -246,6 +249,7 @@ type DialogProps = {
 };
 
 function ApplicationDialog({
+  vacancyId,
   application,
   onClose,
   onUpdate,
@@ -258,12 +262,26 @@ function ApplicationDialog({
   const [notes, setNotes] = useState<string>("");
 
   const open = Boolean(application);
+  const applicationDetailQuery = useVacancyApplicationByIdQuery(
+    vacancyId,
+    application?.id ?? 0,
+    {
+      enabled: open && Boolean(application?.id),
+    },
+  );
+  const detailApplication = applicationDetailQuery.data?.data;
+  const resolvedApplication = detailApplication ?? application;
+  const isHydratingApplication =
+    open &&
+    applicationDetailQuery.isPending &&
+    !detailApplication &&
+    Boolean(application?.id);
 
   useEffect(() => {
-    if (!application) return;
-    setStatus(application.status);
-    setNotes(application.notes ?? "");
-  }, [application]);
+    if (!resolvedApplication) return;
+    setStatus(resolvedApplication.status);
+    setNotes(resolvedApplication.notes ?? "");
+  }, [resolvedApplication]);
 
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
@@ -275,39 +293,43 @@ function ApplicationDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {application && (
+        {resolvedApplication && (
           <div className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2">
               <div>
                 <div className="text-xs text-muted-foreground">Full name</div>
-                <div className="font-medium">{application.fullName}</div>
+                <div className="font-medium">
+                  {resolvedApplication.fullName}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Email</div>
-                <div className="font-medium">{application.email}</div>
+                <div className="font-medium">{resolvedApplication.email}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Phone</div>
-                <div className="font-medium">{application.phone || "—"}</div>
+                <div className="font-medium">
+                  {resolvedApplication.phone || "—"}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Submitted</div>
                 <div className="font-medium">
-                  {humanizeDate(application.createdAt)}
+                  {humanizeDate(resolvedApplication.createdAt)}
                 </div>
               </div>
             </div>
 
             <div>
               <div className="text-xs text-muted-foreground">Portfolio</div>
-              {application.portfolioUrl ? (
+              {resolvedApplication.portfolioUrl ? (
                 <a
                   className="text-primary underline underline-offset-4"
-                  href={application.portfolioUrl}
+                  href={resolvedApplication.portfolioUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {application.portfolioUrl}
+                  {resolvedApplication.portfolioUrl}
                 </a>
               ) : (
                 <div className="text-muted-foreground">—</div>
@@ -316,14 +338,14 @@ function ApplicationDialog({
 
             <div>
               <div className="text-xs text-muted-foreground">LinkedIn</div>
-              {application.linkedinUrl ? (
+              {resolvedApplication.linkedinUrl ? (
                 <a
                   className="text-primary underline underline-offset-4"
-                  href={application.linkedinUrl}
+                  href={resolvedApplication.linkedinUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {application.linkedinUrl}
+                  {resolvedApplication.linkedinUrl}
                 </a>
               ) : (
                 <div className="text-muted-foreground">—</div>
@@ -332,15 +354,17 @@ function ApplicationDialog({
 
             <div>
               <div className="text-xs text-muted-foreground">Resume</div>
-              {application.resumeUrl ? (
+              {resolvedApplication.resumeUrl ? (
                 <a
                   className="text-primary underline underline-offset-4"
-                  href={resolveAssetUrl(application.resumeUrl)}
+                  href={resolveAssetUrl(resolvedApplication.resumeUrl)}
                   target="_blank"
                   rel="noreferrer"
                 >
                   Download resume
                 </a>
+              ) : isHydratingApplication ? (
+                <div className="text-muted-foreground">Loading resume...</div>
               ) : (
                 <div className="text-muted-foreground">—</div>
               )}
@@ -349,7 +373,7 @@ function ApplicationDialog({
             <div>
               <div className="text-xs text-muted-foreground">Cover letter</div>
               <Textarea
-                value={application.coverLetter ?? ""}
+                value={resolvedApplication.coverLetter ?? ""}
                 readOnly
                 rows={4}
               />
@@ -378,7 +402,10 @@ function ApplicationDialog({
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Reviewed At</div>
-                <Input value={humanizeDate(application.reviewedAt)} readOnly />
+                <Input
+                  value={humanizeDate(resolvedApplication.reviewedAt)}
+                  readOnly
+                />
               </div>
             </div>
 

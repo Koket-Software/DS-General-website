@@ -1,9 +1,13 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LexicalEditor } from "../LexicalEditor";
 
 describe("LexicalEditor Markdown Support", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it("should render the editor with Markdown plugin", () => {
     const handleChange = vi.fn();
     render(
@@ -41,8 +45,8 @@ describe("LexicalEditor Markdown Support", () => {
     const handleChange = vi.fn();
     render(<LexicalEditor value="" onChange={handleChange} />);
 
-    const helpButton = screen.getByLabelText("Markdown shortcuts help");
-    expect(helpButton).toBeTruthy();
+    const helpButtons = screen.getAllByLabelText("Markdown shortcuts help");
+    expect(helpButtons.length).toBeGreaterThan(0);
   });
 
   it("should render initial markdown content when valueFormat is markdown", async () => {

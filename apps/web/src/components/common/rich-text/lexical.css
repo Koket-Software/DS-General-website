@@ -152,12 +152,19 @@
 }
 
 .lexical-editor img,
-.lexical-viewer img,
-.lexical-image {
+.lexical-viewer img {
   max-width: 100%;
   height: auto;
   border-radius: 0.5rem;
   margin: 0.5rem 0;
+  display: block;
+}
+
+.lexical-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0;
   display: block;
 }
 
