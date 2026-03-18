@@ -25,57 +25,27 @@ const toAbsoluteUrl = (value: string, siteUrl: string): string => {
   return `${siteUrl}${normalized}`;
 };
 
-const sanitizeOgText = (value: string, maxLength: number): string =>
-  value.trim().replace(/\s+/g, " ").slice(0, maxLength);
+const HOME_OG_URL = "/";
 
-const uniqueValues = (values: Array<string | null | undefined>): string[] => {
-  const seen = new Set<string>();
-  const result: string[] = [];
-
-  values.forEach((value) => {
-    if (!value) return;
-    const normalized = value.trim();
-    if (!normalized || seen.has(normalized)) return;
-    seen.add(normalized);
-    result.push(normalized);
-  });
-
-  return result;
-};
-
-const buildPageOgImageUrl = (input: StaticPageMetaInput): string => {
-  const searchParams = new URLSearchParams({
-    title: sanitizeOgText(input.title, 110),
-  });
-
-  const description = sanitizeOgText(input.description, 220);
-  if (description) {
-    searchParams.set("description", description);
-  }
-
-  if (input.category) {
-    searchParams.set("category", sanitizeOgText(input.category, 40));
-  }
-
-  if (input.pageTheme) {
-    searchParams.set("theme", input.pageTheme);
-  }
-
-  if (input.imageUrl) {
-    searchParams.set("image", input.imageUrl);
-  }
-
-  uniqueValues(input.highlights || [])
-    .slice(0, 4)
-    .forEach((highlight) => {
-      searchParams.append("highlight", sanitizeOgText(highlight, 32));
-    });
-
-  return `/api/og/page?${searchParams.toString()}`;
-};
+function withStaticHomeOpenGraph(meta: PageMeta, config: SsrConfig): PageMeta {
+  return {
+    ...meta,
+    ogTitle: config.defaultTitle,
+    ogDescription: config.defaultDescription,
+    ogImage: config.ogDefaultPath,
+    ogType: "website",
+    ogUrl: HOME_OG_URL,
+  };
+}
 
 export function generateHtmlShell(meta: PageMeta, config: SsrConfig): string {
+  const ogTitle = meta.ogTitle || meta.title;
+  const ogDescription = meta.ogDescription || meta.description;
   const fullOgImage = toAbsoluteUrl(meta.ogImage, config.siteUrl);
+  const fullOgUrl = toAbsoluteUrl(
+    meta.ogUrl || meta.canonicalUrl,
+    config.siteUrl,
+  );
   const fullCanonicalUrl = toAbsoluteUrl(meta.canonicalUrl, config.siteUrl);
   const keywords = meta.keywords || config.keywords.join(", ");
 
@@ -97,15 +67,15 @@ export function generateHtmlShell(meta: PageMeta, config: SsrConfig): string {
     <meta name="theme-color" content="${escapeHtml(config.themeColor)}" />
 
     <meta property="og:type" content="${escapeHtml(meta.ogType)}" />
-    <meta property="og:url" content="${escapeHtml(fullCanonicalUrl)}" />
-    <meta property="og:title" content="${escapeHtml(meta.title)}" />
-    <meta property="og:description" content="${escapeHtml(meta.description)}" />
+    <meta property="og:url" content="${escapeHtml(fullOgUrl)}" />
+    <meta property="og:title" content="${escapeHtml(ogTitle)}" />
+    <meta property="og:description" content="${escapeHtml(ogDescription)}" />
     <meta property="og:site_name" content="${escapeHtml(config.siteName)}" />
     <meta property="og:locale" content="${escapeHtml(config.locale)}" />
     <meta property="og:image" content="${escapeHtml(fullOgImage)}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="${escapeHtml(meta.title)}" />
+    <meta property="og:image:alt" content="${escapeHtml(ogTitle)}" />
     ${meta.publishedTime ? `<meta property="article:published_time" content="${escapeHtml(meta.publishedTime)}" />` : ""}
     ${meta.modifiedTime ? `<meta property="article:modified_time" content="${escapeHtml(meta.modifiedTime)}" />` : ""}
     ${meta.author ? `<meta property="article:author" content="${escapeHtml(meta.author)}" />` : ""}
@@ -113,13 +83,13 @@ export function generateHtmlShell(meta: PageMeta, config: SsrConfig): string {
     ${meta.tags?.map((tag) => `<meta property="article:tag" content="${escapeHtml(tag)}" />`).join("\n    ") || ""}
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="${escapeHtml(fullCanonicalUrl)}" />
-    <meta name="twitter:title" content="${escapeHtml(meta.title)}" />
-    <meta name="twitter:description" content="${escapeHtml(meta.description)}" />
+    <meta name="twitter:url" content="${escapeHtml(fullOgUrl)}" />
+    <meta name="twitter:title" content="${escapeHtml(ogTitle)}" />
+    <meta name="twitter:description" content="${escapeHtml(ogDescription)}" />
     <meta name="twitter:image" content="${escapeHtml(fullOgImage)}" />
     <meta name="twitter:site" content="${escapeHtml(config.twitterHandle)}" />
     <meta name="twitter:creator" content="${escapeHtml(config.twitterHandle)}" />
-    <meta name="twitter:image:alt" content="${escapeHtml(meta.title)}" />
+    <meta name="twitter:image:alt" content="${escapeHtml(ogTitle)}" />
 
     <link rel="icon" href="${escapeHtml(config.logoPath)}" />
     <link rel="apple-touch-icon" href="${escapeHtml(config.logoPath)}" />
@@ -142,9 +112,11 @@ export function generateHtmlShell(meta: PageMeta, config: SsrConfig): string {
 }
 
 function generateStructuredData(meta: PageMeta, config: SsrConfig): string {
+  const schemaType =
+    meta.schemaType || (meta.ogType === "article" ? "BlogPosting" : "WebPage");
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": meta.ogType === "article" ? "BlogPosting" : "WebPage",
+    "@type": schemaType,
     name: meta.title,
     description: meta.description,
     url: toAbsoluteUrl(meta.canonicalUrl, config.siteUrl),
@@ -156,7 +128,7 @@ function generateStructuredData(meta: PageMeta, config: SsrConfig): string {
     },
   };
 
-  if (meta.ogType === "article") {
+  if (schemaType === "BlogPosting") {
     if (meta.publishedTime) data.datePublished = meta.publishedTime;
     if (meta.modifiedTime) data.dateModified = meta.modifiedTime;
     if (meta.author) {
@@ -192,31 +164,37 @@ const humanizePathSegment = (value: string): string => {
 };
 
 export function createDefaultMeta(path: string, config: SsrConfig): PageMeta {
-  return {
-    title: config.defaultTitle,
-    description: config.defaultDescription,
-    ogImage: config.ogDefaultPath,
-    ogType: "website",
-    canonicalUrl: path,
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: config.defaultTitle,
+      description: config.defaultDescription,
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: path,
+    },
+    config,
+  );
 }
 
 export function createHomeMeta(
   canonicalPath: string,
   config: SsrConfig,
 ): PageMeta {
-  return {
-    title: config.defaultTitle,
-    description: config.defaultDescription,
-    ogImage: config.ogDefaultPath,
-    ogType: "website",
-    canonicalUrl: canonicalPath,
-    section: "Home",
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: config.defaultTitle,
+      description: config.defaultDescription,
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: canonicalPath,
+      section: "Home",
+    },
+    config,
+  );
 }
 
 export function createBlogMeta(
-  slug: string,
+  _slug: string,
   canonicalPath: string,
   blog: {
     title: string;
@@ -227,21 +205,25 @@ export function createBlogMeta(
   },
   config: SsrConfig,
 ): PageMeta {
-  return {
-    title: `${blog.title} | ${config.siteName}`,
-    description: blog.excerpt || config.defaultDescription,
-    ogImage: `/api/og/blog/${slug}`,
-    ogType: "article",
-    canonicalUrl: canonicalPath,
-    author: blog.author || undefined,
-    publishedTime: blog.publishDate || undefined,
-    section: "Articles",
-    tags: blog.tags?.map((t) => t.name),
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: `${blog.title} | ${config.siteName}`,
+      description: blog.excerpt || config.defaultDescription,
+      ogImage: config.ogDefaultPath,
+      ogType: "article",
+      canonicalUrl: canonicalPath,
+      schemaType: "BlogPosting",
+      author: blog.author || undefined,
+      publishedTime: blog.publishDate || undefined,
+      section: "Articles",
+      tags: blog.tags?.map((t) => t.name),
+    },
+    config,
+  );
 }
 
 export function createServiceMeta(
-  slug: string,
+  _slug: string,
   canonicalPath: string,
   service: {
     title: string;
@@ -249,18 +231,21 @@ export function createServiceMeta(
   },
   config: SsrConfig,
 ): PageMeta {
-  return {
-    title: `${service.title} | ${config.siteName}`,
-    description: service.excerpt || config.defaultDescription,
-    ogImage: `/api/og/service/${slug}`,
-    ogType: "website",
-    canonicalUrl: canonicalPath,
-    section: "Services",
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: `${service.title} | ${config.siteName}`,
+      description: service.excerpt || config.defaultDescription,
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: canonicalPath,
+      section: "Services",
+    },
+    config,
+  );
 }
 
 export function createProjectMeta(
-  slug: string,
+  _slug: string,
   canonicalPath: string,
   project: {
     title: string;
@@ -269,19 +254,23 @@ export function createProjectMeta(
   },
   config: SsrConfig,
 ): PageMeta {
-  return {
-    title: `${project.title} | ${config.siteName}`,
-    description: project.excerpt || config.defaultDescription,
-    ogImage: `/api/og/project/${slug}`,
-    ogType: "article",
-    canonicalUrl: canonicalPath,
-    section: "Projects",
-    tags: project.tags?.map((t) => t.name),
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: `${project.title} | ${config.siteName}`,
+      description: project.excerpt || config.defaultDescription,
+      ogImage: config.ogDefaultPath,
+      ogType: "article",
+      canonicalUrl: canonicalPath,
+      schemaType: "BlogPosting",
+      section: "Projects",
+      tags: project.tags?.map((t) => t.name),
+    },
+    config,
+  );
 }
 
 export function createCareerMeta(
-  slug: string,
+  _slug: string,
   canonicalPath: string,
   career: {
     title: string;
@@ -295,14 +284,17 @@ export function createCareerMeta(
     career.excerpt ||
     `${career.title}${career.department ? ` in ${career.department}` : ""}${career.location ? ` - ${career.location}` : ""} at ${config.siteName}`;
 
-  return {
-    title: `${career.title} | Careers at ${config.siteName}`,
-    description,
-    ogImage: `/api/og/career/${slug}`,
-    ogType: "website",
-    canonicalUrl: canonicalPath,
-    section: "Careers",
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: `${career.title} | Careers at ${config.siteName}`,
+      description,
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: canonicalPath,
+      section: "Careers",
+    },
+    config,
+  );
 }
 
 export function createSectorMeta(
@@ -317,26 +309,17 @@ export function createSectorMeta(
   const pageTitle = `${sector.title} | ${config.siteName}`;
   const description = sector.excerpt || config.defaultDescription;
 
-  return {
-    title: pageTitle,
-    description,
-    ogImage: buildPageOgImageUrl({
-      title: sector.title,
+  return withStaticHomeOpenGraph(
+    {
+      title: pageTitle,
       description,
-      category: "Business Sector",
-      pageTheme: "sector",
-      imageUrl: sector.featuredImageUrl || undefined,
-      highlights: [
-        "Cross-border sourcing",
-        "Logistics execution",
-        "Reliable delivery",
-      ],
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: canonicalPath,
       section: "Business Sectors",
-    }),
-    ogType: "website",
-    canonicalUrl: canonicalPath,
-    section: "Business Sectors",
-  };
+    },
+    config,
+  );
 }
 
 export function createStaticPageMeta(
@@ -344,14 +327,17 @@ export function createStaticPageMeta(
   input: StaticPageMetaInput,
   config: SsrConfig,
 ): PageMeta {
-  return {
-    title: `${input.title} | ${config.siteName}`,
-    description: input.description,
-    ogImage: buildPageOgImageUrl(input),
-    ogType: "website",
-    canonicalUrl: path,
-    section: input.section,
-  };
+  return withStaticHomeOpenGraph(
+    {
+      title: `${input.title} | ${config.siteName}`,
+      description: input.description,
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: path,
+      section: input.section,
+    },
+    config,
+  );
 }
 
 export function createGenericPathMeta(
@@ -372,22 +358,16 @@ export function createGenericPathMeta(
   const title = `${lastSegment} | ${config.siteName}`;
   const description = `Explore ${lastSegment.toLowerCase()} at ${config.siteName}.`;
 
-  return {
-    title,
-    description,
-    ogImage: buildPageOgImageUrl({
-      title: lastSegment,
+  return withStaticHomeOpenGraph(
+    {
+      title,
       description,
-      category:
-        segments.length > 1
-          ? humanizePathSegment(segments[0]!)
-          : "Official Page",
-      pageTheme: "generic",
-      highlights: ["Trusted delivery", "Operational clarity", config.siteName],
-    }),
-    ogType: "website",
-    canonicalUrl: path,
-    section:
-      segments.length > 1 ? humanizePathSegment(segments[0]!) : undefined,
-  };
+      ogImage: config.ogDefaultPath,
+      ogType: "website",
+      canonicalUrl: path,
+      section:
+        segments.length > 1 ? humanizePathSegment(segments[0]!) : undefined,
+    },
+    config,
+  );
 }

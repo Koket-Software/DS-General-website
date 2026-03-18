@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 
 import {
+  generateHtmlShell,
   createDefaultMeta,
   createHomeMeta,
   createStaticPageMeta,
@@ -30,7 +31,7 @@ describe("SSR meta builders", () => {
     expect(homeMeta.ogImage).toBe("/og_image_ds.webp");
   });
 
-  it("keeps non-home static pages on dynamic page OG endpoint", () => {
+  it("reuses the home OG payload for non-home static pages", () => {
     const aboutMeta = createStaticPageMeta(
       "/about",
       {
@@ -43,7 +44,40 @@ describe("SSR meta builders", () => {
       baseConfig,
     );
 
-    expect(aboutMeta.ogImage).toContain("/api/og/page?");
-    expect(aboutMeta.ogImage).toContain("theme=about");
+    expect(aboutMeta.ogImage).toBe("/og_image_ds.webp");
+    expect(aboutMeta.ogTitle).toBe(baseConfig.defaultTitle);
+    expect(aboutMeta.ogDescription).toBe(baseConfig.defaultDescription);
+    expect(aboutMeta.ogUrl).toBe("/");
+  });
+
+  it("renders static home OG tags while preserving page-specific title and canonical", () => {
+    const aboutMeta = createStaticPageMeta(
+      "/about",
+      {
+        title: "About DS General PLC",
+        description: "About page",
+        category: "About",
+        pageTheme: "about",
+        highlights: ["Mission-led", "Integrated delivery"],
+      },
+      baseConfig,
+    );
+    const html = generateHtmlShell(aboutMeta, baseConfig);
+
+    expect(html).toContain(
+      "<title>About DS General PLC | DS General PLC</title>",
+    );
+    expect(html).toContain(
+      '<link rel="canonical" href="https://dsgeneralplc.com/about" />',
+    );
+    expect(html).toContain(
+      '<meta property="og:title" content="DS General PLC | We&#039;re Building the Future" />',
+    );
+    expect(html).toContain(
+      '<meta property="og:url" content="https://dsgeneralplc.com/" />',
+    );
+    expect(html).toContain(
+      '<meta property="og:image" content="https://dsgeneralplc.com/og_image_ds.webp" />',
+    );
   });
 });

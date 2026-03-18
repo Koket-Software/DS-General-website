@@ -15,11 +15,7 @@ import {
 import homeHeroImage from "@/assets/ds/home/DS_Hero.webp";
 import {
   buildSeoMeta,
-  getCareerOgImageUrl,
   getDefaultOgImageUrl,
-  getPageOgImageUrl,
-  getProjectOgImageUrl,
-  getServiceOgImageUrl,
   SITE_METADATA,
 } from "@/lib/og-utils";
 
@@ -33,8 +29,6 @@ interface CommonHeadInput {
   path: string;
   title: string;
   description: string;
-  ogImage?: string;
-  type?: "website" | "article";
   robots?: string;
   jsonLd?: unknown[];
   preloadImage?: string;
@@ -49,22 +43,36 @@ function normalizeJsonLdArray(jsonLd?: unknown[]) {
   return (jsonLd ?? []).filter(Boolean);
 }
 
+const HOME_OPEN_GRAPH_ROUTE = getStaticSeoRoute(PUBLIC_ROUTE_PATHS.home());
+
+function getStaticHomeOpenGraph() {
+  return {
+    title: HOME_OPEN_GRAPH_ROUTE?.title ?? SITE_METADATA.defaultTitle,
+    description:
+      HOME_OPEN_GRAPH_ROUTE?.description ?? SITE_METADATA.defaultDescription,
+    image: getDefaultOgImageUrl(),
+    path: HOME_OPEN_GRAPH_ROUTE?.path ?? PUBLIC_ROUTE_PATHS.home(),
+  };
+}
+
 export function buildHead({
   path,
   title,
   description,
-  ogImage,
-  type = "website",
   robots = buildRobotsContent(),
   jsonLd,
   preloadImage,
 }: CommonHeadInput): HeadResult {
+  const homeOpenGraph = getStaticHomeOpenGraph();
   const seo = buildSeoMeta({
     path,
     title,
     description,
-    ogImage,
-    type,
+    ogTitle: homeOpenGraph.title,
+    ogDescription: homeOpenGraph.description,
+    ogImage: homeOpenGraph.image,
+    ogType: "website",
+    ogUrl: homeOpenGraph.path,
   });
 
   return {
@@ -160,16 +168,6 @@ export function buildStaticPageHead(path: string) {
     path: route.path,
     title: route.title,
     description: route.description,
-    ogImage:
-      route.path === PUBLIC_ROUTE_PATHS.home()
-        ? getDefaultOgImageUrl()
-        : getPageOgImageUrl({
-            title: route.title,
-            description: route.description,
-            category: route.category,
-            theme: route.pageTheme,
-            highlights: route.highlights,
-          }),
     jsonLd: baseJsonLd,
     preloadImage:
       route.path === PUBLIC_ROUTE_PATHS.home() ? homeHeroImage : undefined,
@@ -193,8 +191,6 @@ export function buildArticleDetailHead(input: {
     path,
     title: `${input.title} | ${SITE_METADATA.siteName}`,
     description,
-    ogImage: input.featuredImageUrl || undefined,
-    type: "article",
     jsonLd: [
       buildArticleJsonLd({
         title: input.title,
@@ -244,7 +240,6 @@ export function buildCareerDetailHead(input: {
     path,
     title: `${input.title} | Careers at ${SITE_METADATA.siteName}`,
     description,
-    ogImage: input.featuredImageUrl || getCareerOgImageUrl(input.slug),
     jsonLd: [
       buildJobPostingJsonLd({
         title: input.title,
@@ -300,7 +295,6 @@ export function buildServiceDetailHead(input: {
     path,
     title: `${input.title} | ${SITE_METADATA.siteName} Services`,
     description,
-    ogImage: input.featuredImageUrl || getServiceOgImageUrl(input.slug),
     jsonLd: [
       buildServiceJsonLd({
         title: input.title,
@@ -342,7 +336,6 @@ export function buildProjectDetailHead(input: {
     path,
     title: `${input.title} | ${SITE_METADATA.siteName} Projects`,
     description,
-    ogImage: input.featuredImageUrl || getProjectOgImageUrl(input.slug),
     jsonLd: [
       buildWebPageJsonLd({
         title: input.title,
@@ -382,15 +375,6 @@ export function buildSectorDetailHead(input: {
     path,
     title: `${input.title} Sector | ${SITE_METADATA.siteName}`,
     description,
-    ogImage:
-      input.featuredImageUrl ||
-      getPageOgImageUrl({
-        title: input.title,
-        description,
-        category: "Sector",
-        theme: "sector",
-        highlights: ["Industry focus", "Execution", "Delivery"],
-      }),
     jsonLd: [
       buildWebPageJsonLd({
         title: input.title,

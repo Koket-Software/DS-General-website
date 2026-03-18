@@ -1,11 +1,16 @@
+import {
+  PUBLIC_ROUTE_PATHS,
+  getStaticSeoRoute,
+  joinUrl,
+} from "@suba-company-template/types";
 import { describe, expect, it } from "vitest";
 
 import {
   buildSeoMeta,
   getDefaultOgImageUrl,
-  getPageOgImageUrl,
+  SITE_METADATA,
 } from "@/lib/og-utils";
-import { buildStaticPageHead } from "@/lib/seo";
+import { buildArticleDetailHead, buildStaticPageHead } from "@/lib/seo";
 
 const getMetaContent = (
   meta: Array<Record<string, unknown>>,
@@ -17,6 +22,8 @@ const getMetaContent = (
 };
 
 describe("OG defaults and route metadata", () => {
+  const homeRoute = getStaticSeoRoute(PUBLIC_ROUTE_PATHS.home());
+
   it("uses static branded OG image as default", () => {
     const defaultImage = getDefaultOgImageUrl();
     expect(defaultImage).toContain("/og_image_ds.webp");
@@ -25,26 +32,65 @@ describe("OG defaults and route metadata", () => {
     expect(seo.ogImage).toContain("/og_image_ds.webp");
   });
 
-  it("maps home route to static OG image", () => {
-    const homeHead = buildStaticPageHead("/");
-    const homeOgImage = getMetaContent(homeHead.meta, "og:image");
+  it("maps the home route to the shared static OG payload", () => {
+    const homeHead = buildStaticPageHead(PUBLIC_ROUTE_PATHS.home());
 
-    expect(homeOgImage).toBeDefined();
-    expect(homeOgImage).toContain("/og_image_ds.webp");
+    expect(getMetaContent(homeHead.meta, "og:image")).toContain(
+      "/og_image_ds.webp",
+    );
+    expect(getMetaContent(homeHead.meta, "og:title")).toBe(homeRoute?.title);
+    expect(getMetaContent(homeHead.meta, "og:description")).toBe(
+      homeRoute?.description,
+    );
+    expect(getMetaContent(homeHead.meta, "og:url")).toBe(
+      joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.home()),
+    );
   });
 
-  it("keeps non-home static pages on dynamic /api/og/page URLs", () => {
-    const aboutHead = buildStaticPageHead("/about");
-    const aboutOgImage = getMetaContent(aboutHead.meta, "og:image");
+  it("reuses the home OG payload for non-home static pages", () => {
+    const aboutHead = buildStaticPageHead(PUBLIC_ROUTE_PATHS.about());
 
-    expect(aboutOgImage).toBeDefined();
-    expect(aboutOgImage).toContain("/api/og/page?");
+    expect(getMetaContent(aboutHead.meta, "og:image")).toContain(
+      "/og_image_ds.webp",
+    );
+    expect(getMetaContent(aboutHead.meta, "og:title")).toBe(homeRoute?.title);
+    expect(getMetaContent(aboutHead.meta, "og:description")).toBe(
+      homeRoute?.description,
+    );
+    expect(getMetaContent(aboutHead.meta, "og:url")).toBe(
+      joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.home()),
+    );
+    expect(getMetaContent(aboutHead.meta, "description", "name")).toBe(
+      "Learn how DS General PLC combines sourcing, construction, and operational delivery into one integrated execution model.",
+    );
+    expect(aboutHead.meta.find((entry) => "title" in entry)?.title).toBe(
+      "About DS General PLC",
+    );
+  });
 
-    const dynamicPageOg = getPageOgImageUrl({
-      title: "About DS General PLC",
-      description: "Route-level OG metadata",
-      theme: "about",
+  it("reuses the home OG payload for dynamic detail pages", () => {
+    const articleHead = buildArticleDetailHead({
+      slug: "freight-resilience",
+      title: "Freight resilience",
+      excerpt: "Operational playbook",
+      featuredImageUrl: "https://cdn.example.com/freight.webp",
     });
-    expect(dynamicPageOg).toContain("/api/og/page?");
+
+    expect(getMetaContent(articleHead.meta, "og:image")).toContain(
+      "/og_image_ds.webp",
+    );
+    expect(getMetaContent(articleHead.meta, "og:title")).toBe(homeRoute?.title);
+    expect(getMetaContent(articleHead.meta, "og:description")).toBe(
+      homeRoute?.description,
+    );
+    expect(getMetaContent(articleHead.meta, "og:url")).toBe(
+      joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.home()),
+    );
+    expect(getMetaContent(articleHead.meta, "description", "name")).toBe(
+      "Operational playbook",
+    );
+    expect(articleHead.meta.find((entry) => "title" in entry)?.title).toBe(
+      "Freight resilience | DS General PLC",
+    );
   });
 });

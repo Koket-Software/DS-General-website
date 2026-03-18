@@ -6,6 +6,10 @@ export interface PageMeta {
   ogImage: string;
   ogType: "website" | "article";
   canonicalUrl: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogUrl?: string;
+  schemaType?: "WebPage" | "BlogPosting";
   keywords?: string;
   author?: string;
   publishedTime?: string;

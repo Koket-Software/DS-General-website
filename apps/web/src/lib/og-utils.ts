@@ -43,6 +43,10 @@ export interface SeoMetaInput {
   description?: string;
   ogImage?: string;
   type?: SeoOgType;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogUrl?: string;
+  ogType?: SeoOgType;
 }
 
 const toAbsoluteUrl = (value: string, base: string): string => {
@@ -156,8 +160,13 @@ export function buildSeoMeta(input: SeoMetaInput) {
   const description = input.description || SITE_METADATA.defaultDescription;
   const canonicalPath = normalizePath(input.path);
   const canonicalUrl = toAbsoluteUrl(canonicalPath, SITE_METADATA.siteUrl);
+  const ogTitle = input.ogTitle || title;
+  const ogDescription = input.ogDescription || description;
   const ogImage = input.ogImage || getDefaultOgImageUrl();
-  const ogType = input.type || "website";
+  const ogType = input.ogType || input.type || "website";
+  const ogUrl = input.ogUrl
+    ? toAbsoluteUrl(normalizePath(input.ogUrl), SITE_METADATA.siteUrl)
+    : canonicalUrl;
 
   return {
     title,
@@ -168,16 +177,16 @@ export function buildSeoMeta(input: SeoMetaInput) {
       { title },
       { name: "description", content: description },
       { name: "keywords", content: SITE_METADATA.keywords.join(", ") },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
+      { property: "og:title", content: ogTitle },
+      { property: "og:description", content: ogDescription },
       { property: "og:image", content: ogImage },
       { property: "og:type", content: ogType },
       { property: "og:site_name", content: SITE_METADATA.siteName },
-      { property: "og:url", content: canonicalUrl },
+      { property: "og:url", content: ogUrl },
       { property: "og:locale", content: SITE_METADATA.locale },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: title },
-      { name: "twitter:description", content: description },
+      { name: "twitter:title", content: ogTitle },
+      { name: "twitter:description", content: ogDescription },
       { name: "twitter:image", content: ogImage },
       { name: "twitter:site", content: SITE_METADATA.twitterHandle },
       { name: "twitter:creator", content: SITE_METADATA.twitterHandle },
