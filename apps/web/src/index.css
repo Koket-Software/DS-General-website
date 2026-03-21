@@ -320,6 +320,21 @@ body {
   /* Custom duration can be overridden by inline style */
 }
 
+@keyframes achievement-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-achievement-progress {
+  animation-name: achievement-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
