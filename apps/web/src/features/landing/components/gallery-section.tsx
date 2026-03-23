@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { Transition } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -122,15 +122,8 @@ export function GallerySection() {
   const contentTransition: Transition = reduceMotion
     ? { duration: 0.01 }
     : { duration: 0.24, ease: [0.22, 1, 0.36, 1] as const };
-  const contentInitial = reduceMotion
-    ? { opacity: 1 }
-    : { opacity: 0, y: 8, filter: "blur(2px)" };
-  const contentAnimate = reduceMotion
-    ? { opacity: 1 }
-    : { opacity: 1, y: 0, filter: "blur(0px)" };
-  const contentExit = reduceMotion
-    ? { opacity: 1 }
-    : { opacity: 0, y: -6, filter: "blur(2px)" };
+  const contentInitial = reduceMotion ? { opacity: 1 } : { opacity: 0, y: 8 };
+  const contentAnimate = reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 };
 
   const closePreview = () => setActivePreview(null);
 
@@ -211,58 +204,53 @@ export function GallerySection() {
       </div>
 
       <div className="landing-section-compact">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={activeTabKey}
-            initial={contentInitial}
-            animate={contentAnimate}
-            exit={contentExit}
-            transition={contentTransition}
-            className="will-change-[opacity,transform,filter]"
-          >
-            {isLoading ? (
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {Array.from({ length: 12 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="relative h-50 overflow-hidden bg-muted/60 animate-pulse md:h-78.5"
+        <motion.div
+          key={activeTabKey}
+          initial={contentInitial}
+          animate={contentAnimate}
+          transition={contentTransition}
+          className="will-change-[opacity,transform]"
+        >
+          {isLoading ? (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {Array.from({ length: 12 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="relative h-50 overflow-hidden bg-muted/60 animate-pulse md:h-78.5"
+                />
+              ))}
+            </div>
+          ) : items.length === 0 ? (
+            <div className="py-20 text-center text-sm text-muted-foreground">
+              No gallery items found for this filter.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => openPreview(item)}
+                  className="group relative h-50 overflow-hidden bg-muted/60 text-left touch-manipulation focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:outline-none md:h-78.5"
+                  aria-label={`Open preview for ${item.title}`}
+                >
+                  <AppImage
+                    alt={item.title}
+                    width={960}
+                    height={720}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-105"
+                    src={item.coverImageUrl ?? item.imageUrls[0]}
                   />
-                ))}
-              </div>
-            ) : items.length === 0 ? (
-              <div className="py-20 text-center text-sm text-muted-foreground">
-                No gallery items found for this filter.
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => openPreview(item)}
-                    className="group relative h-50 overflow-hidden bg-muted/60 text-left touch-manipulation focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:outline-none md:h-78.5"
-                    aria-label={`Open preview for ${item.title}`}
-                  >
-                    <AppImage
-                      alt={item.title}
-                      width={960}
-                      height={720}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 motion-reduce:transition-none motion-reduce:group-hover:scale-100 group-hover:scale-105"
-                      src={item.coverImageUrl ?? item.imageUrls[0]}
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 motion-reduce:transition-none group-hover:opacity-100" />
-                    <div className="pointer-events-none absolute right-0 bottom-0 left-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-[opacity,transform] duration-300 motion-reduce:translate-y-0 motion-reduce:transition-none group-hover:translate-y-0 group-hover:opacity-100">
-                      <p className="truncate text-sm font-medium">
-                        {item.title}
-                      </p>
-                      <p className="text-xs text-white/80">Tap to preview</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 motion-reduce:transition-none group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute right-0 bottom-0 left-0 translate-y-4 px-3 pb-3 text-white opacity-0 transition-[opacity,transform] duration-300 motion-reduce:translate-y-0 motion-reduce:transition-none group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="truncate text-sm font-medium">{item.title}</p>
+                    <p className="text-xs text-white/80">Tap to preview</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
 
       <MediaPreviewDialog

@@ -1,7 +1,7 @@
-import { Outlet, useLocation, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Outlet, useLocation } from "@tanstack/react-router";
+import { motion, useReducedMotion } from "motion/react";
 import type { Transition } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import { Footer } from "../components/footer";
 import { Navbar } from "../components/navbar";
@@ -18,41 +18,21 @@ function ScrollToTop() {
 
 function LandingRouteTransition() {
   const { pathname } = useLocation();
-  const isLoading = useRouterState({ select: (s) => s.isLoading });
   const reduceMotion = useReducedMotion();
-
-  // Hold the previous pathname while the next route's loader is pending.
-  // This prevents AnimatePresence from swapping the key (and running exit
-  // + enter animations) before the incoming <Outlet /> has content.
-  const resolvedPathname = useRef(pathname);
-  if (!isLoading) {
-    resolvedPathname.current = pathname;
-  }
-
-  const initial = reduceMotion
-    ? { opacity: 1 }
-    : { opacity: 0, y: 10, filter: "blur(3px)" };
-  const animate = { opacity: 1, y: 0, filter: "blur(0px)" };
-  const exit = reduceMotion
-    ? { opacity: 1 }
-    : { opacity: 0, y: -8, filter: "blur(2px)" };
   const transition: Transition = reduceMotion
     ? { duration: 0.01 }
-    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
+    : { duration: 0.22, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={resolvedPathname.current}
-        initial={initial}
-        animate={animate}
-        exit={exit}
-        transition={transition}
-        className="min-h-screen will-change-[opacity,transform,filter]"
-      >
-        <Outlet />
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={pathname}
+      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={transition}
+      className="min-h-screen will-change-[opacity,transform]"
+    >
+      <Outlet />
+    </motion.div>
   );
 }
 
