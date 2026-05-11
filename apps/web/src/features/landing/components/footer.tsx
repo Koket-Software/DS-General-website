@@ -150,7 +150,7 @@ export function Footer() {
               <Link
                 key={item.label}
                 to={item.path}
-                className="hover:text-primary transition-colors no-underline text-foreground"
+                className="inline-flex min-h-6 items-center hover:text-primary transition-colors no-underline text-foreground"
               >
                 {item.label}
               </Link>
@@ -175,7 +175,7 @@ export function Footer() {
                   params={{ slug: sector.slug }}
                   onMouseEnter={() => prefetchSectorDetail(sector.slug)}
                   onFocus={() => prefetchSectorDetail(sector.slug)}
-                  className="no-underline text-foreground transition-colors hover:text-primary"
+                  className="inline-flex min-h-6 items-center no-underline text-foreground transition-colors hover:text-primary"
                 >
                   {sector.title}
                 </Link>
@@ -192,7 +192,11 @@ export function Footer() {
             className="pointer-events-none absolute -top-[64px] right-2 z-0 h-auto w-[168px] max-w-none sm:-top-[72px] sm:right-4 sm:w-[184px]"
             loading="lazy"
           />
-          <form onSubmit={handleSubscribe} className="relative z-10 space-y-3">
+          <form
+            onSubmit={handleSubscribe}
+            aria-label="Newsletter subscription"
+            className="relative z-10 space-y-3"
+          >
             <div className="relative z-20 bg-background border border-primary/10 flex items-center justify-between px-4 py-3">
               <Input
                 type="email"
@@ -224,7 +228,7 @@ export function Footer() {
                 setShowNameInput((prev) => !prev);
                 setSubmitSuccess(null);
               }}
-              className="font-sans text-[13px] text-primary hover:opacity-80"
+              className="inline-flex min-h-6 items-center font-sans text-[13px] text-primary hover:opacity-80"
             >
               {showNameInput
                 ? "Hide optional name"
@@ -246,12 +250,18 @@ export function Footer() {
               />
             ) : null}
             {submitError ? (
-              <p className="font-sans text-[13px] text-destructive">
+              <p
+                className="font-sans text-[13px] text-destructive"
+                role="alert"
+              >
                 {submitError}
               </p>
             ) : null}
             {submitSuccess ? (
-              <p className="font-sans text-[13px] text-primary">
+              <p
+                className="font-sans text-[13px] text-primary"
+                aria-live="polite"
+              >
                 {submitSuccess}
               </p>
             ) : null}
@@ -274,13 +284,13 @@ export function Footer() {
         <div className="flex gap-6 font-sans font-medium text-primary text-[14px]">
           <Link
             to="/terms-of-service"
-            className="hover:opacity-80 transition-opacity no-underline text-primary"
+            className="inline-flex min-h-6 items-center hover:opacity-80 transition-opacity no-underline text-primary"
           >
             Terms of Service
           </Link>
           <Link
             to="/privacy-policy"
-            className="hover:opacity-80 transition-opacity no-underline text-primary"
+            className="inline-flex min-h-6 items-center hover:opacity-80 transition-opacity no-underline text-primary"
           >
             Privacy Policy
           </Link>

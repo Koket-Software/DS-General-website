@@ -12,7 +12,7 @@ export function CTASection() {
             <h2 className="font-sans font-semibold text-primary-foreground text-[32px] md:text-[40px] leading-tight">
               Ready to Streamline Your Supply Chain?
             </h2>
-            <p className="font-sans font-normal text-primary-foreground/70 text-[16px] leading-normal">
+            <p className="font-sans font-normal text-primary-foreground text-[16px] leading-normal">
               Stop dealing with multiple vendors. Partner with DS General PLC
               for direct access to high-quality construction materials,
               electronics, and corporate supplies.

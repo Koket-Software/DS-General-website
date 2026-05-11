@@ -15,7 +15,12 @@ export function PartnersSection() {
           Unable to load partners right now.
         </div>
       ) : (
-        <div className="mt-10 flex gap-8 overflow-x-auto no-scrollbar">
+        <div
+          className="mt-10 flex gap-8 overflow-x-auto no-scrollbar focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+          tabIndex={0}
+          role="region"
+          aria-label="Partner logos"
+        >
           {partnersQuery.isPending
             ? Array.from({ length: 7 }).map((_, index) => (
                 <div

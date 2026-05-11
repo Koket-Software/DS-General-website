@@ -207,7 +207,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
               <h1 className="mb-2 font-sans text-[22px] font-semibold text-primary-foreground md:text-[28px]">
                 {vacancy.title}
               </h1>
-              <p className="max-w-137.5 font-sans text-[14px] text-primary-foreground/80 md:text-[16px]">
+              <p className="max-w-137.5 font-sans text-[14px] text-primary-foreground/90 md:text-[16px]">
                 {vacancy.excerpt ?? "Join our team."}
               </p>
             </div>
@@ -222,7 +222,13 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
             <span>Deadline: {formatDate(vacancy.deadlineAt)}</span>
           </div>
 
-          <div className="mb-12 space-y-4">
+          <section
+            className="mb-12 space-y-4"
+            aria-labelledby="job-details-heading"
+          >
+            <h2 id="job-details-heading" className="sr-only">
+              Job Details
+            </h2>
             {vacancy.description.includes("<") ? (
               <LexicalViewer content={vacancy.description} />
             ) : (
@@ -230,7 +236,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
                 {vacancy.description}
               </p>
             )}
-          </div>
+          </section>
 
           <div className="border border-border/60 p-6 md:p-10">
             <h2 className="mb-8 font-sans text-[22px] font-semibold text-foreground md:text-[26px]">
@@ -392,6 +398,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
                 <div className="flex items-start gap-3">
                   <Checkbox
                     id="consent"
+                    aria-label="Consent to recruitment data processing"
                     checked={formValues.consent}
                     onCheckedChange={(checked) =>
                       setFormValues((prev) => ({
@@ -399,7 +406,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
                         consent: Boolean(checked),
                       }))
                     }
-                    className="mt-1"
+                    className="mt-0.5 size-6"
                   />
                   <FieldLabel
                     htmlFor="consent"
@@ -422,7 +429,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
           </div>
         </div>
 
-        <aside className="hidden lg:block w-70 xl:w-79 shrink-0 sticky top-20">
+        <div className="hidden lg:block w-70 xl:w-79 shrink-0 sticky top-20">
           <p className="font-sans text-muted-foreground text-[14px] mb-4">
             Latest Vacancies
           </p>
@@ -444,7 +451,7 @@ export function CareerDetailSection({ slug }: CareerDetailSectionProps) {
               ))}
             </div>
           )}
-        </aside>
+        </div>
       </div>
     </section>
   );

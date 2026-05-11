@@ -105,11 +105,18 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background">
       <div className="landing-container flex items-center justify-between py-3">
-        <Link to="/" className="flex items-center gap-3 no-underline">
+        <Link
+          to="/"
+          aria-label="DS General PLC home"
+          className="flex items-center gap-3 no-underline"
+        >
           <Logo size="lg" />
         </Link>
 
-        <nav className="hidden items-center lg:flex">
+        <nav
+          aria-label="Main navigation"
+          className="hidden items-center lg:flex"
+        >
           {navItems.map((item) => {
             if (item.hasDropdown) {
               const isDropdownActive = isSectorActive || dropdownOpen;
@@ -123,6 +130,7 @@ export function Navbar() {
                     type="button"
                     onClick={() => setDropdownOpen((open) => !open)}
                     aria-expanded={dropdownOpen}
+                    aria-controls="business-sectors-menu"
                     aria-haspopup="menu"
                     aria-label="Toggle business sectors menu"
                     className={`relative isolate cursor-pointer overflow-hidden px-4 py-2 font-sans text-[14px] font-medium transition-colors ${
@@ -165,7 +173,10 @@ export function Navbar() {
                   </Button>
 
                   {dropdownOpen ? (
-                    <div className="absolute left-0 top-full z-50 mt-0 min-w-56 border border-border/60 bg-background shadow-lg">
+                    <div
+                      id="business-sectors-menu"
+                      className="absolute left-0 top-full z-50 mt-0 min-w-56 border border-border/60 bg-background shadow-lg"
+                    >
                       {sectors.length > 0 ? (
                         sectors.map((sector) => (
                           <Link
@@ -252,6 +263,7 @@ export function Navbar() {
         {mobileOpen ? (
           <motion.nav
             id="mobile-navigation"
+            aria-label="Mobile navigation"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -267,6 +279,7 @@ export function Navbar() {
                       type="button"
                       onClick={() => setMobileDropdownOpen((open) => !open)}
                       aria-expanded={mobileDropdownOpen}
+                      aria-controls="mobile-business-sectors-menu"
                       aria-label="Toggle mobile business sectors menu"
                       className={`w-full cursor-pointer justify-between rounded px-4 py-3 font-sans text-[14px] font-medium ${
                         isSectorActive
@@ -292,7 +305,10 @@ export function Navbar() {
                     </Button>
 
                     {mobileDropdownOpen ? (
-                      <div className="mt-1 ml-4 flex flex-col gap-1">
+                      <div
+                        id="mobile-business-sectors-menu"
+                        className="mt-1 ml-4 flex flex-col gap-1"
+                      >
                         {sectors.length > 0 ? (
                           sectors.map((sector) => (
                             <Link

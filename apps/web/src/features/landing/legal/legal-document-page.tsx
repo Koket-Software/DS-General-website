@@ -96,7 +96,7 @@ export function LegalDocumentPage({
           </div>
         </div>
 
-        <aside className="sticky top-25 hidden w-79 shrink-0 lg:block">
+        <div className="sticky top-25 hidden w-79 shrink-0 lg:block">
           <p className="mb-6 font-sans text-[16px] text-muted-foreground">
             Content Sections
           </p>
@@ -117,7 +117,7 @@ export function LegalDocumentPage({
               </Button>
             ))}
           </div>
-        </aside>
+        </div>
       </div>
     </section>
   );

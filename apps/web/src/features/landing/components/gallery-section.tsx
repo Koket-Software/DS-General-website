@@ -160,8 +160,13 @@ export function GallerySection() {
 
   return (
     <section className="landing-container">
+      <h1 className="sr-only">Gallery</h1>
       <div className="border-b border-primary/10">
-        <div className="flex items-center overflow-x-auto no-scrollbar">
+        <div
+          className="flex items-center overflow-x-auto no-scrollbar"
+          role="region"
+          aria-label="Gallery categories"
+        >
           {tabs.map((tab) => {
             const isActive =
               tab.slug === ALL_TAB ? !categorySlug : categorySlug === tab.slug;

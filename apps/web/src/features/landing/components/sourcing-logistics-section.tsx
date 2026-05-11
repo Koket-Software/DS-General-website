@@ -149,7 +149,7 @@ export function SourcingLogisticsSection({
                 <h1 className="font-sans text-[32px] font-medium leading-[1.15] text-primary-foreground md:text-[42px]">
                   {sector.title}
                 </h1>
-                <p className="max-w-[38rem] font-sans text-[14px] leading-[1.55] text-primary-foreground/80 md:text-[16px]">
+                <p className="max-w-[38rem] font-sans text-[14px] leading-[1.55] text-primary-foreground md:text-[16px]">
                   {sector.excerpt ?? "Sourcing and logistics services."}
                 </p>
               </div>
@@ -239,8 +239,11 @@ export function SourcingLogisticsSection({
           <div
             ref={scrollRef}
             onScroll={updateScroll}
-            className="flex gap-4 overflow-x-auto scrollbar-hide"
+            className="flex gap-4 overflow-x-auto scrollbar-hide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            tabIndex={0}
+            role="region"
+            aria-label={`${sector.title} gallery`}
           >
             {gallery.map((image, index) => (
               <div

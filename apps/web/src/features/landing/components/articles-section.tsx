@@ -134,8 +134,14 @@ export function ArticlesSection() {
           </div>
           <div className="flex h-10.5 items-center w-full max-w-205.5">
             <div className="flex-1 h-full border border-border/60">
+              <label htmlFor="article-search" className="sr-only">
+                Search articles
+              </label>
               <Input
-                type="text"
+                id="article-search"
+                type="search"
+                name="articleSearch"
+                aria-label="Search articles"
                 placeholder="Search for Articles"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
@@ -281,9 +287,12 @@ export function ArticlesSection() {
               type="button"
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
+              aria-label="Go to previous articles page"
               className="bg-primary/5 flex items-center justify-center w-8 h-8 disabled:opacity-40 hover:bg-primary/10 transition-colors"
             >
-              <CaretLeft />
+              <span aria-hidden="true">
+                <CaretLeft />
+              </span>
             </Button>
             {Array.from({ length: totalPages })
               .slice(0, 6)
@@ -295,6 +304,8 @@ export function ArticlesSection() {
                     type="button"
                     key={page}
                     onClick={() => onPageChange(page)}
+                    aria-label={`Go to articles page ${page}`}
+                    aria-current={currentPage === page ? "page" : undefined}
                     className={`flex items-center justify-center w-8 h-8 font-sans font-medium text-[16px] transition-colors ${
                       currentPage === page
                         ? "bg-primary/5 text-primary"
@@ -312,9 +323,12 @@ export function ArticlesSection() {
                 onPageChange(Math.min(totalPages, currentPage + 1))
               }
               disabled={currentPage === totalPages}
+              aria-label="Go to next articles page"
               className="bg-primary/5 flex items-center justify-center w-8 h-8 disabled:opacity-40 hover:bg-primary/10 transition-colors"
             >
-              <CaretRight />
+              <span aria-hidden="true">
+                <CaretRight />
+              </span>
             </Button>
           </div>
         </>

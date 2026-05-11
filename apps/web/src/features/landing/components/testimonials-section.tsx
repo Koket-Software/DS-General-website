@@ -18,7 +18,12 @@ export function TestimonialsSection() {
           Unable to load testimonials right now.
         </div>
       ) : (
-        <div className="mt-10 flex md:flex-row gap-2 overflow-x-auto no-scrollbar">
+        <div
+          className="mt-10 flex md:flex-row gap-2 overflow-x-auto no-scrollbar focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+          tabIndex={0}
+          role="region"
+          aria-label="Client testimonials"
+        >
           {testimonialsQuery.isPending
             ? Array.from({ length: 4 }).map((_, index) => (
                 <div

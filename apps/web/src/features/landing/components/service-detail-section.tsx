@@ -98,7 +98,7 @@ export function ServiceDetailSection({ slug }: ServiceDetailSectionProps) {
       <div className="flex items-center gap-4 pb-6 md:pb-8">
         <Link
           to="/services"
-          className="inline-flex items-center gap-2 font-sans text-[15px] text-primary no-underline hover:opacity-80"
+          className="inline-flex min-h-6 items-center gap-2 font-sans text-[15px] text-primary no-underline hover:opacity-80"
         >
           <ArrowLeft size={16} />
           <span>Our services</span>
@@ -262,7 +262,7 @@ export function ServiceDetailSection({ slug }: ServiceDetailSectionProps) {
                     params={{ slug: item.slug }}
                     onMouseEnter={() => prefetchServiceDetail(item.slug)}
                     onFocus={() => prefetchServiceDetail(item.slug)}
-                    className="mt-4 inline-flex items-center gap-2 font-sans text-[14px] font-medium text-primary no-underline group-hover:opacity-80"
+                    className="mt-4 inline-flex min-h-6 items-center gap-2 font-sans text-[14px] font-medium text-primary no-underline group-hover:opacity-80"
                   >
                     <span>Learn More</span>
                     <ArrowRight size={16} />
