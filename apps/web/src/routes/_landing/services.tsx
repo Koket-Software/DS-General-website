@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { buildStaticPageHead } from "@/lib/seo";
+import { buildLeafStaticPageHead } from "@/lib/seo";
 import { publicServicesQueryOptions } from "@/lib/services/services-query";
 
 export const Route = createFileRoute("/_landing/services")({
-  head: () => buildStaticPageHead("/services"),
+  head: ({ match, matches }) =>
+    buildLeafStaticPageHead("/services", { match, matches }),
   loader: async ({ context }) => {
     return context.queryClient.ensureQueryData(
       publicServicesQueryOptions({

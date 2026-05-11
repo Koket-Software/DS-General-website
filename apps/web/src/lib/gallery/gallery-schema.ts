@@ -39,6 +39,15 @@ export const publicGalleryParamsSchema = z.object({
   categorySlug: z.string().trim().optional(),
 });
 
+export const publicGalleryRouteSearchSchema = z.object({
+  page: z.number().int().positive().optional(),
+  limit: z.number().int().min(1).max(100).optional(),
+  search: z.string().trim().optional(),
+  sortBy: z.enum(["occurredAt", "createdAt"]).optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
+  categorySlug: z.string().trim().optional(),
+});
+
 export type PublicGalleryCategory = z.infer<typeof publicGalleryCategorySchema>;
 export type PublicGalleryItem = z.infer<typeof publicGalleryItemSchema>;
 export type PublicGalleryCategoryParams = z.infer<

@@ -50,6 +50,17 @@ export const publicVacanciesParamsSchema = z.object({
   openOnly: z.boolean().optional(),
 });
 
+export const publicVacanciesRouteSearchSchema = z.object({
+  page: z.number().int().positive().optional(),
+  limit: z.number().int().min(1).max(100).optional(),
+  search: z.string().trim().optional(),
+  sortBy: z
+    .enum(["publishedAt", "deadlineAt", "createdAt", "title"])
+    .optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
+  openOnly: z.boolean().optional(),
+});
+
 export const createPublicVacancyApplicationSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
   email: z.string().email(),

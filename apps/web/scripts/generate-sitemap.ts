@@ -12,9 +12,14 @@ import {
 async function main() {
   const envBaseUrl =
     process.env.VITE_SITE_URL || process.env.VITE_FRONTEND_URL || "";
-  const baseUrl = /localhost|127\.0\.1/.test(envBaseUrl)
+  const baseUrl = /localhost|127\.0\.0\.1/.test(envBaseUrl)
     ? "https://dsgeneralplc.com"
     : envBaseUrl || "https://dsgeneralplc.com";
+  const serverUrl = process.env.VITE_SERVER_URL || process.env.SERVER_URL || "";
+  const strictDynamicRoutes =
+    process.env.SITEMAP_STRICT_DYNAMIC === "true" ||
+    (process.env.SITEMAP_STRICT_DYNAMIC !== "false" &&
+      !/localhost|127\.0\.0\.1/i.test(serverUrl || envBaseUrl));
   const publicDir = resolve(process.cwd(), "public");
   const sitemapPath = resolve(publicDir, "sitemap.xml");
   const robotsPath = resolve(publicDir, "robots.txt");
@@ -26,6 +31,10 @@ async function main() {
       generateFullSitemap(baseUrl, {
         prettyPrint: true,
         includeDynamicRoutes: true,
+        strictDynamicRoutes,
+        onDynamicRouteWarning: (message) => {
+          console.warn(message);
+        },
       }),
       Promise.resolve(generateRobotsTxt(baseUrl)),
     ]);

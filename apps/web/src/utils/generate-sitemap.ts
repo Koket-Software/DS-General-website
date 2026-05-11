@@ -31,6 +31,14 @@ interface SitemapOptions {
   prettyPrint?: boolean;
 }
 
+interface GenerateFullSitemapOptions {
+  prettyPrint?: boolean;
+  buildDate?: string;
+  includeDynamicRoutes?: boolean;
+  strictDynamicRoutes?: boolean;
+  onDynamicRouteWarning?: (message: string) => void;
+}
+
 function escapeXml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -51,6 +59,47 @@ function toDateString(value?: Date | string | null): string | undefined {
   }
 
   return date.toISOString().split("T")[0];
+}
+
+type PaginatedPublicResponse<TItem> = {
+  data: TItem[];
+  meta?: {
+    pagination?: {
+      totalPages?: number | string;
+    };
+  };
+};
+
+async function fetchAllPublicPages<
+  TResponse extends PaginatedPublicResponse<unknown>,
+  TParams extends Record<string, unknown>,
+>(
+  fetchPage: (params: TParams & { page: number }) => Promise<TResponse>,
+  params: TParams,
+): Promise<TResponse> {
+  const firstPage = await fetchPage({
+    ...params,
+    page: 1,
+  } as TParams & { page: number });
+  const totalPages = Number(firstPage.meta?.pagination?.totalPages ?? 1);
+
+  if (!Number.isFinite(totalPages) || totalPages <= 1) {
+    return firstPage;
+  }
+
+  const additionalPages = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, index) =>
+      fetchPage({ ...params, page: index + 2 } as TParams & { page: number }),
+    ),
+  );
+
+  return {
+    ...firstPage,
+    data: [
+      ...firstPage.data,
+      ...additionalPages.flatMap((response) => response.data),
+    ],
+  };
 }
 
 export function generateSitemap(options: SitemapOptions): string {
@@ -96,37 +145,105 @@ function getStaticRoutes(buildDate: string, baseUrl: string): SitemapUrl[] {
 async function getDynamicRoutes(
   buildDate: string,
   baseUrl: string,
+  options?: Pick<
+    GenerateFullSitemapOptions,
+    "strictDynamicRoutes" | "onDynamicRouteWarning"
+  >,
 ): Promise<SitemapUrl[]> {
-  const settled = await Promise.allSettled([
-    fetchPublicBlogs({
-      page: 1,
-      limit: 100,
-      sortBy: "publishDate",
-      sortOrder: "desc",
-    }),
-    fetchPublicVacancies({
-      page: 1,
-      limit: 100,
-      sortBy: "publishedAt",
-      sortOrder: "desc",
-    }),
-    fetchPublicServices({
-      page: 1,
-      limit: 100,
-      sortBy: "createdAt",
-      sortOrder: "desc",
-    }),
-    fetchPublicBusinessSectors({
-      page: 1,
-      limit: 100,
-      sortBy: "publishDate",
-      sortOrder: "desc",
-    }),
-    fetchPublicCaseStudies({
-      page: 1,
-      limit: 100,
-    }),
-  ]);
+  const sourceNames = [
+    "blogs",
+    "vacancies",
+    "services",
+    "business sectors",
+    "case studies",
+  ] as const;
+
+  const settled = (await Promise.allSettled([
+    fetchAllPublicPages(
+      (params) =>
+        fetchPublicBlogs(params as Parameters<typeof fetchPublicBlogs>[0]),
+      {
+        limit: 100,
+        sortBy: "publishDate",
+        sortOrder: "desc",
+      },
+    ),
+    fetchAllPublicPages(
+      (params) =>
+        fetchPublicVacancies(
+          params as Parameters<typeof fetchPublicVacancies>[0],
+        ),
+      {
+        limit: 100,
+        sortBy: "publishedAt",
+        sortOrder: "desc",
+      },
+    ),
+    fetchAllPublicPages(
+      (params) =>
+        fetchPublicServices(
+          params as Parameters<typeof fetchPublicServices>[0],
+        ),
+      {
+        limit: 50,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      },
+    ),
+    fetchAllPublicPages(
+      (params) =>
+        fetchPublicBusinessSectors(
+          params as Parameters<typeof fetchPublicBusinessSectors>[0],
+        ),
+      {
+        limit: 50,
+        sortBy: "publishDate",
+        sortOrder: "desc",
+      },
+    ),
+    fetchAllPublicPages(
+      (params) =>
+        fetchPublicCaseStudies(
+          params as Parameters<typeof fetchPublicCaseStudies>[0],
+        ),
+      {
+        limit: 50,
+      },
+    ),
+  ])) as [
+    PromiseSettledResult<Awaited<ReturnType<typeof fetchPublicBlogs>>>,
+    PromiseSettledResult<Awaited<ReturnType<typeof fetchPublicVacancies>>>,
+    PromiseSettledResult<Awaited<ReturnType<typeof fetchPublicServices>>>,
+    PromiseSettledResult<
+      Awaited<ReturnType<typeof fetchPublicBusinessSectors>>
+    >,
+    PromiseSettledResult<Awaited<ReturnType<typeof fetchPublicCaseStudies>>>,
+  ];
+
+  const failures = settled
+    .map((result, index) => ({ result, name: sourceNames[index] }))
+    .filter(
+      (
+        item,
+      ): item is {
+        result: PromiseRejectedResult;
+        name: (typeof sourceNames)[number];
+      } => item.result.status === "rejected",
+    );
+
+  if (failures.length > 0) {
+    const message = `Failed to fetch dynamic sitemap routes for: ${failures
+      .map((item) => item.name)
+      .join(", ")}`;
+
+    if (options?.strictDynamicRoutes) {
+      throw new Error(message, {
+        cause: failures.map((item) => item.result.reason),
+      });
+    }
+
+    options?.onDynamicRouteWarning?.(message);
+  }
 
   const [
     blogsResult,
@@ -210,11 +327,7 @@ async function getDynamicRoutes(
 
 export async function generateFullSitemap(
   baseUrl: string,
-  options?: {
-    prettyPrint?: boolean;
-    buildDate?: string;
-    includeDynamicRoutes?: boolean;
-  },
+  options?: GenerateFullSitemapOptions,
 ): Promise<string> {
   const buildDate =
     options?.buildDate ??
@@ -225,7 +338,7 @@ export async function generateFullSitemap(
   const routes = [
     ...getStaticRoutes(buildDate, normalizedBaseUrl),
     ...((options?.includeDynamicRoutes ?? true)
-      ? await getDynamicRoutes(buildDate, normalizedBaseUrl)
+      ? await getDynamicRoutes(buildDate, normalizedBaseUrl, options)
       : []),
   ];
 

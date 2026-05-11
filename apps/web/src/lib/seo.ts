@@ -13,11 +13,7 @@ import {
 } from "@suba-company-template/types";
 
 import homeHeroImage from "@/assets/ds/home/DS_Hero.webp";
-import {
-  buildSeoMeta,
-  getDefaultOgImageUrl,
-  SITE_METADATA,
-} from "@/lib/og-utils";
+import { buildSeoMeta, SITE_METADATA } from "@/lib/og-utils";
 
 type HeadResult = {
   meta: Array<Record<string, unknown>>;
@@ -29,6 +25,9 @@ interface CommonHeadInput {
   path: string;
   title: string;
   description: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  ogUrl?: string;
   robots?: string;
   jsonLd?: unknown[];
   preloadImage?: string;
@@ -39,40 +38,48 @@ const COMPANY_SAME_AS = [
   "https://x.com/dsgeneralplc",
 ];
 
+export type RouteHeadMatchContext = {
+  match: { routeId: unknown };
+  matches: Array<{ routeId: unknown }>;
+};
+
 function normalizeJsonLdArray(jsonLd?: unknown[]) {
   return (jsonLd ?? []).filter(Boolean);
 }
 
-const HOME_OPEN_GRAPH_ROUTE = getStaticSeoRoute(PUBLIC_ROUTE_PATHS.home());
+export function emptyHead(): HeadResult {
+  return { meta: [], links: [], scripts: [] };
+}
 
-function getStaticHomeOpenGraph() {
-  return {
-    title: HOME_OPEN_GRAPH_ROUTE?.title ?? SITE_METADATA.defaultTitle,
-    description:
-      HOME_OPEN_GRAPH_ROUTE?.description ?? SITE_METADATA.defaultDescription,
-    image: getDefaultOgImageUrl(),
-    path: HOME_OPEN_GRAPH_ROUTE?.path ?? PUBLIC_ROUTE_PATHS.home(),
-  };
+export function isLeafHeadMatch({ match, matches }: RouteHeadMatchContext) {
+  return matches.at(-1)?.routeId === match.routeId;
+}
+
+export function buildLeafStaticPageHead(
+  path: string,
+  context: RouteHeadMatchContext,
+) {
+  return isLeafHeadMatch(context) ? buildStaticPageHead(path) : emptyHead();
 }
 
 export function buildHead({
   path,
   title,
   description,
+  ogImage,
+  ogType,
+  ogUrl,
   robots = buildRobotsContent(),
   jsonLd,
   preloadImage,
 }: CommonHeadInput): HeadResult {
-  const homeOpenGraph = getStaticHomeOpenGraph();
   const seo = buildSeoMeta({
     path,
     title,
     description,
-    ogTitle: homeOpenGraph.title,
-    ogDescription: homeOpenGraph.description,
-    ogImage: homeOpenGraph.image,
-    ogType: "website",
-    ogUrl: homeOpenGraph.path,
+    ogImage,
+    ogType,
+    ogUrl,
   });
 
   return {
@@ -191,6 +198,8 @@ export function buildArticleDetailHead(input: {
     path,
     title: `${input.title} | ${SITE_METADATA.siteName}`,
     description,
+    ogImage: input.featuredImageUrl || undefined,
+    ogType: "article",
     jsonLd: [
       buildArticleJsonLd({
         title: input.title,
@@ -240,6 +249,7 @@ export function buildCareerDetailHead(input: {
     path,
     title: `${input.title} | Careers at ${SITE_METADATA.siteName}`,
     description,
+    ogImage: input.featuredImageUrl || undefined,
     jsonLd: [
       buildJobPostingJsonLd({
         title: input.title,
@@ -295,6 +305,7 @@ export function buildServiceDetailHead(input: {
     path,
     title: `${input.title} | ${SITE_METADATA.siteName} Services`,
     description,
+    ogImage: input.featuredImageUrl || undefined,
     jsonLd: [
       buildServiceJsonLd({
         title: input.title,
@@ -336,6 +347,7 @@ export function buildProjectDetailHead(input: {
     path,
     title: `${input.title} | ${SITE_METADATA.siteName} Projects`,
     description,
+    ogImage: input.featuredImageUrl || undefined,
     jsonLd: [
       buildWebPageJsonLd({
         title: input.title,
@@ -375,6 +387,7 @@ export function buildSectorDetailHead(input: {
     path,
     title: `${input.title} Sector | ${SITE_METADATA.siteName}`,
     description,
+    ogImage: input.featuredImageUrl || undefined,
     jsonLd: [
       buildWebPageJsonLd({
         title: input.title,

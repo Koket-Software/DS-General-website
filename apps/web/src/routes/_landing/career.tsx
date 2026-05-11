@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { buildStaticPageHead } from "@/lib/seo";
+import { buildLeafStaticPageHead } from "@/lib/seo";
 import { publicVacanciesQueryOptions } from "@/lib/vacancies/vacancies-query";
 import {
   normalizePublicVacanciesParams,
-  publicVacanciesParamsSchema,
+  publicVacanciesRouteSearchSchema,
 } from "@/lib/vacancies/vacancies-schema";
 
 const toFiniteNumber = (value: unknown) => {
@@ -13,9 +13,10 @@ const toFiniteNumber = (value: unknown) => {
 };
 
 export const Route = createFileRoute("/_landing/career")({
-  head: () => buildStaticPageHead("/career"),
+  head: ({ match, matches }) =>
+    buildLeafStaticPageHead("/career", { match, matches }),
   validateSearch: (search: Record<string, unknown>) =>
-    publicVacanciesParamsSchema.partial().parse({
+    publicVacanciesRouteSearchSchema.parse({
       page: toFiniteNumber(search.page),
       limit: toFiniteNumber(search.limit),
       search: typeof search.search === "string" ? search.search : undefined,

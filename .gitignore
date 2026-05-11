@@ -71,3 +71,7 @@ docs
 docs/**
 
 apps/web/dist-ssr
+.playwright-report
+.playwright-report/**
+.playwright-mcp
+.playwright-mcp/**

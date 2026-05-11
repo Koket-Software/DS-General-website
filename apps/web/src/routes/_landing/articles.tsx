@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { publicBlogsQueryOptions } from "@/lib/blogs/blogs-query";
 import {
   normalizePublicBlogsParams,
-  publicBlogsParamsSchema,
+  publicBlogsRouteSearchSchema,
 } from "@/lib/blogs/blogs-schema";
-import { buildStaticPageHead } from "@/lib/seo";
+import { buildLeafStaticPageHead } from "@/lib/seo";
 import { publicTagsQueryOptions } from "@/lib/tags/tags-query";
 
 const toFiniteNumber = (value: unknown) => {
@@ -14,9 +14,10 @@ const toFiniteNumber = (value: unknown) => {
 };
 
 export const Route = createFileRoute("/_landing/articles")({
-  head: () => buildStaticPageHead("/articles"),
+  head: ({ match, matches }) =>
+    buildLeafStaticPageHead("/articles", { match, matches }),
   validateSearch: (search: Record<string, unknown>) =>
-    publicBlogsParamsSchema.partial().parse({
+    publicBlogsRouteSearchSchema.parse({
       page: toFiniteNumber(search.page),
       limit: toFiniteNumber(search.limit),
       search: typeof search.search === "string" ? search.search : undefined,

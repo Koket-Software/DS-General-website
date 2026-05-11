@@ -10,9 +10,14 @@ const shouldLoadProdEnv =
   mode === "production" || process.env.ENV_FILE?.endsWith(".env.prod");
 
 const rootEnv = loadEnv(mode, rootDir, "");
-Object.assign(process.env, rootEnv);
+
+for (const [key, value] of Object.entries(rootEnv)) {
+  process.env[key] ??= value;
+}
 
 if (shouldLoadProdEnv) {
   const prodEnv = loadEnv("prod", rootDir, "");
-  Object.assign(process.env, prodEnv);
+  for (const [key, value] of Object.entries(prodEnv)) {
+    process.env[key] ??= value;
+  }
 }

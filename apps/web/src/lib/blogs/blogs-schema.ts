@@ -52,6 +52,17 @@ export const publicBlogsParamsSchema = z.object({
   cursor: z.string().optional(),
 });
 
+export const publicBlogsRouteSearchSchema = z.object({
+  page: z.number().int().positive().optional(),
+  limit: z.number().int().min(1).max(100).optional(),
+  search: z.string().trim().optional(),
+  sortBy: z.enum(["publishDate", "createdAt", "title"]).optional(),
+  sortOrder: z.enum(["asc", "desc"]).optional(),
+  tagId: z.number().int().positive().optional(),
+  authorId: z.string().optional(),
+  cursor: z.string().optional(),
+});
+
 export type PublicBlog = z.infer<typeof publicBlogSchema>;
 export type PublicBlogTag = z.infer<typeof publicBlogTagSchema>;
 export type PublicBlogsParams = z.infer<typeof publicBlogsParamsSchema>;

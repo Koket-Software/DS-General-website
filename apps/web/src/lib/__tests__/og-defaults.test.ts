@@ -10,7 +10,11 @@ import {
   getDefaultOgImageUrl,
   SITE_METADATA,
 } from "@/lib/og-utils";
-import { buildArticleDetailHead, buildStaticPageHead } from "@/lib/seo";
+import {
+  buildArticleDetailHead,
+  buildLeafStaticPageHead,
+  buildStaticPageHead,
+} from "@/lib/seo";
 
 const getMetaContent = (
   meta: Array<Record<string, unknown>>,
@@ -47,18 +51,20 @@ describe("OG defaults and route metadata", () => {
     );
   });
 
-  it("reuses the home OG payload for non-home static pages", () => {
+  it("uses page-specific OG payloads for non-home static pages", () => {
     const aboutHead = buildStaticPageHead(PUBLIC_ROUTE_PATHS.about());
 
     expect(getMetaContent(aboutHead.meta, "og:image")).toContain(
       "/og_image_ds.webp",
     );
-    expect(getMetaContent(aboutHead.meta, "og:title")).toBe(homeRoute?.title);
+    expect(getMetaContent(aboutHead.meta, "og:title")).toBe(
+      "About DS General PLC",
+    );
     expect(getMetaContent(aboutHead.meta, "og:description")).toBe(
-      homeRoute?.description,
+      "Learn how DS General PLC combines sourcing, construction, and operational delivery into one integrated execution model.",
     );
     expect(getMetaContent(aboutHead.meta, "og:url")).toBe(
-      joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.home()),
+      joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.about()),
     );
     expect(getMetaContent(aboutHead.meta, "description", "name")).toBe(
       "Learn how DS General PLC combines sourcing, construction, and operational delivery into one integrated execution model.",
@@ -68,7 +74,7 @@ describe("OG defaults and route metadata", () => {
     );
   });
 
-  it("reuses the home OG payload for dynamic detail pages", () => {
+  it("uses page-specific OG payloads for dynamic detail pages", () => {
     const articleHead = buildArticleDetailHead({
       slug: "freight-resilience",
       title: "Freight resilience",
@@ -76,15 +82,20 @@ describe("OG defaults and route metadata", () => {
       featuredImageUrl: "https://cdn.example.com/freight.webp",
     });
 
-    expect(getMetaContent(articleHead.meta, "og:image")).toContain(
-      "/og_image_ds.webp",
+    expect(getMetaContent(articleHead.meta, "og:image")).toBe(
+      "https://cdn.example.com/freight.webp",
     );
-    expect(getMetaContent(articleHead.meta, "og:title")).toBe(homeRoute?.title);
+    expect(getMetaContent(articleHead.meta, "og:title")).toBe(
+      "Freight resilience | DS General PLC",
+    );
     expect(getMetaContent(articleHead.meta, "og:description")).toBe(
-      homeRoute?.description,
+      "Operational playbook",
     );
     expect(getMetaContent(articleHead.meta, "og:url")).toBe(
-      joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.home()),
+      joinUrl(
+        SITE_METADATA.siteUrl,
+        PUBLIC_ROUTE_PATHS.article("freight-resilience"),
+      ),
     );
     expect(getMetaContent(articleHead.meta, "description", "name")).toBe(
       "Operational playbook",
@@ -92,5 +103,31 @@ describe("OG defaults and route metadata", () => {
     expect(articleHead.meta.find((entry) => "title" in entry)?.title).toBe(
       "Freight resilience | DS General PLC",
     );
+  });
+
+  it("suppresses parent static heads when a nested detail route is active", () => {
+    const parentHead = buildLeafStaticPageHead(PUBLIC_ROUTE_PATHS.articles(), {
+      match: { routeId: "/_landing/articles" },
+      matches: [
+        { routeId: "/_landing" },
+        { routeId: "/_landing/articles" },
+        { routeId: "/_landing/articles/$slug" },
+      ],
+    });
+
+    expect(parentHead.meta).toHaveLength(0);
+    expect(parentHead.links).toHaveLength(0);
+
+    const leafHead = buildLeafStaticPageHead(PUBLIC_ROUTE_PATHS.articles(), {
+      match: { routeId: "/_landing/articles" },
+      matches: [{ routeId: "/_landing" }, { routeId: "/_landing/articles" }],
+    });
+
+    expect(leafHead.links).toEqual([
+      {
+        rel: "canonical",
+        href: joinUrl(SITE_METADATA.siteUrl, PUBLIC_ROUTE_PATHS.articles()),
+      },
+    ]);
   });
 });

@@ -145,4 +145,30 @@ describe("generate-sitemap", () => {
     );
     expect(xml).not.toContain("/blogs/");
   });
+
+  it("throws when strict dynamic route generation cannot fetch a source", async () => {
+    fetchPublicBlogs.mockRejectedValue(new Error("blogs unavailable"));
+    fetchPublicVacancies.mockResolvedValue({
+      success: true,
+      data: [],
+    } as PublicVacanciesResponse);
+    fetchPublicServices.mockResolvedValue({
+      success: true,
+      data: [],
+    } as PublicServicesListResponse);
+    fetchPublicBusinessSectors.mockResolvedValue({
+      success: true,
+      data: [],
+    } as PublicBusinessSectorsListResponse);
+    fetchPublicCaseStudies.mockResolvedValue({
+      success: true,
+      data: [],
+    } as PublicCaseStudiesListResponse);
+
+    await expect(
+      generateFullSitemap("https://dsgeneralplc.com/", {
+        strictDynamicRoutes: true,
+      }),
+    ).rejects.toThrow("Failed to fetch dynamic sitemap routes for: blogs");
+  });
 });

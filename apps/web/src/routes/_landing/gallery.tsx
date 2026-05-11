@@ -7,7 +7,7 @@ import {
 import {
   normalizePublicGalleryCategoryParams,
   normalizePublicGalleryParams,
-  publicGalleryParamsSchema,
+  publicGalleryRouteSearchSchema,
 } from "@/lib/gallery/gallery-schema";
 import { buildStaticPageHead } from "@/lib/seo";
 
@@ -19,7 +19,7 @@ const toFiniteNumber = (value: unknown) => {
 export const Route = createFileRoute("/_landing/gallery")({
   head: () => buildStaticPageHead("/gallery"),
   validateSearch: (search: Record<string, unknown>) =>
-    publicGalleryParamsSchema.partial().parse({
+    publicGalleryRouteSearchSchema.parse({
       page: toFiniteNumber(search.page),
       limit: toFiniteNumber(search.limit),
       search: typeof search.search === "string" ? search.search : undefined,
